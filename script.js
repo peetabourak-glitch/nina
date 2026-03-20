@@ -115,7 +115,6 @@ async function send() {
 
   userMessageCount++;
 
-  // 🔥 WARNING SYSTEM
   if (userMessageCount === 8) {
     addMessage("ai", "mm… you’re getting close to the limit 🖤");
   }
@@ -124,7 +123,6 @@ async function send() {
     addMessage("ai", "one more… then you’ll have to unlock me 😏");
   }
 
-  // 🔥 PAYWALL
   if (userMessageCount >= 10) {
     locked = true;
     paywall.style.display = "block";
@@ -159,8 +157,4 @@ sendBtn.addEventListener("click", send);
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") send();
-});
-
-unlockBtn.addEventListener("click", () => {
-  alert("unlock Nina for full access 🖤 (payment coming soon)");
 });
