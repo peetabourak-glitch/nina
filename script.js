@@ -9,7 +9,7 @@ let userMessageCount = 0;
 let locked = false;
 let proactiveTimer = null;
 
-// paměť v prohlížeči
+// 🔥 paměť
 let memory = JSON.parse(localStorage.getItem("nina_memory") || "{}");
 
 const messages = [
@@ -50,18 +50,13 @@ async function sendMessageToAI(history, proactive = false) {
 }
 
 function splitReplyIntoParts(reply) {
-  if (!reply) return [];
-
   return reply
-    .split("\n")
-    .map(part => part.trim())
-    .filter(Boolean);
+    ? reply.split("\n").map(p => p.trim()).filter(Boolean)
+    : [];
 }
 
 function addAssistantReply(reply) {
   const parts = splitReplyIntoParts(reply);
-
-  if (parts.length === 0) return;
 
   parts.forEach((part, index) => {
     setTimeout(() => {
@@ -83,17 +78,11 @@ function saveMemory(data) {
 }
 
 function scheduleProactiveMessage() {
-  if (proactiveTimer) {
-    clearTimeout(proactiveTimer);
-  }
+  if (proactiveTimer) clearTimeout(proactiveTimer);
 
   proactiveTimer = setTimeout(async () => {
     if (locked) return;
-
-    // musí už proběhnout aspoň nějaká konverzace
     if (messages.length < 3) return;
-
-    // nebude psát pokaždé
     if (Math.random() < 0.6) return;
 
     try {
@@ -112,7 +101,10 @@ function scheduleProactiveMessage() {
 }
 
 async function send() {
-  if (locked) return;
+  if (locked) {
+    input.disabled = true;
+    return;
+  }
 
   const text = input.value.trim();
   if (!text) return;
@@ -121,10 +113,24 @@ async function send() {
   messages.push({ role: "user", content: text });
   input.value = "";
 
-  userMessageCount += 1;
+  userMessageCount++;
+
+  // 🔥 WARNING SYSTEM
+  if (userMessageCount === 8) {
+    addMessage("ai", "mm… you’re getting close to the limit 🖤");
+  }
+
+  if (userMessageCount === 9) {
+    addMessage("ai", "one more… then you’ll have to unlock me 😏");
+  }
+
+  // 🔥 PAYWALL
   if (userMessageCount >= 10) {
     locked = true;
     paywall.style.display = "block";
+    input.disabled = true;
+    sendBtn.disabled = true;
+    return;
   }
 
   sendBtn.disabled = true;
@@ -148,14 +154,13 @@ async function send() {
   }
 }
 
+// 🔥 EVENTS
 sendBtn.addEventListener("click", send);
 
 input.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    send();
-  }
+  if (event.key === "Enter") send();
 });
 
 unlockBtn.addEventListener("click", () => {
-  alert("payment system coming soon 😉");
+  alert("unlock Nina for full access 🖤 (payment coming soon)");
 });
