@@ -330,21 +330,27 @@ body {
   color: #e4d7f1;
 }
 
-.paywall button {
+.unlock-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  border: 0;
   border-radius: 16px;
   padding: 14px 16px;
   cursor: pointer;
   font-size: 0.98rem;
   font-weight: 700;
   color: white;
+  text-decoration: none;
   background: linear-gradient(135deg, #ff4fa3, #c15cff);
   box-shadow: 0 10px 26px rgba(193, 92, 255, 0.24);
+  transition: opacity 0.16s ease, transform 0.16s ease;
 }
 
-.paywall button:hover {
+.unlock-link:hover {
   opacity: 0.96;
+  transform: translateY(-1px);
+}
 }
 
 @keyframes pageFade {
