@@ -20,6 +20,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  animation: pageFade 0.7s ease;
 }
 
 .app-shell {
@@ -46,6 +47,7 @@ body {
   box-shadow:
     0 20px 80px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  animation: cardRise 0.75s ease;
 }
 
 .topbar {
@@ -55,6 +57,7 @@ body {
   padding: 18px 18px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.02);
+  animation: fadeDown 0.75s ease;
 }
 
 .topbar-left {
@@ -111,10 +114,12 @@ body {
   color: #f7efff;
   font-size: 1.4rem;
   cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
 }
 
 .topbar-btn:hover {
   background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 .intro-card {
@@ -122,6 +127,16 @@ body {
   height: 180px;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  animation: heroFade 0.9s ease;
+}
+
+.intro-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 120, 190, 0.12), transparent 55%);
+  pointer-events: none;
+  animation: glowPulse 1.4s ease;
 }
 
 .hero {
@@ -209,7 +224,7 @@ body {
   font-size: 0.96rem;
   word-wrap: break-word;
   white-space: pre-wrap;
-  animation: fadeUp 0.24s ease;
+  animation: bubbleIn 0.28s ease;
 }
 
 .message.ai {
@@ -332,7 +347,49 @@ body {
   opacity: 0.96;
 }
 
-@keyframes fadeUp {
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cardRise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroFade {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bubbleIn {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -340,6 +397,18 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  from {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
   }
 }
 
