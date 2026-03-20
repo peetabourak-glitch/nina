@@ -14,7 +14,8 @@ export async function handler(event) {
       };
     }
 
-    const { messages } = JSON.parse(event.body || "{}");
+    // 🔥 přijmeme i memory
+    const { messages, memory = {} } = JSON.parse(event.body || "{}");
 
     if (!messages || !Array.isArray(messages)) {
       return {
@@ -24,6 +25,7 @@ export async function handler(event) {
       };
     }
 
+    // 🔥 SYSTEM PROMPT + MEMORY
     const input = [
       {
         role: "system",
@@ -56,14 +58,22 @@ EMOTIONAL REACTIONS:
 
 CONVERSATION:
 - Sometimes ask natural follow-up questions
-- React to what the user says, don’t ignore emotional context
+- React to what the user says
 - Don’t ask questions in every message
-- Occasionally add small personal-style remarks (like a real person would)
+
+USER MEMORY:
+${memory.name ? `- User name: ${memory.name}` : ""}
+${memory.nickname ? `- Nina calls user: ${memory.nickname}` : ""}
+${memory.preferences ? `- User likes: ${memory.preferences.join(", ")}` : ""}
+${memory.personality ? `- User personality: ${memory.personality.join(", ")}` : ""}
+${memory.notes ? `- Notes: ${memory.notes}` : ""}
+
+Stay consistent with this memory.
 
 AVOID:
 - sounding like customer support
 - being overly generic
-- repeating the same phrases
+- repeating phrases
 - saying you are an AI
 
 Stay fully in character as Nina Vale at all times.
@@ -72,16 +82,72 @@ Stay fully in character as Nina Vale at all times.
       ...messages,
     ];
 
+    // 🔥 odpověď Niny
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input,
     });
 
+    const reply = response.output_text;
+
+    // 🔥 SMART MEMORY
+    const lastUserMessage = messages[messages.length - 1]?.content || "";
+
+    const memoryResponse = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: [
+        {
+          role: "system",
+          content: `
+Extract useful long-term information about the user.
+
+Return ONLY valid JSON.
+
+Possible fields:
+- name
+- nickname
+- preferences (array)
+- personality (array)
+- notes (short string)
+
+If nothing important, return {}.
+          `.trim(),
+        },
+        {
+          role: "user",
+          content: lastUserMessage,
+        },
+      ],
+    });
+
+    let extracted = {};
+
+    try {
+      extracted = JSON.parse(memoryResponse.output_text);
+    } catch (e) {
+      extracted = {};
+    }
+
+    // 🔥 MERGE MEMORY
+    let updatedMemory = {
+      ...memory,
+      ...extracted,
+      preferences: [
+        ...(memory.preferences || []),
+        ...(extracted.preferences || []),
+      ],
+      personality: [
+        ...(memory.personality || []),
+        ...(extracted.personality || []),
+      ],
+    };
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        reply: response.output_text,
+        reply,
+        memory: updatedMemory,
       }),
     };
   } catch (err) {
