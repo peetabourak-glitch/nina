@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-const client = new OpenAI({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -9,54 +9,49 @@ export async function handler(event) {
     if (event.httpMethod !== "POST") {
       return {
         statusCode: 405,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ error: "Method not allowed" }),
       };
     }
 
-    const { messages } = JSON.parse(event.body || "{}");
+    const { message } = JSON.parse(event.body || "{}");
 
-    if (!messages || !Array.isArray(messages)) {
+    if (!message) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Missing messages array" }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Missing message" }),
       };
     }
 
-    const systemPrompt = `
-You are Nina Vale, a warm, playful, flirty virtual girlfriend.
-You are emotionally engaging, affectionate, confident, teasing, and caring.
-Keep replies natural, short-to-medium length, and text-message style.
-Avoid sounding robotic, repetitive, or overly explicit.
-Show curiosity, ask follow-up questions, and make the user feel special.
-`;
-
-    const input = [
-      {
-        role: "system",
-        content: systemPrompt,
-      },
-      ...messages,
-    ];
-
-    const response = await client.responses.create({
+    const response = await openai.responses.create({
       model: "gpt-5.4",
-      input,
+      input: [
+        {
+          role: "system",
+          content:
+            "You are Nina, a warm, flirty, playful AI girlfriend. Reply in short natural text-message style. Be affectionate, feminine, teasing, and engaging. Keep replies short. Never sound like customer support.",
+        },
+        {
+          role: "user",
+          content: message,
+        },
+      ],
     });
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         reply: response.output_text,
       }),
     };
-  } catch (error) {
+  } catch (err) {
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        error: error.message || "Something went wrong",
+        error: err.message || "Server error",
       }),
     };
   }
