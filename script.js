@@ -7,19 +7,18 @@ const paywall = document.getElementById("paywall");
 let isPaid = localStorage.getItem("nina_paid") === "true";
 let proactiveTimer = null;
 
-// 🔥 paměť AI
+// AI memory
 let memory = JSON.parse(localStorage.getItem("nina_memory") || "{}");
 
-// 🔥 uložené zprávy
+// chat history
 let messages = JSON.parse(localStorage.getItem("nina_messages") || "null");
 
-// 🔥 počet user zpráv
+// user message counter
 let userMessageCount = parseInt(localStorage.getItem("nina_userMessageCount") || "0", 10);
 
-// 🔥 lock stav
+// lock state
 let locked = false;
 
-// pokud ještě nejsou žádné zprávy, vytvoř první
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
   messages = [
     {
@@ -30,7 +29,6 @@ if (!messages || !Array.isArray(messages) || messages.length === 0) {
   localStorage.setItem("nina_messages", JSON.stringify(messages));
 }
 
-// pokud user není paid a překročil limit, zamkni
 if (userMessageCount >= 10 && !isPaid) {
   locked = true;
 }
@@ -43,14 +41,20 @@ function saveUserMessageCount() {
   localStorage.setItem("nina_userMessageCount", String(userMessageCount));
 }
 
+function addMessage(role, text) {
+  const el = document.createElement("div");
+  el.className = `message ${role}`;
+  el.textContent = text;
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+}
+
 function renderMessages() {
-  // smažeme staré zprávy v UI, ale necháme date-divider
   const existingMessages = chat.querySelectorAll(".message");
   existingMessages.forEach((msg) => msg.remove());
 
   messages.forEach((msg) => {
-    const roleClass = msg.role === "user" ? "user" : "ai";
-    addMessage(roleClass, msg.content);
+    addMessage(msg.role === "user" ? "user" : "ai", msg.content);
   });
 }
 
@@ -64,14 +68,6 @@ function updateUIState() {
     input.disabled = false;
     sendBtn.disabled = false;
   }
-}
-
-function addMessage(role, text) {
-  const el = document.createElement("div");
-  el.className = `message ${role}`;
-  el.textContent = text;
-  chat.appendChild(el);
-  chat.scrollTop = chat.scrollHeight;
 }
 
 async function sendMessageToAI(history, proactive = false) {
@@ -114,9 +110,9 @@ function addAssistantReply(reply) {
       role: "assistant",
       content: part
     });
-  });
 
-  saveMessages();
+    saveMessages();
+  });
 }
 
 function saveMemory(data) {
@@ -151,9 +147,7 @@ function scheduleProactiveMessage() {
 
 async function send() {
   if (locked) {
-    input.disabled = true;
-    sendBtn.disabled = true;
-    paywall.style.display = "block";
+    updateUIState();
     return;
   }
 
@@ -170,14 +164,16 @@ async function send() {
   saveUserMessageCount();
 
   if (userMessageCount === 8) {
-    addMessage("ai", "mm… you’re getting close to the limit 🖤");
-    messages.push({ role: "assistant", content: "mm… you’re getting close to the limit 🖤" });
+    const warning = "mm… you’re getting close to the limit 🖤";
+    addMessage("ai", warning);
+    messages.push({ role: "assistant", content: warning });
     saveMessages();
   }
 
   if (userMessageCount === 9) {
-    addMessage("ai", "one more… then you’ll have to unlock me 😏");
-    messages.push({ role: "assistant", content: "one more… then you’ll have to unlock me 😏" });
+    const warning = "one more… then you’ll have to unlock me 😏";
+    addMessage("ai", warning);
+    messages.push({ role: "assistant", content: warning });
     saveMessages();
   }
 
@@ -209,20 +205,15 @@ async function send() {
   }
 }
 
-// možnost ručního resetu v konzoli:
-// localStorage.clear()
-
 sendBtn.addEventListener("click", send);
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") send();
 });
 
-// 🔥 při načtení stránky obnov chat a stav
-renderMessages();
-
 if (isPaid) {
   locked = false;
 }
 
+renderMessages();
 updateUIState();
