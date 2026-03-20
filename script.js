@@ -3,6 +3,7 @@ const input = document.getElementById("input");
 const sendBtn = document.getElementById("sendBtn");
 const statusEl = document.getElementById("status");
 const paywall = document.getElementById("paywall");
+const manageBtn = document.getElementById("manageBtn");
 
 let isPaid = localStorage.getItem("nina_paid") === "true";
 let proactiveTimer = null;
@@ -58,6 +59,20 @@ function renderMessages() {
   });
 }
 
+function showSubscriptionStatus() {
+  if (isPaid) {
+    statusEl.textContent = "you’re subscribed 💕";
+
+    if (manageBtn) {
+      manageBtn.style.display = "inline-flex";
+    }
+  } else {
+    if (manageBtn) {
+      manageBtn.style.display = "none";
+    }
+  }
+}
+
 function updateUIState() {
   if (locked) {
     paywall.style.display = "block";
@@ -68,6 +83,8 @@ function updateUIState() {
     input.disabled = false;
     sendBtn.disabled = false;
   }
+
+  showSubscriptionStatus();
 }
 
 async function sendMessageToAI(history, proactive = false) {
@@ -131,7 +148,7 @@ function scheduleProactiveMessage() {
     if (Math.random() < 0.6) return;
 
     try {
-      statusEl.textContent = "Nina is typing...";
+      statusEl.textContent = isPaid ? "you’re subscribed 💕" : "Nina is typing...";
 
       const data = await sendMessageToAI(messages, true);
 
@@ -140,7 +157,7 @@ function scheduleProactiveMessage() {
     } catch (err) {
       console.error("Proactive message failed:", err);
     } finally {
-      statusEl.textContent = "";
+      statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
     }
   }, 20000);
 }
@@ -201,7 +218,7 @@ async function send() {
     console.error(err);
   } finally {
     sendBtn.disabled = false;
-    statusEl.textContent = "";
+    statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
   }
 }
 
