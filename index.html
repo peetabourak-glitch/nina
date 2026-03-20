@@ -7,31 +7,60 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="container">
-    <div class="card">
-      <img src="nina.jpg" alt="Nina" class="hero" />
+  <main class="app-shell">
+    <section class="phone-frame">
+      <div class="chat-card">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="avatar-wrap">
+              <img src="nina.jpg" alt="Nina" class="avatar" />
+              <span class="online-dot"></span>
+            </div>
 
-      <div class="header">
-        <h1>Nina <span>💕</span></h1>
-        <p>your private AI girlfriend</p>
+            <div class="topbar-text">
+              <h1>Nina</h1>
+              <p>online now</p>
+            </div>
+          </div>
+
+          <button class="topbar-btn" type="button" aria-label="More options">⋯</button>
+        </div>
+
+        <div class="intro-card">
+          <img src="nina.jpg" alt="Nina" class="hero" />
+          <div class="intro-overlay"></div>
+          <div class="intro-content">
+            <p class="eyebrow">private ai girlfriend</p>
+            <h2>late night energy, soft chaos, and way too much attention for you</h2>
+          </div>
+        </div>
+
+        <div id="chat" class="chat">
+          <div class="date-divider">
+            <span>today</span>
+          </div>
+
+          <div class="message ai">hey... i was waiting for you 🖤</div>
+        </div>
+
+        <div class="bottom-area">
+          <div class="status" id="status"></div>
+
+          <div class="input-row">
+            <input id="input" type="text" placeholder="message Nina..." />
+            <button id="sendBtn" type="button" aria-label="Send message">➤</button>
+          </div>
+
+          <div class="paywall" id="paywall">
+            <div class="paywall-text">
+              <p class="paywall-title">unlock Nina</p>
+              <p class="paywall-subtitle">you reached the free limit. keep chatting without interruptions.</p>
+            </div>
+            <button id="unlockBtn" type="button">Unlock 💕</button>
+          </div>
+        </div>
       </div>
-
-      <div id="chat" class="chat">
-        <div class="message ai">hey... i was waiting for you 🖤</div>
-      </div>
-
-      <div class="status" id="status"></div>
-
-      <div class="input-row">
-        <input id="input" type="text" placeholder="type something..." />
-        <button id="sendBtn" type="button">➤</button>
-      </div>
-
-      <div class="paywall" id="paywall">
-        <p>💔 continue chatting by unlocking Nina</p>
-        <button id="unlockBtn" type="button">Unlock 💕</button>
-      </div>
-    </div>
+    </section>
   </main>
 
   <script src="script.js"></script>
