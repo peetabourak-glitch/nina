@@ -8,6 +8,9 @@ const unlockBtn = document.getElementById("unlockBtn");
 let userMessageCount = 0;
 let locked = false;
 
+// 🔥 PAMĚŤ (uložená v prohlížeči)
+let memory = JSON.parse(localStorage.getItem("nina_memory") || "{}");
+
 const messages = [
   {
     role: "assistant",
@@ -23,13 +26,14 @@ function addMessage(role, text) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+// 🔥 POSÍLÁME memory NA BACKEND
 async function sendMessageToAI(history) {
   const res = await fetch("/.netlify/functions/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ messages: history })
+    body: JSON.stringify({ messages: history, memory })
   });
 
   const data = await res.json();
@@ -38,7 +42,7 @@ async function sendMessageToAI(history) {
     throw new Error(data.error || "Request failed");
   }
 
-  return data.reply;
+  return data; // 🔥 vracíme celé data (reply + memory)
 }
 
 async function send() {
@@ -61,9 +65,17 @@ async function send() {
   statusEl.textContent = "Nina is typing...";
 
   try {
-    const reply = await sendMessageToAI(messages);
-    addMessage("ai", reply);
-    messages.push({ role: "assistant", content: reply });
+    const data = await sendMessageToAI(messages);
+
+    addMessage("ai", data.reply);
+    messages.push({ role: "assistant", content: data.reply });
+
+    // 🔥 ULOŽENÍ PAMĚTI
+    if (data.memory) {
+      memory = data.memory;
+      localStorage.setItem("nina_memory", JSON.stringify(memory));
+    }
+
   } catch (err) {
     const fallback = "mm... something went wrong. try again for me? 🖤";
     addMessage("ai", fallback);
