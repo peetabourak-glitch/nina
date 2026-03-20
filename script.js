@@ -5,6 +5,8 @@ const statusEl = document.getElementById("status");
 const paywall = document.getElementById("paywall");
 const unlockBtn = document.getElementById("unlockBtn");
 
+let isPaid = localStorage.getItem("nina_paid") === "true";
+
 let userMessageCount = 0;
 let locked = false;
 let proactiveTimer = null;
@@ -51,7 +53,7 @@ async function sendMessageToAI(history, proactive = false) {
 
 function splitReplyIntoParts(reply) {
   return reply
-    ? reply.split("\n").map(p => p.trim()).filter(Boolean)
+    ? reply.split("\n").map((p) => p.trim()).filter(Boolean)
     : [];
 }
 
@@ -123,7 +125,7 @@ async function send() {
     addMessage("ai", "one more… then you’ll have to unlock me 😏");
   }
 
-  if (userMessageCount >= 10) {
+  if (userMessageCount >= 10 && !isPaid) {
     locked = true;
     paywall.style.display = "block";
     input.disabled = true;
