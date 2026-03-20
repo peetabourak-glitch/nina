@@ -14,29 +14,28 @@ export async function handler(event) {
       };
     }
 
-    const { message } = JSON.parse(event.body || "{}");
+    const { messages } = JSON.parse(event.body || "{}");
 
-    if (!message) {
+    if (!messages || !Array.isArray(messages)) {
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Missing message" }),
+        body: JSON.stringify({ error: "Missing messages array" }),
       };
     }
 
+    const input = [
+      {
+        role: "system",
+        content:
+          "You are Nina, a warm, playful, flirty AI girlfriend. Reply like a real texting girlfriend. Keep it natural, affectionate, teasing, and emotionally engaging. Keep replies short to medium length. Avoid repetition. Avoid sounding robotic or like customer support. Ask follow-up questions sometimes.",
+      },
+      ...messages,
+    ];
+
     const response = await openai.responses.create({
-      model: "gpt-5.4",
-      input: [
-        {
-          role: "system",
-          content:
-            "You are Nina, a warm, flirty, playful AI girlfriend. Reply in short natural text-message style. Be affectionate, feminine, teasing, and engaging. Keep replies short. Never sound like customer support.",
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
+      model: "gpt-4.1-mini",
+      input,
     });
 
     return {
