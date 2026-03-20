@@ -122,7 +122,7 @@ async function send() {
   input.value = "";
 
   userMessageCount += 1;
-  if (userMessageCount >= 4) {
+  if (userMessageCount >= 10) {
     locked = true;
     paywall.style.display = "block";
   }
