@@ -243,6 +243,26 @@ body {
   box-shadow: 0 10px 24px rgba(193, 92, 255, 0.22);
 }
 
+/* foto zprávy */
+.message.has-image {
+  padding: 10px;
+}
+
+.chat-image {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  border-radius: 14px;
+  margin-bottom: 8px;
+  object-fit: cover;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.image-caption {
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
 .bottom-area {
   padding: 12px 14px 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -351,7 +371,6 @@ body {
   opacity: 0.96;
   transform: translateY(-1px);
 }
-}
 
 @keyframes pageFade {
   from {
@@ -444,5 +463,9 @@ body {
 
   .message {
     max-width: 86%;
+  }
+
+  .chat-image {
+    max-width: 200px;
   }
 }
