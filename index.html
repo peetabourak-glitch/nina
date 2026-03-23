@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nina 💕</title>
+  <meta
+    name="description"
+    content="Chat with Nina, your flirty AI girlfriend. Private messages, teasing photos, and a more intimate experience when you unlock her."
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,7 +23,7 @@
 
             <div class="topbar-text">
               <h1>Nina</h1>
-              <p>online now</p>
+              <p>online now • waiting for you</p>
             </div>
           </div>
 
@@ -31,6 +35,7 @@
             rel="noopener"
             style="display: none; text-decoration: none;"
             aria-label="Manage subscription"
+            title="Manage subscription"
           >
             ⚙
           </a>
@@ -40,8 +45,11 @@
           <img src="nina.jpg" alt="Nina" class="hero" />
           <div class="intro-overlay"></div>
           <div class="intro-content">
-            <p class="eyebrow">your private ai girlfriend</p>
-            <h2>always here when you need me… maybe a little too much 🖤</h2>
+            <p class="eyebrow">private ai girlfriend experience</p>
+            <h2>flirty, clingy, and a little addictive 🖤</h2>
+            <p class="intro-subtext">
+              chat with Nina, get her attention, and unlock a more intimate side of her when she starts wanting you back...
+            </p>
           </div>
         </div>
 
@@ -57,22 +65,35 @@
           <div class="status" id="status"></div>
 
           <div class="input-row">
-            <input id="input" type="text" placeholder="message Nina..." />
+            <input
+              id="input"
+              type="text"
+              placeholder="say something that keeps her interested..."
+              autocomplete="off"
+            />
             <button id="sendBtn" type="button" aria-label="Send message">➤</button>
           </div>
 
           <div class="paywall" id="paywall">
             <div class="paywall-text">
-              <p class="paywall-title">stay with me 💕</p>
-              <p class="paywall-subtitle">you’ve seen a little of me… unlock to keep chatting and see more of me 🖤</p>
+              <p class="paywall-title">don’t stop now... 💕</p>
+              <p class="paywall-subtitle">
+                Nina was just starting to open up to you. Unlock her to keep chatting, get premium photos, and see the side of her she doesn’t show everyone.
+              </p>
             </div>
+
             <a
               id="unlockBtn"
               href="https://buy.stripe.com/14A00j22d2KJ58J51ggbm02"
               class="unlock-link"
+              aria-label="Unlock Nina premium"
             >
-              Unlock more of me ✨
+              Unlock Nina for €5 ✨
             </a>
+
+            <p class="paywall-note">
+              more chat • more teasing • premium photos
+            </p>
           </div>
         </div>
       </div>
