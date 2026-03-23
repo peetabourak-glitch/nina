@@ -205,7 +205,7 @@ function getRandomPremiumImage() {
 }
 
 async function sendTeaserPhoto() {
-  const caption = "maybe just one… if you want more of me, stay with me 🖤";
+  const caption = "okay… just one little sneak peek 🖤";
 
   statusEl.textContent = "Nina is typing...";
 
@@ -266,6 +266,13 @@ function shouldTriggerPhotoInterest(userText) {
     "what do you look like",
     "send me a pic",
     "send a pic",
+    "send me one",
+    "send one",
+    "let me see you",
+    "want to see you",
+    "wanna see you",
+    "see you",
+    "see more of you",
     "you are cute",
     "you're cute",
     "you are hot",
@@ -284,7 +291,7 @@ function shouldTriggerPhotoInterest(userText) {
 function maybeSendTeaserPhoto(userText) {
   if (isPaid) return;
   if (teaserPhotoSent) return;
-  if (userMessageCount < 4) return;
+  if (userMessageCount < 3) return;
   if (!shouldTriggerPhotoInterest(userText)) return;
 
   teaserPhotoSent = true;
