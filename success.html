@@ -3,15 +3,85 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Success 💕</title>
+  <title>Unlocking Nina...</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255, 105, 180, 0.2), transparent 30%),
+        radial-gradient(circle at bottom, rgba(167, 139, 250, 0.18), transparent 25%),
+        linear-gradient(180deg, #0f0b16 0%, #120d1f 45%, #0b0812 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      width: min(92vw, 420px);
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+    }
+
+    p {
+      margin: 0;
+      color: #d7cce8;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
-  <h1>Payment successful 💕</h1>
-  <p>Redirecting back to Nina...</p>
+  <div class="card">
+    <h1>Unlocking Nina... 💕</h1>
+    <p id="msg">Checking your payment...</p>
+  </div>
 
   <script>
-    localStorage.setItem("nina_paid", "true");
-    window.location.href = "/";
+    async function verify() {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get("session_id");
+      const msg = document.getElementById("msg");
+
+      if (!sessionId) {
+        msg.textContent = "Missing session info.";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/.netlify/functions/verify-session?session_id=${encodeURIComponent(sessionId)}`);
+        const data = await res.json();
+
+        if (data.paid) {
+          localStorage.setItem("nina_paid", "true");
+          msg.textContent = "Payment confirmed. Taking you back to Nina...";
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1200);
+        } else {
+          msg.textContent = "Payment not confirmed yet. Please wait a few seconds and refresh.";
+        }
+      } catch (err) {
+        msg.textContent = "Something went wrong while confirming payment.";
+      }
+    }
+
+    verify();
   </script>
 </body>
 </html>
