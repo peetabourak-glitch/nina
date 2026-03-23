@@ -5,6 +5,10 @@ const statusEl = document.getElementById("status");
 const paywall = document.getElementById("paywall");
 const manageBtn = document.getElementById("manageBtn");
 
+const imageModal = document.getElementById("imageModal");
+const imageModalImg = document.getElementById("imageModalImg");
+const imageModalClose = document.getElementById("imageModalClose");
+
 let isPaid = localStorage.getItem("nina_paid") === "true";
 let proactiveTimer = null;
 
@@ -24,18 +28,18 @@ let premiumPhotoCooldownUntil = parseInt(localStorage.getItem("nina_premiumPhoto
 // lock state
 let locked = false;
 
-// teaser / conversion flow flags
+// tease flow flags
 let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") === "true";
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
 
-// 📸 fotky v rootu projektu
+// images
 const teaserImage = "/tease.png";
 const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
 
 // config
 const FREE_MESSAGE_LIMIT = 10;
-const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3; // 3 minuty
+const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
 
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
   messages = [
@@ -99,6 +103,32 @@ function getMicroPause() {
   return randomBetween(300, 900);
 }
 
+function openImageModal(src) {
+  if (!imageModal || !imageModalImg) return;
+
+  imageModalImg.src = src;
+  imageModal.style.display = "flex";
+  imageModal.setAttribute("aria-hidden", "false");
+
+  requestAnimationFrame(() => {
+    imageModal.classList.add("visible");
+  });
+}
+
+function closeImageModal() {
+  if (!imageModal) return;
+
+  imageModal.classList.remove("visible");
+  imageModal.setAttribute("aria-hidden", "true");
+
+  setTimeout(() => {
+    imageModal.style.display = "none";
+    if (imageModalImg) {
+      imageModalImg.src = "";
+    }
+  }, 200);
+}
+
 function addMessage(role, text, imageUrl = null) {
   const el = document.createElement("div");
   el.className = `message ${role}`;
@@ -110,6 +140,12 @@ function addMessage(role, text, imageUrl = null) {
     img.src = imageUrl;
     img.alt = "Nina photo";
     img.className = "chat-image";
+    img.loading = "lazy";
+
+    img.addEventListener("click", () => {
+      openImageModal(imageUrl);
+    });
+
     el.appendChild(img);
   }
 
@@ -313,13 +349,7 @@ async function sendTeaserPhoto() {
   statusEl.textContent = "Nina is typing...";
   await wait(getPhotoDelay());
 
-  addMessage("ai", caption, teaserImage);
-  messages.push({
-    role: "assistant",
-    content: caption,
-    imageUrl: teaserImage
-  });
-  saveMessages();
+  pushAssistantMessage(caption, teaserImage);
 
   statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
@@ -342,13 +372,7 @@ async function sendPremiumPhoto() {
   statusEl.textContent = "Nina is typing...";
   await wait(getPhotoDelay());
 
-  addMessage("ai", caption, imageUrl);
-  messages.push({
-    role: "assistant",
-    content: caption,
-    imageUrl
-  });
-  saveMessages();
+  pushAssistantMessage(caption, imageUrl);
 
   premiumPhotoCooldownUntil = Date.now() + PREMIUM_PHOTO_COOLDOWN_MS;
   savePremiumCooldown();
@@ -542,7 +566,27 @@ async function send() {
 sendBtn.addEventListener("click", send);
 
 input.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") send();
+  if (event.key === "Enter") {
+    send();
+  }
+});
+
+if (imageModal) {
+  imageModal.addEventListener("click", (event) => {
+    if (event.target === imageModal) {
+      closeImageModal();
+    }
+  });
+}
+
+if (imageModalClose) {
+  imageModalClose.addEventListener("click", closeImageModal);
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && imageModal && imageModal.classList.contains("visible")) {
+    closeImageModal();
+  }
 });
 
 if (isPaid) {
@@ -552,3 +596,6 @@ if (isPaid) {
 renderMessages();
 updateUIState();
 scheduleProactiveMessage();
+
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
