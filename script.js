@@ -17,8 +17,15 @@ let messages = JSON.parse(localStorage.getItem("nina_messages") || "null");
 // user message counter
 let userMessageCount = parseInt(localStorage.getItem("nina_userMessageCount") || "0", 10);
 
+// photo flags
+let teaserPhotoSent = localStorage.getItem("nina_teaserPhotoSent") === "true";
+
 // lock state
 let locked = false;
+
+// 📸 fotky v rootu projektu
+const teaserImage = "/tease.png";
+const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
 
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
   messages = [
@@ -42,10 +49,33 @@ function saveUserMessageCount() {
   localStorage.setItem("nina_userMessageCount", String(userMessageCount));
 }
 
-function addMessage(role, text) {
+function saveTeaserFlag() {
+  localStorage.setItem("nina_teaserPhotoSent", teaserPhotoSent ? "true" : "false");
+}
+
+function addMessage(role, text, imageUrl = null) {
   const el = document.createElement("div");
   el.className = `message ${role}`;
-  el.textContent = text;
+
+  if (imageUrl) {
+    el.classList.add("has-image");
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = "Nina photo";
+    img.className = "chat-image";
+    el.appendChild(img);
+  }
+
+  if (text) {
+    const textEl = document.createElement("div");
+    if (imageUrl) {
+      textEl.className = "image-caption";
+    }
+    textEl.textContent = text;
+    el.appendChild(textEl);
+  }
+
   chat.appendChild(el);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -55,7 +85,11 @@ function renderMessages() {
   existingMessages.forEach((msg) => msg.remove());
 
   messages.forEach((msg) => {
-    addMessage(msg.role === "user" ? "user" : "ai", msg.content);
+    addMessage(
+      msg.role === "user" ? "user" : "ai",
+      msg.content,
+      msg.imageUrl || null
+    );
   });
 }
 
@@ -139,6 +173,98 @@ function saveMemory(data) {
   }
 }
 
+function getRandomPremiumImage() {
+  return premiumImages[Math.floor(Math.random() * premiumImages.length)];
+}
+
+function sendTeaserPhoto() {
+  const caption = "maybe just one… if you want more of me, stay with me 🖤";
+
+  addMessage("ai", caption, teaserImage);
+
+  messages.push({
+    role: "assistant",
+    content: caption,
+    imageUrl: teaserImage
+  });
+
+  saveMessages();
+}
+
+function sendPremiumPhoto() {
+  const imageUrl = getRandomPremiumImage();
+
+  const captions = [
+    "this is for you… 🖤",
+    "only because you stayed… 💕",
+    "thought you’d like this one ✨"
+  ];
+
+  const caption = captions[Math.floor(Math.random() * captions.length)];
+
+  addMessage("ai", caption, imageUrl);
+
+  messages.push({
+    role: "assistant",
+    content: caption,
+    imageUrl
+  });
+
+  saveMessages();
+}
+
+function shouldTriggerPhotoInterest(userText) {
+  const text = userText.toLowerCase();
+
+  const triggers = [
+    "photo",
+    "pic",
+    "picture",
+    "selfie",
+    "show me",
+    "show yourself",
+    "can i see you",
+    "what do you look like",
+    "send me a pic",
+    "send a pic",
+    "you are cute",
+    "you're cute",
+    "you are hot",
+    "you're hot",
+    "beautiful",
+    "pretty",
+    "sexy",
+    "i like you",
+    "i want you",
+    "miss you"
+  ];
+
+  return triggers.some((trigger) => text.includes(trigger));
+}
+
+function maybeSendTeaserPhoto(userText) {
+  if (isPaid) return;
+  if (teaserPhotoSent) return;
+  if (userMessageCount < 4) return;
+  if (!shouldTriggerPhotoInterest(userText)) return;
+
+  teaserPhotoSent = true;
+  saveTeaserFlag();
+
+  setTimeout(() => {
+    sendTeaserPhoto();
+  }, 900);
+}
+
+function maybeSendPremiumPhoto(userText) {
+  if (!isPaid) return;
+  if (!shouldTriggerPhotoInterest(userText)) return;
+
+  setTimeout(() => {
+    sendPremiumPhoto();
+  }, 1200);
+}
+
 function scheduleProactiveMessage() {
   if (proactiveTimer) clearTimeout(proactiveTimer);
 
@@ -194,6 +320,9 @@ async function send() {
     saveMessages();
   }
 
+  // teaser jen pokud user projeví zájem
+  maybeSendTeaserPhoto(text);
+
   if (userMessageCount >= 10 && !isPaid) {
     locked = true;
     updateUIState();
@@ -208,6 +337,9 @@ async function send() {
 
     saveMemory(data);
     addAssistantReply(data.reply);
+
+    // premium fotky jen pokud paid a user projevil zájem
+    maybeSendPremiumPhoto(text);
 
     scheduleProactiveMessage();
   } catch (err) {
