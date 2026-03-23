@@ -53,6 +53,24 @@ function saveTeaserFlag() {
   localStorage.setItem("nina_teaserPhotoSent", teaserPhotoSent ? "true" : "false");
 }
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function randomBetween(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getTypingDelay(text = "") {
+  const base = randomBetween(700, 1400);
+  const textBonus = Math.min((text || "").length * 18, 1800);
+  return base + textBonus;
+}
+
+function getPhotoDelay() {
+  return randomBetween(1800, 3200);
+}
+
 function addMessage(role, text, imageUrl = null) {
   const el = document.createElement("div");
   el.className = `message ${role}`;
@@ -154,13 +172,15 @@ function splitReplyIntoParts(reply) {
     : [];
 }
 
-function addAssistantReply(reply) {
+async function addAssistantReply(reply) {
   const parts = splitReplyIntoParts(reply);
 
-  parts.forEach((part, index) => {
-    setTimeout(() => {
-      addMessage("ai", part);
-    }, index * 700);
+  for (const part of parts) {
+    statusEl.textContent = "Nina is typing...";
+
+    await wait(getTypingDelay(part));
+
+    addMessage("ai", part);
 
     messages.push({
       role: "assistant",
@@ -168,7 +188,9 @@ function addAssistantReply(reply) {
     });
 
     saveMessages();
-  });
+  }
+
+  statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
 
 function saveMemory(data) {
@@ -182,8 +204,12 @@ function getRandomPremiumImage() {
   return premiumImages[Math.floor(Math.random() * premiumImages.length)];
 }
 
-function sendTeaserPhoto() {
+async function sendTeaserPhoto() {
   const caption = "maybe just one… if you want more of me, stay with me 🖤";
+
+  statusEl.textContent = "Nina is typing...";
+
+  await wait(getPhotoDelay());
 
   addMessage("ai", caption, teaserImage);
 
@@ -194,9 +220,11 @@ function sendTeaserPhoto() {
   });
 
   saveMessages();
+
+  statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
 
-function sendPremiumPhoto() {
+async function sendPremiumPhoto() {
   const imageUrl = getRandomPremiumImage();
 
   const captions = [
@@ -207,6 +235,10 @@ function sendPremiumPhoto() {
 
   const caption = captions[Math.floor(Math.random() * captions.length)];
 
+  statusEl.textContent = "Nina is typing...";
+
+  await wait(getPhotoDelay());
+
   addMessage("ai", caption, imageUrl);
 
   messages.push({
@@ -216,6 +248,8 @@ function sendPremiumPhoto() {
   });
 
   saveMessages();
+
+  statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
 
 function shouldTriggerPhotoInterest(userText) {
@@ -256,18 +290,14 @@ function maybeSendTeaserPhoto(userText) {
   teaserPhotoSent = true;
   saveTeaserFlag();
 
-  setTimeout(() => {
-    sendTeaserPhoto();
-  }, 900);
+  sendTeaserPhoto();
 }
 
 function maybeSendPremiumPhoto(userText) {
   if (!isPaid) return;
   if (!shouldTriggerPhotoInterest(userText)) return;
 
-  setTimeout(() => {
-    sendPremiumPhoto();
-  }, 1200);
+  sendPremiumPhoto();
 }
 
 function scheduleProactiveMessage() {
@@ -284,7 +314,7 @@ function scheduleProactiveMessage() {
       const data = await sendMessageToAI(messages, true);
 
       saveMemory(data);
-      addAssistantReply(data.reply);
+      await addAssistantReply(data.reply);
     } catch (err) {
       console.error("Proactive message failed:", err);
     } finally {
@@ -325,7 +355,6 @@ async function send() {
     saveMessages();
   }
 
-  // teaser jen pokud user projeví zájem
   maybeSendTeaserPhoto(text);
 
   if (userMessageCount >= 10 && !isPaid) {
@@ -341,9 +370,8 @@ async function send() {
     const data = await sendMessageToAI(messages);
 
     saveMemory(data);
-    addAssistantReply(data.reply);
+    await addAssistantReply(data.reply);
 
-    // premium fotky jen pokud paid a user projevil zájem
     maybeSendPremiumPhoto(text);
 
     scheduleProactiveMessage();
