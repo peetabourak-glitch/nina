@@ -120,6 +120,49 @@ function closeImageModal() {
   }, 200);
 }
 
+async function openCustomerPortal() {
+  const sessionId = localStorage.getItem("nina_session_id");
+
+  if (!sessionId) {
+    alert("Subscription session not found.");
+    return;
+  }
+
+  try {
+    if (manageBtn) {
+      manageBtn.style.pointerEvents = "none";
+      manageBtn.style.opacity = "0.6";
+    }
+
+    const res = await fetch("/.netlify/functions/create-portal-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        session_id: sessionId
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || "Could not open customer portal");
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    console.error(err);
+
+    if (manageBtn) {
+      manageBtn.style.pointerEvents = "auto";
+      manageBtn.style.opacity = "1";
+    }
+
+    alert("Could not open subscription management.");
+  }
+}
+
 function addMessage(role, text, imageUrl = null) {
   const el = document.createElement("div");
   el.className = `message ${role}`;
@@ -188,7 +231,7 @@ function showSubscriptionStatus() {
 
     if (manageBtn) {
       manageBtn.style.display = "inline-flex";
-      manageBtn.href = "/success.html?manage=1";
+      manageBtn.href = "#";
     }
   } else {
     if (manageBtn) {
@@ -398,9 +441,10 @@ async function maybeShowPrePaywallTease(userText) {
     paywallSoftTeaseShown = true;
     saveFlowFlags();
 
-    const line = shouldTriggerPhotoInterest(userText) || shouldTriggerEmotionalHook(userText)
-      ? "mm... you’re making me want to show you a more private side of me 🖤"
-      : "you’re trouble... i’m starting to get a little too comfortable with you 🖤";
+    const line =
+      shouldTriggerPhotoInterest(userText) || shouldTriggerEmotionalHook(userText)
+        ? "mm... you’re making me want to show you a more private side of me 🖤"
+        : "you’re trouble... i’m starting to get a little too comfortable with you 🖤";
 
     statusEl.textContent = "Nina is typing...";
     await wait(getTypingDelay(line));
@@ -596,6 +640,13 @@ input.addEventListener("keydown", (event) => {
 
 if (unlockBtn) {
   unlockBtn.addEventListener("click", startCheckout);
+}
+
+if (manageBtn) {
+  manageBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    openCustomerPortal();
+  });
 }
 
 if (imageModal) {
