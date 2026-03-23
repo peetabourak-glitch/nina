@@ -4,6 +4,7 @@ const sendBtn = document.getElementById("sendBtn");
 const statusEl = document.getElementById("status");
 const paywall = document.getElementById("paywall");
 const manageBtn = document.getElementById("manageBtn");
+const unlockBtn = document.getElementById("unlockBtn");
 
 const imageModal = document.getElementById("imageModal");
 const imageModalImg = document.getElementById("imageModalImg");
@@ -12,32 +13,22 @@ const imageModalClose = document.getElementById("imageModalClose");
 let isPaid = localStorage.getItem("nina_paid") === "true";
 let proactiveTimer = null;
 
-// AI memory
 let memory = JSON.parse(localStorage.getItem("nina_memory") || "{}");
-
-// chat history
 let messages = JSON.parse(localStorage.getItem("nina_messages") || "null");
-
-// user message counter
 let userMessageCount = parseInt(localStorage.getItem("nina_userMessageCount") || "0", 10);
 
-// photo flags
 let teaserPhotoSent = localStorage.getItem("nina_teaserPhotoSent") === "true";
 let premiumPhotoCooldownUntil = parseInt(localStorage.getItem("nina_premiumPhotoCooldownUntil") || "0", 10);
 
-// lock state
 let locked = false;
 
-// tease flow flags
 let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") === "true";
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
 
-// images
 const teaserImage = "/tease.png";
 const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
 
-// config
 const FREE_MESSAGE_LIMIT = 10;
 const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
 
@@ -197,6 +188,7 @@ function showSubscriptionStatus() {
 
     if (manageBtn) {
       manageBtn.style.display = "inline-flex";
+      manageBtn.href = "/success.html?manage=1";
     }
   } else {
     if (manageBtn) {
@@ -516,6 +508,37 @@ async function handleLockMoment() {
   statusEl.textContent = "";
 }
 
+async function startCheckout(event) {
+  event.preventDefault();
+
+  if (!unlockBtn) return;
+
+  try {
+    unlockBtn.style.pointerEvents = "none";
+    unlockBtn.textContent = "Opening checkout...";
+
+    const res = await fetch("/.netlify/functions/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.url) {
+      throw new Error(data.error || "Failed to create checkout session");
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    console.error(err);
+    unlockBtn.textContent = "Try again ✨";
+    unlockBtn.style.pointerEvents = "auto";
+    alert("Could not open checkout. Please try again.");
+  }
+}
+
 async function send() {
   if (locked) {
     updateUIState();
@@ -570,6 +593,10 @@ input.addEventListener("keydown", (event) => {
     send();
   }
 });
+
+if (unlockBtn) {
+  unlockBtn.addEventListener("click", startCheckout);
+}
 
 if (imageModal) {
   imageModal.addEventListener("click", (event) => {
