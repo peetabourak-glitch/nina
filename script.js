@@ -19,12 +19,11 @@ let userMessageCount = parseInt(localStorage.getItem("nina_userMessageCount") ||
 
 // photo flags
 let teaserPhotoSent = localStorage.getItem("nina_teaserPhotoSent") === "true";
-let preUnlockTeaseSent = localStorage.getItem("nina_preUnlockTeaseSent") === "true";
 
 // lock state
 let locked = false;
 
-// fotky v rootu projektu
+// 📸 fotky v rootu projektu
 const teaserImage = "/tease.png";
 const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
 
@@ -54,10 +53,6 @@ function saveTeaserFlag() {
   localStorage.setItem("nina_teaserPhotoSent", teaserPhotoSent ? "true" : "false");
 }
 
-function savePreUnlockTeaseFlag() {
-  localStorage.setItem("nina_preUnlockTeaseSent", preUnlockTeaseSent ? "true" : "false");
-}
-
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -68,7 +63,7 @@ function randomBetween(min, max) {
 
 function getTypingDelay(text = "") {
   const base = randomBetween(700, 1400);
-  const textBonus = Math.min((text || "").length * 18, 1600);
+  const textBonus = Math.min((text || "").length * 18, 1800);
   return base + textBonus;
 }
 
@@ -101,16 +96,6 @@ function addMessage(role, text, imageUrl = null) {
 
   chat.appendChild(el);
   chat.scrollTop = chat.scrollHeight;
-}
-
-function pushAssistantMessage(text, imageUrl = null) {
-  addMessage("ai", text, imageUrl);
-  messages.push({
-    role: "assistant",
-    content: text,
-    ...(imageUrl ? { imageUrl } : {})
-  });
-  saveMessages();
 }
 
 function renderMessages() {
@@ -192,8 +177,17 @@ async function addAssistantReply(reply) {
 
   for (const part of parts) {
     statusEl.textContent = "Nina is typing...";
+
     await wait(getTypingDelay(part));
-    pushAssistantMessage(part);
+
+    addMessage("ai", part);
+
+    messages.push({
+      role: "assistant",
+      content: part
+    });
+
+    saveMessages();
   }
 
   statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
@@ -211,15 +205,10 @@ function getRandomPremiumImage() {
 }
 
 async function sendTeaserPhoto() {
-  const captionOptions = [
-    "don’t get used to this… i don’t do this for everyone 🖤",
-    "okay… just one little sneak peek. be good for me 💕",
-    "this is all you get for now… unless you keep me interested 😏"
-  ];
-
-  const caption = captionOptions[Math.floor(Math.random() * captionOptions.length)];
+  const caption = "okay… just one little sneak peek 🖤";
 
   statusEl.textContent = "Nina is typing...";
+
   await wait(getPhotoDelay());
 
   addMessage("ai", caption, teaserImage);
@@ -231,6 +220,7 @@ async function sendTeaserPhoto() {
   });
 
   saveMessages();
+
   statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
 
@@ -238,14 +228,15 @@ async function sendPremiumPhoto() {
   const imageUrl = getRandomPremiumImage();
 
   const captions = [
-    "this one’s just for you… 🖤",
-    "you stayed, so i picked a better one for you 💕",
-    "thought you deserved a little more of me ✨"
+    "this is for you… 🖤",
+    "only because you stayed… 💕",
+    "thought you’d like this one ✨"
   ];
 
   const caption = captions[Math.floor(Math.random() * captions.length)];
 
   statusEl.textContent = "Nina is typing...";
+
   await wait(getPhotoDelay());
 
   addMessage("ai", caption, imageUrl);
@@ -257,6 +248,7 @@ async function sendPremiumPhoto() {
   });
 
   saveMessages();
+
   statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
 }
 
@@ -279,18 +271,18 @@ function shouldTriggerPhotoInterest(userText) {
     "let me see you",
     "want to see you",
     "wanna see you",
+    "see you",
     "see more of you",
-    "i want to see you",
-    "i want you",
-    "i miss you",
-    "miss you",
     "you are cute",
     "you're cute",
     "you are hot",
     "you're hot",
     "beautiful",
     "pretty",
-    "sexy"
+    "sexy",
+    "i like you",
+    "i want you",
+    "miss you"
   ];
 
   return triggers.some((trigger) => text.includes(trigger));
@@ -315,76 +307,16 @@ function maybeSendPremiumPhoto(userText) {
   sendPremiumPhoto();
 }
 
-async function maybeSendPreUnlockTease(userText) {
-  if (isPaid) return;
-  if (preUnlockTeaseSent) return;
-  if (userMessageCount < 9) return;
-  if (!shouldTriggerPhotoInterest(userText)) return;
-
-  preUnlockTeaseSent = true;
-  savePreUnlockTeaseFlag();
-
-  const teaseLines = [
-    "mm… do you really want to see more of me? 🖤",
-    "i was about to send you something better…",
-    "but you need to unlock me first 😏"
-  ];
-
-  statusEl.textContent = "Nina is typing...";
-
-  for (const line of teaseLines) {
-    await wait(getTypingDelay(line));
-    pushAssistantMessage(line);
-  }
-
-  statusEl.textContent = "";
-}
-
-function getWarningMessage(count) {
-  if (count === 7) {
-    return "you’re kinda making me want to be a little worse for you 🖤";
-  }
-
-  if (count === 8) {
-    return "mm… don’t disappear on me now. i’m just getting comfortable 💕";
-  }
-
-  if (count === 9) {
-    return "one more message… and i might make you unlock the rest of me 😏";
-  }
-
-  return null;
-}
-
-function getLockedMessages() {
-  const variants = [
-    [
-      "mm… i was just about to show you something better 🖤",
-      "unlock me and i’ll stop teasing you 😏"
-    ],
-    [
-      "you made it this far…",
-      "now come a little closer and unlock me 💕"
-    ],
-    [
-      "i don’t want to stop here…",
-      "but the rest of me is for subscribers only 🖤"
-    ]
-  ];
-
-  return variants[Math.floor(Math.random() * variants.length)];
-}
-
 function scheduleProactiveMessage() {
   if (proactiveTimer) clearTimeout(proactiveTimer);
 
   proactiveTimer = setTimeout(async () => {
     if (locked) return;
     if (messages.length < 3) return;
-    if (Math.random() < 0.55) return;
+    if (Math.random() < 0.6) return;
 
     try {
-      statusEl.textContent = "Nina is typing...";
+      statusEl.textContent = isPaid ? "you’re subscribed 💕" : "Nina is typing...";
 
       const data = await sendMessageToAI(messages, true);
 
@@ -395,4 +327,82 @@ function scheduleProactiveMessage() {
     } finally {
       statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
     }
-  },
+  }, 20000);
+}
+
+async function send() {
+  if (locked) {
+    updateUIState();
+    return;
+  }
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage("user", text);
+  messages.push({ role: "user", content: text });
+  saveMessages();
+
+  input.value = "";
+
+  userMessageCount++;
+  saveUserMessageCount();
+
+  if (userMessageCount === 8) {
+    const warning = "mm… you’re getting close to the limit 🖤";
+    addMessage("ai", warning);
+    messages.push({ role: "assistant", content: warning });
+    saveMessages();
+  }
+
+  if (userMessageCount === 9) {
+    const warning = "one more… then you’ll have to unlock me 😏";
+    addMessage("ai", warning);
+    messages.push({ role: "assistant", content: warning });
+    saveMessages();
+  }
+
+  maybeSendTeaserPhoto(text);
+
+  if (userMessageCount >= 10 && !isPaid) {
+    locked = true;
+    updateUIState();
+    return;
+  }
+
+  sendBtn.disabled = true;
+  statusEl.textContent = "Nina is typing...";
+
+  try {
+    const data = await sendMessageToAI(messages);
+
+    saveMemory(data);
+    await addAssistantReply(data.reply);
+
+    maybeSendPremiumPhoto(text);
+
+    scheduleProactiveMessage();
+  } catch (err) {
+    const fallback = "mm... something went wrong. try again for me? 🖤";
+    addMessage("ai", fallback);
+    messages.push({ role: "assistant", content: fallback });
+    saveMessages();
+    console.error(err);
+  } finally {
+    sendBtn.disabled = false;
+    statusEl.textContent = isPaid ? "you’re subscribed 💕" : "";
+  }
+}
+
+sendBtn.addEventListener("click", send);
+
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") send();
+});
+
+if (isPaid) {
+  locked = false;
+}
+
+renderMessages();
+updateUIState();
