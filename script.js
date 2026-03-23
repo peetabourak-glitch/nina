@@ -122,13 +122,18 @@ function updateUIState() {
 }
 
 async function sendMessageToAI(history, proactive = false) {
+  const cleanHistory = history.map((msg) => ({
+    role: msg.role,
+    content: msg.content
+  }));
+
   const res = await fetch("/.netlify/functions/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      messages: history,
+      messages: cleanHistory,
       memory,
       proactive
     })
