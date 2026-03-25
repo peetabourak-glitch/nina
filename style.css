@@ -124,6 +124,37 @@ body {
   transform: translateY(-1px);
 }
 
+.lang-switch {
+  display: flex;
+  gap: 6px;
+}
+
+.lang-switch button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.lang-switch button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.lang-switch button.active {
+  background: linear-gradient(135deg, #ff4fc8, #b845ff);
+  border: none;
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 79, 200, 0.3);
+}
+
 .intro-card {
   position: relative;
   height: 190px;
