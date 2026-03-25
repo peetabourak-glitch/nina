@@ -277,10 +277,10 @@ let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") =
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
 
-// chemistry persisted
-let chemistry = parseInt(localStorage.getItem("nina_chemistry") || "12", 10);
-if (Number.isNaN(chemistry)) chemistry = 12;
-chemistry = Math.max(12, Math.min(chemistry, 100));
+// slower chemistry start
+let chemistry = parseFloat(localStorage.getItem("nina_chemistry") || "8");
+if (Number.isNaN(chemistry)) chemistry = 8;
+chemistry = Math.max(8, Math.min(chemistry, 100));
 
 const teaserImage = "/tease.png";
 const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
@@ -382,9 +382,11 @@ function getChemistryMoodIndex() {
 }
 
 function updateChemistryUI() {
+  const chemistryDisplay = Math.round(chemistry);
+
   if (chemistryLabelEl) chemistryLabelEl.textContent = t("chemistryLabel");
-  if (chemistryValueEl) chemistryValueEl.textContent = `${chemistry}% ${t("chemistryGrowing")}`;
-  if (chemistryFillEl) chemistryFillEl.style.width = `${chemistry}%`;
+  if (chemistryValueEl) chemistryValueEl.textContent = `${chemistryDisplay}% ${t("chemistryGrowing")}`;
+  if (chemistryFillEl) chemistryFillEl.style.width = `${chemistryDisplay}%`;
 
   const moodIndex = getChemistryMoodIndex();
   if (chemistryMoodEl) chemistryMoodEl.textContent = t("chemistryMoods")[moodIndex];
@@ -401,10 +403,12 @@ function updateChemistryUI() {
 }
 
 function increaseChemistry(amount) {
+  const safeAmount = Number(amount) || 0;
+
   if (isPaid) {
-    chemistry = Math.min(100, chemistry + amount);
+    chemistry = Math.min(100, chemistry + safeAmount);
   } else {
-    chemistry = Math.min(78, chemistry + amount);
+    chemistry = Math.min(55, chemistry + safeAmount);
   }
 
   saveChemistry();
@@ -413,15 +417,15 @@ function increaseChemistry(amount) {
 
 function getChemistryGainFromText(text) {
   const len = (text || "").trim().length;
-  let gain = 4;
+  let gain = 1;
 
-  if (len > 12) gain += 2;
-  if (len > 35) gain += 1;
+  if (len > 20) gain += 1;
+  if (len > 60) gain += 1;
 
   if (shouldTriggerPhotoInterest(text)) gain += 1;
-  if (shouldTriggerEmotionalHook(text)) gain += 2;
+  if (shouldTriggerEmotionalHook(text)) gain += 1;
 
-  return Math.min(gain, 10);
+  return Math.min(gain, 3);
 }
 
 // ==========================
@@ -628,7 +632,7 @@ async function sendMessageToAI(history, proactive = false) {
       memory,
       proactive,
       lang: currentLang,
-      chemistry
+      chemistry: Math.round(chemistry)
     })
   });
 
@@ -657,7 +661,7 @@ async function addAssistantReply(reply) {
     await wait(getMicroPause());
   }
 
-  increaseChemistry(3);
+  increaseChemistry(1);
   setIdleStatus();
 }
 
@@ -718,7 +722,7 @@ async function sendTeaserPhoto() {
   await wait(getPhotoDelay());
 
   pushAssistantMessage(caption, teaserImage);
-  increaseChemistry(6);
+  increaseChemistry(2);
   setIdleStatus();
 }
 
@@ -736,7 +740,7 @@ async function sendPremiumPhoto() {
 
   premiumPhotoCooldownUntil = Date.now() + PREMIUM_PHOTO_COOLDOWN_MS;
   savePremiumCooldown();
-  increaseChemistry(8);
+  increaseChemistry(3);
 
   setIdleStatus();
 }
@@ -778,7 +782,7 @@ async function maybeShowPrePaywallTease(userText) {
     setTypingStatus();
     await wait(getTypingDelay(line));
     pushAssistantMessage(line);
-    increaseChemistry(6);
+    increaseChemistry(2);
   }
 
   if (userMessageCount === 8 && !paywallHardTeaseShown) {
@@ -796,7 +800,7 @@ async function maybeShowPrePaywallTease(userText) {
       await wait(getMicroPause());
     }
 
-    increaseChemistry(7);
+    increaseChemistry(2);
   }
 
   if (userMessageCount === 9 && !almostUnlockedMomentShown) {
@@ -812,7 +816,7 @@ async function maybeShowPrePaywallTease(userText) {
       await wait(getMicroPause());
     }
 
-    increaseChemistry(5);
+    increaseChemistry(1);
   }
 
   setIdleStatus();
@@ -842,7 +846,7 @@ function scheduleProactiveMessage() {
         const fallback = buildProactiveFallback();
         await wait(getTypingDelay(fallback));
         pushAssistantMessage(fallback);
-        increaseChemistry(2);
+        increaseChemistry(1);
       }
     } catch (err) {
       console.error("Proactive message failed:", err);
@@ -862,7 +866,7 @@ async function handleLockMoment() {
     await wait(getMicroPause());
   }
 
-  chemistry = Math.max(chemistry, 76);
+  chemistry = Math.max(chemistry, 42);
   saveChemistry();
   updateChemistryUI();
 
