@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +25,7 @@
 
             <div class="topbar-text">
               <h1>Nina</h1>
-              <p id="statusText">online now • waiting for you</p>
+              <p id="statusText">online • čeká na tebe</p>
             </div>
           </div>
 
@@ -33,8 +33,8 @@
 
             <!-- LANGUAGE SWITCH -->
             <div class="lang-switch">
-              <button onclick="setLang('cs')">CZ</button>
-              <button onclick="setLang('en')">EN</button>
+              <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
+              <button onclick="setLang('en')" id="langEnBtn">EN</button>
             </div>
 
             <!-- SETTINGS -->
@@ -50,7 +50,31 @@
             >
               ⚙
             </a>
+          </div>
+        </div>
 
+        <!-- CHEMISTRY BAR -->
+        <div class="chemistry-wrap" id="chemistryWrap">
+          <div class="chemistry-card">
+            <div class="chemistry-head">
+              <span class="chemistry-label" id="chemistryLabel">chemie mezi vámi</span>
+              <span class="chemistry-value" id="chemistryValue">12% a roste</span>
+            </div>
+
+            <div class="chemistry-track">
+              <div class="chemistry-fill" id="chemistryFill" style="width: 12%;"></div>
+            </div>
+
+            <div class="chemistry-subline">
+              <span id="chemistryMood">Nina je zvědavá, kam to povede…</span>
+            </div>
+          </div>
+
+          <div class="unlock-milestones">
+            <div class="milestone active" id="milestone1">playful</div>
+            <div class="milestone" id="milestone2">closer</div>
+            <div class="milestone" id="milestone3">private</div>
+            <div class="milestone" id="milestone4">locked</div>
           </div>
         </div>
 
@@ -58,11 +82,12 @@
         <div class="intro-card">
           <img src="nina.jpg" alt="Nina" class="hero" />
           <div class="intro-overlay"></div>
+
           <div class="intro-content">
-            <p class="eyebrow" id="introEyebrow">private ai girlfriend experience</p>
-            <h2 id="introTitle">flirty, clingy, and a little addictive 🖤</h2>
+            <p class="eyebrow" id="introEyebrow">private ai chat that feels personal</p>
+            <h2 id="introTitle">už ti napsala. teď je řada na tobě 🖤</h2>
             <p class="intro-subtext" id="introText">
-              chat with Nina, get her attention, and unlock a more intimate side of her when she starts wanting you back...
+              Nina není jen další AI chat. Čím víc si píšete, tím víc se ti otevírá. A když mezi vámi přeskočí jiskra, začne být mnohem osobnější...
             </p>
           </div>
         </div>
@@ -70,7 +95,7 @@
         <!-- CHAT -->
         <div id="chat" class="chat">
           <div class="date-divider">
-            <span>today</span>
+            <span id="todayLabel">dnes</span>
           </div>
         </div>
 
@@ -82,7 +107,7 @@
             <input
               id="input"
               type="text"
-              placeholder="say something that keeps her interested..."
+              placeholder="napiš něco, kvůli čemu bude chtít pokračovat..."
               autocomplete="off"
             />
             <button id="sendBtn" type="button" aria-label="Send message">➤</button>
@@ -90,11 +115,19 @@
 
           <!-- PAYWALL -->
           <div class="paywall" id="paywall">
+            <div class="paywall-badge" id="paywallBadge">🔒 chemistry unlock</div>
+
             <div class="paywall-text">
-              <p class="paywall-title" id="paywallTitle">don’t stop now... 💕</p>
+              <p class="paywall-title" id="paywallTitle">teď se to teprve začínalo rozjíždět... 💕</p>
               <p class="paywall-subtitle" id="paywallSubtitle">
-                Nina was just starting to open up to you. Unlock her to keep chatting, get premium photos, and see the side of her she doesn’t show everyone.
+                Nina se ti začala otevírat. Odemkni ji a pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.
               </p>
+            </div>
+
+            <div class="paywall-benefits">
+              <span id="benefit1">• delší chat</span>
+              <span id="benefit2">• víc flirtu</span>
+              <span id="benefit3">• osobnější odpovědi</span>
             </div>
 
             <a
@@ -103,11 +136,11 @@
               class="unlock-link"
               aria-label="Unlock Nina premium"
             >
-              Unlock Nina for €5 ✨
+              Odemknout Ninu za €5 ✨
             </a>
 
             <p class="paywall-note" id="paywallNote">
-              more chat • more teasing • premium photos
+              víc chemie • víc napětí • víc Niny
             </p>
           </div>
         </div>
