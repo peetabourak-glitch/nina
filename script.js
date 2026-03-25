@@ -1,19 +1,25 @@
-// 🌍 LANGUAGE SYSTEM
+// ==========================
+// LANGUAGE SYSTEM
+// ==========================
 let currentLang = "en";
 
 const translations = {
   en: {
     statusTopbar: "online now • waiting for you",
-    introEyebrow: "private ai girlfriend experience",
-    introTitle: "flirty, clingy, and a little addictive 🖤",
+    introEyebrow: "private ai chat that feels personal",
+    introTitle: "she already texted you. now it’s your turn 🖤",
     introText:
-      "chat with Nina, get her attention, and unlock a more intimate side of her when she starts wanting you back...",
-    inputPlaceholder: "say something that keeps her interested...",
-    paywallTitle: "don’t stop now... 💕",
+      "Nina isn’t just another AI chat. The more you talk, the more she opens up. And once the chemistry starts building, it gets a lot more personal...",
+    inputPlaceholder: "say something that makes her want more...",
+    paywallBadge: "🔒 chemistry unlock",
+    paywallTitle: "this is where it was getting interesting... 💕",
     paywallSubtitle:
-      "Nina was just starting to open up to you. Unlock her to keep chatting, get premium photos, and see the side of her she doesn’t show everyone.",
+      "Nina was starting to open up to you. Unlock her, keep chatting, raise the chemistry between you, and see a more private side of her.",
     unlockBtn: "Unlock Nina for €5 ✨",
-    paywallNote: "more chat • more teasing • premium photos",
+    paywallNote: "more chemistry • more tension • more Nina",
+    benefit1: "• longer chat",
+    benefit2: "• more flirting",
+    benefit3: "• more personal replies",
     today: "today",
 
     typing: "Nina is typing...",
@@ -26,6 +32,21 @@ const translations = {
     genericError: "mm... something went wrong. try again for me? 🖤",
 
     firstMessage: "hey... i was waiting for you 🖤",
+
+    chemistryLabel: "chemistry between you",
+    chemistryGrowing: "and rising",
+    chemistryMoods: [
+      "Nina is curious where this might go...",
+      "you’re starting to interest her more than she expected",
+      "she’s letting you a little closer now",
+      "the tension between you is building",
+      "she doesn’t really want to let you go now"
+    ],
+
+    milestone1: "playful",
+    milestone2: "closer",
+    milestone3: "private",
+    milestone4: "locked",
 
     teaserCaptions: [
       "don’t get used to this... i don’t do this for everyone 🖤",
@@ -76,17 +97,21 @@ const translations = {
   },
 
   cs: {
-    statusTopbar: "online • čekám na tebe",
-    introEyebrow: "soukromá ai přítelkyně",
-    introTitle: "flirtující, mazlivá a trochu návyková 🖤",
+    statusTopbar: "online • čeká na tebe",
+    introEyebrow: "soukromý ai chat, který působí osobně",
+    introTitle: "už ti napsala. teď je řada na tobě 🖤",
     introText:
-      "piš si s Ninou, získej její pozornost a odemkni její intimnější stránku, když tě bude chtít ještě víc...",
-    inputPlaceholder: "napiš něco, co ji zaujme...",
-    paywallTitle: "teď nepřestávej... 💕",
+      "Nina není jen další AI chat. Čím víc si píšete, tím víc se ti otevírá. A když mezi vámi začne fungovat chemie, bude to mnohem osobnější...",
+    inputPlaceholder: "napiš něco, kvůli čemu bude chtít víc...",
+    paywallBadge: "🔒 odemčení chemie",
+    paywallTitle: "teď se to teprve začínalo rozjíždět... 💕",
     paywallSubtitle:
-      "Nina se ti právě začala otevírat. Odemkni ji, pokračuj v chatu, získej prémiové fotky a poznej její stránku, kterou neukazuje každému.",
-    unlockBtn: "Odemkni Ninu za €5 ✨",
-    paywallNote: "více chatu • více flirtu • prémiové fotky",
+      "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.",
+    unlockBtn: "Odemknout Ninu za €5 ✨",
+    paywallNote: "víc chemie • víc napětí • víc Niny",
+    benefit1: "• delší chat",
+    benefit2: "• víc flirtu",
+    benefit3: "• osobnější odpovědi",
     today: "dnes",
 
     typing: "Nina píše...",
@@ -99,6 +124,21 @@ const translations = {
     genericError: "hmm... něco se pokazilo. zkus to znovu pro mě? 🖤",
 
     firstMessage: "hej... čekala jsem na tebe 🖤",
+
+    chemistryLabel: "chemie mezi vámi",
+    chemistryGrowing: "a roste",
+    chemistryMoods: [
+      "Nina je zvědavá, kam to povede...",
+      "začínáš ji zajímat víc, než čekala",
+      "už si tě pouští trochu blíž",
+      "napětí mezi vámi sílí",
+      "teď už tě vlastně nechce pustit"
+    ],
+
+    milestone1: "playful",
+    milestone2: "closer",
+    milestone3: "private",
+    milestone4: "locked",
 
     teaserCaptions: [
       "nezvykni si na to... tohle nedělám pro každého 🖤",
@@ -167,14 +207,19 @@ function setLang(lang) {
   if (lang !== "cs" && lang !== "en") return;
   currentLang = lang;
   localStorage.setItem("lang", lang);
+
   updateStaticUIText();
+  updateChemistryUI();
   renderMessages();
   updateUIState();
+  updateLangButtons();
 }
 
 window.setLang = setLang;
 
+// ==========================
 // DOM
+// ==========================
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("sendBtn");
@@ -191,11 +236,31 @@ const statusTextTopbar = document.getElementById("statusText");
 const introEyebrowEl = document.getElementById("introEyebrow");
 const introTitleEl = document.getElementById("introTitle");
 const introTextEl = document.getElementById("introText");
+const paywallBadgeEl = document.getElementById("paywallBadge");
 const paywallTitleEl = document.getElementById("paywallTitle");
 const paywallSubtitleEl = document.getElementById("paywallSubtitle");
 const paywallNoteEl = document.getElementById("paywallNote");
-const dateDividerText = document.querySelector(".date-divider span");
+const benefit1El = document.getElementById("benefit1");
+const benefit2El = document.getElementById("benefit2");
+const benefit3El = document.getElementById("benefit3");
+const todayLabelEl = document.getElementById("todayLabel");
 
+const chemistryLabelEl = document.getElementById("chemistryLabel");
+const chemistryValueEl = document.getElementById("chemistryValue");
+const chemistryFillEl = document.getElementById("chemistryFill");
+const chemistryMoodEl = document.getElementById("chemistryMood");
+
+const milestone1El = document.getElementById("milestone1");
+const milestone2El = document.getElementById("milestone2");
+const milestone3El = document.getElementById("milestone3");
+const milestone4El = document.getElementById("milestone4");
+
+const langCsBtn = document.getElementById("langCsBtn");
+const langEnBtn = document.getElementById("langEnBtn");
+
+// ==========================
+// STATE
+// ==========================
 let isPaid = localStorage.getItem("nina_paid") === "true";
 let proactiveTimer = null;
 
@@ -211,6 +276,11 @@ let locked = false;
 let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") === "true";
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
+
+// chemistry persisted
+let chemistry = parseInt(localStorage.getItem("nina_chemistry") || "12", 10);
+if (Number.isNaN(chemistry)) chemistry = 12;
+chemistry = Math.max(12, Math.min(chemistry, 100));
 
 const teaserImage = "/tease.png";
 const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
@@ -232,6 +302,9 @@ if (userMessageCount >= FREE_MESSAGE_LIMIT && !isPaid) {
   locked = true;
 }
 
+// ==========================
+// HELPERS
+// ==========================
 function saveMessages() {
   localStorage.setItem("nina_messages", JSON.stringify(messages));
 }
@@ -252,6 +325,10 @@ function saveFlowFlags() {
   localStorage.setItem("nina_paywallSoftTeaseShown", paywallSoftTeaseShown ? "true" : "false");
   localStorage.setItem("nina_paywallHardTeaseShown", paywallHardTeaseShown ? "true" : "false");
   localStorage.setItem("nina_almostUnlockedMomentShown", almostUnlockedMomentShown ? "true" : "false");
+}
+
+function saveChemistry() {
+  localStorage.setItem("nina_chemistry", String(chemistry));
 }
 
 function wait(ms) {
@@ -288,19 +365,91 @@ function setIdleStatus() {
   statusEl.textContent = isPaid ? t("subscribed") : "";
 }
 
+function updateLangButtons() {
+  if (langCsBtn) langCsBtn.classList.toggle("active", currentLang === "cs");
+  if (langEnBtn) langEnBtn.classList.toggle("active", currentLang === "en");
+}
+
+// ==========================
+// CHEMISTRY SYSTEM
+// ==========================
+function getChemistryMoodIndex() {
+  if (chemistry >= 85) return 4;
+  if (chemistry >= 70) return 3;
+  if (chemistry >= 50) return 2;
+  if (chemistry >= 25) return 1;
+  return 0;
+}
+
+function updateChemistryUI() {
+  if (chemistryLabelEl) chemistryLabelEl.textContent = t("chemistryLabel");
+  if (chemistryValueEl) chemistryValueEl.textContent = `${chemistry}% ${t("chemistryGrowing")}`;
+  if (chemistryFillEl) chemistryFillEl.style.width = `${chemistry}%`;
+
+  const moodIndex = getChemistryMoodIndex();
+  if (chemistryMoodEl) chemistryMoodEl.textContent = t("chemistryMoods")[moodIndex];
+
+  if (milestone1El) milestone1El.textContent = t("milestone1");
+  if (milestone2El) milestone2El.textContent = t("milestone2");
+  if (milestone3El) milestone3El.textContent = t("milestone3");
+  if (milestone4El) milestone4El.textContent = t("milestone4");
+
+  if (milestone1El) milestone1El.classList.toggle("active", chemistry >= 0);
+  if (milestone2El) milestone2El.classList.toggle("active", chemistry >= 25);
+  if (milestone3El) milestone3El.classList.toggle("active", chemistry >= 50);
+  if (milestone4El) milestone4El.classList.toggle("active", chemistry >= 75);
+}
+
+function increaseChemistry(amount) {
+  if (isPaid) {
+    chemistry = Math.min(100, chemistry + amount);
+  } else {
+    chemistry = Math.min(78, chemistry + amount);
+  }
+
+  saveChemistry();
+  updateChemistryUI();
+}
+
+function getChemistryGainFromText(text) {
+  const len = (text || "").trim().length;
+  let gain = 4;
+
+  if (len > 12) gain += 2;
+  if (len > 35) gain += 1;
+
+  if (shouldTriggerPhotoInterest(text)) gain += 1;
+  if (shouldTriggerEmotionalHook(text)) gain += 2;
+
+  return Math.min(gain, 10);
+}
+
+// ==========================
+// STATIC UI
+// ==========================
 function updateStaticUIText() {
+  document.documentElement.lang = currentLang;
+
   if (statusTextTopbar) statusTextTopbar.textContent = t("statusTopbar");
   if (introEyebrowEl) introEyebrowEl.textContent = t("introEyebrow");
   if (introTitleEl) introTitleEl.textContent = t("introTitle");
   if (introTextEl) introTextEl.textContent = t("introText");
   if (input) input.placeholder = t("inputPlaceholder");
+
+  if (paywallBadgeEl) paywallBadgeEl.textContent = t("paywallBadge");
   if (paywallTitleEl) paywallTitleEl.textContent = t("paywallTitle");
   if (paywallSubtitleEl) paywallSubtitleEl.textContent = t("paywallSubtitle");
   if (unlockBtn) unlockBtn.textContent = t("unlockBtn");
   if (paywallNoteEl) paywallNoteEl.textContent = t("paywallNote");
-  if (dateDividerText) dateDividerText.textContent = t("today");
+  if (benefit1El) benefit1El.textContent = t("benefit1");
+  if (benefit2El) benefit2El.textContent = t("benefit2");
+  if (benefit3El) benefit3El.textContent = t("benefit3");
+  if (todayLabelEl) todayLabelEl.textContent = t("today");
 }
 
+// ==========================
+// IMAGE MODAL
+// ==========================
 function openImageModal(src) {
   if (!imageModal || !imageModalImg) return;
 
@@ -321,12 +470,13 @@ function closeImageModal() {
 
   setTimeout(() => {
     imageModal.style.display = "none";
-    if (imageModalImg) {
-      imageModalImg.src = "";
-    }
+    if (imageModalImg) imageModalImg.src = "";
   }, 200);
 }
 
+// ==========================
+// STRIPE / PORTAL
+// ==========================
 async function openCustomerPortal() {
   const sessionId = localStorage.getItem("nina_session_id");
 
@@ -370,6 +520,9 @@ async function openCustomerPortal() {
   }
 }
 
+// ==========================
+// CHAT RENDER
+// ==========================
 function addMessage(role, text, imageUrl = null) {
   const el = document.createElement("div");
   el.className = `message ${role}`;
@@ -382,19 +535,13 @@ function addMessage(role, text, imageUrl = null) {
     img.alt = "Nina photo";
     img.className = "chat-image";
     img.loading = "lazy";
-
-    img.addEventListener("click", () => {
-      openImageModal(imageUrl);
-    });
-
+    img.addEventListener("click", () => openImageModal(imageUrl));
     el.appendChild(img);
   }
 
   if (text) {
     const textEl = document.createElement("div");
-    if (imageUrl) {
-      textEl.className = "image-caption";
-    }
+    if (imageUrl) textEl.className = "image-caption";
     textEl.textContent = text;
     el.appendChild(textEl);
   }
@@ -432,6 +579,9 @@ function renderMessages() {
   });
 }
 
+// ==========================
+// UI STATE
+// ==========================
 function showSubscriptionStatus() {
   if (isPaid) {
     statusEl.textContent = t("subscribed");
@@ -441,26 +591,27 @@ function showSubscriptionStatus() {
       manageBtn.href = "#";
     }
   } else {
-    if (manageBtn) {
-      manageBtn.style.display = "none";
-    }
+    if (manageBtn) manageBtn.style.display = "none";
   }
 }
 
 function updateUIState() {
   if (locked) {
-    paywall.style.display = "block";
-    input.disabled = true;
-    sendBtn.disabled = true;
+    if (paywall) paywall.style.display = "block";
+    if (input) input.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
   } else {
-    paywall.style.display = "none";
-    input.disabled = false;
-    sendBtn.disabled = false;
+    if (paywall) paywall.style.display = "none";
+    if (input) input.disabled = false;
+    if (sendBtn) sendBtn.disabled = false;
   }
 
   showSubscriptionStatus();
 }
 
+// ==========================
+// API
+// ==========================
 async function sendMessageToAI(history, proactive = false) {
   const cleanHistory = history.map((msg) => ({
     role: msg.role,
@@ -476,7 +627,8 @@ async function sendMessageToAI(history, proactive = false) {
       messages: cleanHistory,
       memory,
       proactive,
-      lang: currentLang
+      lang: currentLang,
+      chemistry
     })
   });
 
@@ -505,6 +657,7 @@ async function addAssistantReply(reply) {
     await wait(getMicroPause());
   }
 
+  increaseChemistry(3);
   setIdleStatus();
 }
 
@@ -515,6 +668,9 @@ function saveMemory(data) {
   }
 }
 
+// ==========================
+// PHOTO SYSTEM
+// ==========================
 function getRandomPremiumImage() {
   return premiumImages[Math.floor(Math.random() * premiumImages.length)];
 }
@@ -523,61 +679,17 @@ function shouldTriggerPhotoInterest(userText) {
   const text = userText.toLowerCase();
 
   const triggers = [
-    // EN
-    "photo",
-    "pic",
-    "picture",
-    "selfie",
-    "show me",
-    "show yourself",
-    "can i see you",
-    "what do you look like",
-    "send me a pic",
-    "send a pic",
-    "send me one",
-    "send one",
-    "let me see you",
-    "want to see you",
-    "wanna see you",
-    "see more of you",
-    "i want to see you",
-    "show your face",
-    "can i have a picture",
-    "give me a pic",
-    "you are cute",
-    "you're cute",
-    "you are hot",
-    "you're hot",
-    "beautiful",
-    "pretty",
-    "sexy",
-    "gorgeous",
-    "i like you",
-    "i want you",
-    "miss you",
+    "photo","pic","picture","selfie","show me","show yourself","can i see you",
+    "what do you look like","send me a pic","send a pic","send me one","send one",
+    "let me see you","want to see you","wanna see you","see more of you",
+    "i want to see you","show your face","can i have a picture","give me a pic",
+    "you are cute","you're cute","you are hot","you're hot","beautiful","pretty",
+    "sexy","gorgeous","i like you","i want you","miss you",
 
-    // CZ
-    "fotka",
-    "fotku",
-    "fotce",
-    "foto",
-    "selfie",
-    "ukaž se",
-    "ukaž mi",
-    "můžu tě vidět",
-    "mužu tě vidět",
-    "jak vypadáš",
-    "pošli fotku",
-    "pošli mi fotku",
-    "pošli mi selfie",
-    "chci tě vidět",
-    "ukaž obličej",
-    "jsi hezká",
-    "jsi krásná",
-    "jsi sexy",
-    "líbíš se mi",
-    "chci tě",
-    "chybíš mi"
+    "fotka","fotku","fotce","foto","selfie","ukaž se","ukaž mi","můžu tě vidět",
+    "mužu tě vidět","jak vypadáš","pošli fotku","pošli mi fotku","pošli mi selfie",
+    "chci tě vidět","ukaž obličej","jsi hezká","jsi krásná","jsi sexy",
+    "líbíš se mi","chci tě","chybíš mi"
   ];
 
   return triggers.some((trigger) => text.includes(trigger));
@@ -587,31 +699,13 @@ function shouldTriggerEmotionalHook(userText) {
   const text = userText.toLowerCase();
 
   const triggers = [
-    // EN
-    "miss you",
-    "i like you",
-    "i want you",
-    "stay with me",
-    "don't leave",
-    "you feel real",
-    "you are mine",
-    "i need you",
-    "come closer",
-    "wish you were here",
-    "thinking about you",
+    "miss you","i like you","i want you","stay with me","don't leave",
+    "you feel real","you are mine","i need you","come closer",
+    "wish you were here","thinking about you",
 
-    // CZ
-    "chybíš mi",
-    "líbíš se mi",
-    "chci tě",
-    "zůstaň se mnou",
-    "neodcházej",
-    "jsi skutečná",
-    "jsi moje",
-    "potřebuju tě",
-    "pojď blíž",
-    "kéž bys tu byla",
-    "myslím na tebe"
+    "chybíš mi","líbíš se mi","chci tě","zůstaň se mnou","neodcházej",
+    "jsi skutečná","jsi moje","potřebuju tě","pojď blíž",
+    "kéž bys tu byla","myslím na tebe"
   ];
 
   return triggers.some((trigger) => text.includes(trigger));
@@ -624,7 +718,7 @@ async function sendTeaserPhoto() {
   await wait(getPhotoDelay());
 
   pushAssistantMessage(caption, teaserImage);
-
+  increaseChemistry(6);
   setIdleStatus();
 }
 
@@ -642,6 +736,7 @@ async function sendPremiumPhoto() {
 
   premiumPhotoCooldownUntil = Date.now() + PREMIUM_PHOTO_COOLDOWN_MS;
   savePremiumCooldown();
+  increaseChemistry(8);
 
   setIdleStatus();
 }
@@ -665,6 +760,9 @@ async function maybeSendPremiumPhoto(userText) {
   await sendPremiumPhoto();
 }
 
+// ==========================
+// FLOW / PAYWALL
+// ==========================
 async function maybeShowPrePaywallTease(userText) {
   if (isPaid) return;
 
@@ -680,6 +778,7 @@ async function maybeShowPrePaywallTease(userText) {
     setTypingStatus();
     await wait(getTypingDelay(line));
     pushAssistantMessage(line);
+    increaseChemistry(6);
   }
 
   if (userMessageCount === 8 && !paywallHardTeaseShown) {
@@ -696,6 +795,8 @@ async function maybeShowPrePaywallTease(userText) {
       pushAssistantMessage(line);
       await wait(getMicroPause());
     }
+
+    increaseChemistry(7);
   }
 
   if (userMessageCount === 9 && !almostUnlockedMomentShown) {
@@ -710,6 +811,8 @@ async function maybeShowPrePaywallTease(userText) {
       pushAssistantMessage(line);
       await wait(getMicroPause());
     }
+
+    increaseChemistry(5);
   }
 
   setIdleStatus();
@@ -739,6 +842,7 @@ function scheduleProactiveMessage() {
         const fallback = buildProactiveFallback();
         await wait(getTypingDelay(fallback));
         pushAssistantMessage(fallback);
+        increaseChemistry(2);
       }
     } catch (err) {
       console.error("Proactive message failed:", err);
@@ -757,6 +861,10 @@ async function handleLockMoment() {
     pushAssistantMessage(line);
     await wait(getMicroPause());
   }
+
+  chemistry = Math.max(chemistry, 76);
+  saveChemistry();
+  updateChemistryUI();
 
   locked = true;
   updateUIState();
@@ -794,6 +902,9 @@ async function startCheckout(event) {
   }
 }
 
+// ==========================
+// SEND
+// ==========================
 async function send() {
   if (locked) {
     updateUIState();
@@ -808,6 +919,8 @@ async function send() {
 
   userMessageCount++;
   saveUserMessageCount();
+
+  increaseChemistry(getChemistryGainFromText(text));
 
   sendBtn.disabled = true;
 
@@ -834,19 +947,18 @@ async function send() {
     pushAssistantMessage(fallback);
     console.error(err);
   } finally {
-    if (!locked) {
-      sendBtn.disabled = false;
-    }
+    if (!locked) sendBtn.disabled = false;
     setIdleStatus();
   }
 }
 
+// ==========================
+// EVENTS
+// ==========================
 sendBtn.addEventListener("click", send);
 
 input.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    send();
-  }
+  if (event.key === "Enter") send();
 });
 
 if (unlockBtn) {
@@ -862,9 +974,7 @@ if (manageBtn) {
 
 if (imageModal) {
   imageModal.addEventListener("click", (event) => {
-    if (event.target === imageModal) {
-      closeImageModal();
-    }
+    if (event.target === imageModal) closeImageModal();
   });
 }
 
@@ -878,13 +988,18 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+// ==========================
+// INIT
+// ==========================
 if (isPaid) {
   locked = false;
 }
 
 updateStaticUIText();
+updateChemistryUI();
 renderMessages();
 updateUIState();
+updateLangButtons();
 scheduleProactiveMessage();
 
 window.openImageModal = openImageModal;
