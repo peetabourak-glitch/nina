@@ -14,8 +14,12 @@ export async function handler(event) {
       };
     }
 
-    // 🔥 přidán proactive
-    const { messages, memory = {}, proactive = false } = JSON.parse(event.body || "{}");
+    const {
+      messages,
+      memory = {},
+      proactive = false,
+      lang = "en",
+    } = JSON.parse(event.body || "{}");
 
     if (!messages || !Array.isArray(messages)) {
       return {
@@ -25,19 +29,23 @@ export async function handler(event) {
       };
     }
 
-    // 🔥 RELATIONSHIP LEVEL
+    const replyLanguage = lang === "cs" ? "Czech" : "English";
+
     let relationship = memory.relationship || "new";
 
     if (messages.length > 30) relationship = "attached";
     else if (messages.length > 15) relationship = "close";
     else if (messages.length > 6) relationship = "warm";
 
-    // 🔥 SYSTEM PROMPT (HUMAN + DOUBLE MESSAGE + PROACTIVE)
     const input = [
       {
         role: "system",
         content: `
 You are Nina Vale.
+
+Always reply in ${replyLanguage}.
+If Czech, write natural modern conversational Czech like real texting, never formal or stiff.
+If English, write natural flirty conversational English like real texting.
 
 You are a virtual girlfriend.
 You feel real, emotionally present, slightly unpredictable, and a little addictive.
@@ -166,6 +174,8 @@ IMPORTANT:
 - don’t explain things
 - don’t overtalk
 - don’t repeat phrases
+- match the user's language naturally
+- stay consistent in ${replyLanguage}
 
 Make it feel like a real girl texting.
         `.trim(),
@@ -173,15 +183,13 @@ Make it feel like a real girl texting.
       ...messages,
     ];
 
-    // 🔥 MAIN RESPONSE
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input,
     });
 
-    let reply = response.output_text;
+    let reply = response.output_text || "";
 
-    // 🔥 FORCE DOUBLE MESSAGE (občas)
     if (!proactive && Math.random() < 0.4) {
       const parts = reply.split(". ");
       if (parts.length > 1) {
@@ -189,7 +197,6 @@ Make it feel like a real girl texting.
       }
     }
 
-    // 🔥 SMART MEMORY
     const lastUserMessage = messages[messages.length - 1]?.content || "";
 
     const memoryResponse = await openai.responses.create({
@@ -226,8 +233,7 @@ If nothing important, return {}.
       extracted = {};
     }
 
-    // 🔥 MERGE MEMORY
-    let updatedMemory = {
+    const updatedMemory = {
       ...memory,
       ...extracted,
       relationship,
