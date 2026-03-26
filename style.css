@@ -300,12 +300,9 @@ body {
   box-shadow: 0 0 16px rgba(255, 79, 163, 0.14);
 }
 
-/* INTRO - COMPACT */
+/* INTRO - HIDDEN */
 .intro-card {
-  position: relative;
-  height: 138px;
-  overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: none;
 }
 
 .intro-card::after {
@@ -791,7 +788,7 @@ body {
   }
 
   .intro-card {
-    height: 118px;
+    display: none;
   }
 
   .hero {
