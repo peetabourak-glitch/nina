@@ -1,5 +1,4 @@
 const Stripe = require("stripe");
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async () => {
@@ -18,27 +17,19 @@ exports.handler = async () => {
         }
       ],
       success_url: `${siteUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/?canceled=1`
+      cancel_url: `${siteUrl}/chat.html?canceled=1`
     });
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        url: session.url
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: session.url })
     };
   } catch (err) {
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        error: err.message
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: err.message })
     };
   }
 };
