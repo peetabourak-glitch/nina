@@ -469,6 +469,61 @@ body {
   line-height: 1.4;
 }
 
+/* PHOTO BUTTON */
+.photo-btn {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.18s ease, transform 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.photo-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* PHOTO PAYWALL */
+.photo-paywall {
+  margin-top: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 79, 163, 0.18), rgba(193, 92, 255, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  animation: paywallFade 0.3s ease;
+}
+
+.photo-paywall-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+
+.photo-paywall-lock {
+  font-size: 1.6rem;
+}
+
+.photo-paywall-text {
+  font-size: 0.92rem;
+  color: var(--white);
+  line-height: 1.5;
+}
+
 /* TYPING INDICATOR */
 .message.typing-indicator {
   display: flex;
