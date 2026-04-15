@@ -20,6 +20,7 @@ export async function handler(event) {
       proactive = false,
       lang = "en",
       chemistry = 10,
+      hasPhoto = false,
     } = JSON.parse(event.body || "{}");
 
     if (!messages || !Array.isArray(messages)) {
@@ -223,7 +224,7 @@ Piš jako skutečná holka co textuje. Ne jako asistent.
     ];
 
     const response = await openai.responses.create({
-      model: "gpt-4.1",
+      model: hasPhoto ? "gpt-4o" : "gpt-4.1",
       input,
     });
 
