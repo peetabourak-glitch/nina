@@ -1269,6 +1269,7 @@ scheduleProactiveMessage();
       const wasP = isPaid;
       isPaid = data.paid;
       localStorage.setItem("nina_paid", isPaid ? "true" : "false");
+      if (isPaid) localStorage.setItem("nina_ever_paid", "true");
 
       // Pokud se stav změnil, aktualizuj UI
       if (wasP !== isPaid) {
@@ -1279,6 +1280,115 @@ scheduleProactiveMessage();
   } catch (err) {
     // Tiché selhání — necháme localStorage hodnotu
     console.warn("Could not verify subscription:", err);
+  }
+})();
+
+// ==========================
+// EMAIL LOGIN MODAL
+// ==========================
+const emailModal = document.getElementById("emailModal");
+const emailInput = document.getElementById("emailInput");
+const emailSubmitBtn = document.getElementById("emailSubmitBtn");
+const emailModalError = document.getElementById("emailModalError");
+const emailModalSkip = document.getElementById("emailModalSkip");
+
+function showEmailModal() {
+  if (emailModal) {
+    emailModal.style.display = "flex";
+    emailModal.classList.add("visible");
+    setTimeout(() => { if (emailInput) emailInput.focus(); }, 300);
+  }
+}
+
+function hideEmailModal() {
+  if (emailModal) {
+    emailModal.classList.remove("visible");
+    emailModal.style.display = "none";
+  }
+}
+
+async function verifyEmail() {
+  const email = emailInput?.value?.trim();
+  if (!email || !email.includes("@")) {
+    if (emailModalError) {
+      emailModalError.textContent = currentLang === "cs"
+        ? "Zadej platný email."
+        : "Please enter a valid email.";
+      emailModalError.style.display = "block";
+    }
+    return;
+  }
+
+  if (emailSubmitBtn) {
+    emailSubmitBtn.disabled = true;
+    emailSubmitBtn.textContent = currentLang === "cs" ? "Ověřuji..." : "Checking...";
+  }
+  if (emailModalError) emailModalError.style.display = "none";
+
+  try {
+    const res = await fetch("/.netlify/functions/verify-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (data.paid) {
+      // Úspěch — nastavíme přístup
+      isPaid = true;
+      locked = false;
+      localStorage.setItem("nina_paid", "true");
+      localStorage.setItem("nina_email", email);
+      hideEmailModal();
+      updateUIState();
+    } else {
+      // Nenalezeno aktivní předplatné
+      if (emailModalError) {
+        emailModalError.textContent = currentLang === "cs"
+          ? "Pro tento email jsme nenašli aktivní předplatné."
+          : "No active subscription found for this email.";
+        emailModalError.style.display = "block";
+      }
+    }
+  } catch (err) {
+    if (emailModalError) {
+      emailModalError.textContent = currentLang === "cs"
+        ? "Něco se pokazilo. Zkus to znovu."
+        : "Something went wrong. Try again.";
+      emailModalError.style.display = "block";
+    }
+  } finally {
+    if (emailSubmitBtn) {
+      emailSubmitBtn.disabled = false;
+      emailSubmitBtn.textContent = currentLang === "cs" ? "Ověřit přístup" : "Verify access";
+    }
+  }
+}
+
+if (emailSubmitBtn) {
+  emailSubmitBtn.addEventListener("click", verifyEmail);
+}
+
+if (emailInput) {
+  emailInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") verifyEmail();
+  });
+}
+
+if (emailModalSkip) {
+  emailModalSkip.addEventListener("click", hideEmailModal);
+}
+
+// Zobraz email modal pokud nemá přístup a není na novém zařízení
+// (tj. byl někdy přihlášen ale ztratil localStorage)
+(function checkEmailModalNeeded() {
+  const hasEverPaid = localStorage.getItem("nina_ever_paid") === "true";
+  const currentlyPaid = localStorage.getItem("nina_paid") === "true";
+
+  // Zobraz modal pokud uživatel v minulosti platil ale teď nemá přístup
+  if (hasEverPaid && !currentlyPaid) {
+    setTimeout(showEmailModal, 1500);
   }
 })();
 
