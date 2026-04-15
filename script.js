@@ -539,9 +539,10 @@ function closeImageModal() {
 // STRIPE / PORTAL
 // ==========================
 async function openCustomerPortal() {
+  const customerId = localStorage.getItem("nina_customer_id");
   const sessionId = localStorage.getItem("nina_session_id");
 
-  if (!sessionId) {
+  if (!customerId && !sessionId) {
     alert(t("portalSessionMissing"));
     return;
   }
@@ -555,7 +556,10 @@ async function openCustomerPortal() {
     const res = await fetch("/.netlify/functions/create-portal-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session_id: sessionId })
+      body: JSON.stringify({
+        customer_id: customerId || null,
+        session_id: sessionId || null
+      })
     });
 
     const data = await res.json();
@@ -1339,7 +1343,11 @@ async function verifyEmail() {
       isPaid = true;
       locked = false;
       localStorage.setItem("nina_paid", "true");
+      localStorage.setItem("nina_ever_paid", "true");
       localStorage.setItem("nina_email", email);
+      if (data.customerId) {
+        localStorage.setItem("nina_customer_id", data.customerId);
+      }
       hideEmailModal();
       updateUIState();
     } else {
@@ -1378,6 +1386,21 @@ if (emailInput) {
 
 if (emailModalSkip) {
   emailModalSkip.addEventListener("click", hideEmailModal);
+}
+
+// Tlačítka "Už mám předplatné" v paywallu
+const paywallLoginBtn = document.getElementById("paywallLoginBtn");
+const photoPaywallLoginBtn = document.getElementById("photoPaywallLoginBtn");
+
+if (paywallLoginBtn) {
+  paywallLoginBtn.addEventListener("click", showEmailModal);
+}
+
+if (photoPaywallLoginBtn) {
+  photoPaywallLoginBtn.addEventListener("click", () => {
+    hidePhotoPaywall();
+    showEmailModal();
+  });
 }
 
 // Zobraz email modal pokud nemá přístup a není na novém zařízení
