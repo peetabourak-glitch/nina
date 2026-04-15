@@ -1192,11 +1192,11 @@ input.addEventListener("keydown", (event) => {
 // FOTO TLAČÍTKO
 if (photoBtn) {
   photoBtn.addEventListener("click", () => {
-    hidePhotoPaywall();
     if (!isPaid) {
       showPhotoPaywall();
       return;
     }
+    hidePhotoPaywall();
     if (locked) { updateUIState(); return; }
     if (photoInput) photoInput.click();
   });
@@ -1255,6 +1255,32 @@ renderMessages();
 updateUIState();
 updateLangButtons();
 scheduleProactiveMessage();
+
+// Ověř stav předplatného při načtení stránky
+(async function verifySubscriptionOnLoad() {
+  const sessionId = localStorage.getItem("nina_session_id");
+  if (!sessionId) return;
+
+  try {
+    const res = await fetch(`/.netlify/functions/verify-session?session_id=${sessionId}`);
+    const data = await res.json();
+
+    if (res.ok && typeof data.paid === "boolean") {
+      const wasP = isPaid;
+      isPaid = data.paid;
+      localStorage.setItem("nina_paid", isPaid ? "true" : "false");
+
+      // Pokud se stav změnil, aktualizuj UI
+      if (wasP !== isPaid) {
+        if (isPaid) locked = false;
+        updateUIState();
+      }
+    }
+  } catch (err) {
+    // Tiché selhání — necháme localStorage hodnotu
+    console.warn("Could not verify subscription:", err);
+  }
+})();
 
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
