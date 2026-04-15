@@ -93,7 +93,11 @@ const translations = {
     lockMoment: [
       "mm... i was just getting comfortable with you 🖤",
       "unlock me and i'll show you what i was about to send 😏"
-    ]
+    ],
+
+    photoPaywallText: "want to send me a photo?\nunlock me first... 😏",
+    photoModerationError: "mm... don't send me that 😏 try something else",
+    photoReplyPrefix: ""
   },
 
   cs: {
@@ -185,7 +189,11 @@ const translations = {
     lockMoment: [
       "mm... zrovna jsem se s tebou začínala cítit dobře 🖤",
       "odemkni si mě a ukážu ti, co jsem ti chtěla poslat 😏"
-    ]
+    ],
+
+    photoPaywallText: "chceš mi poslat fotku?\nnejdřív si mě odemkni... 😏",
+    photoModerationError: "mm... tohle mi radši neposílej 😏 zkus něco jiného",
+    photoReplyPrefix: ""
   }
 };
 
@@ -231,6 +239,12 @@ const unlockBtn = document.getElementById("unlockBtn");
 const imageModal = document.getElementById("imageModal");
 const imageModalImg = document.getElementById("imageModalImg");
 const imageModalClose = document.getElementById("imageModalClose");
+
+const photoBtn = document.getElementById("photoBtn");
+const photoInput = document.getElementById("photoInput");
+const photoPaywall = document.getElementById("photoPaywall");
+const photoUnlockBtn = document.getElementById("photoUnlockBtn");
+const photoPaywallText = document.getElementById("photoPaywallText");
 
 const statusTextTopbar = document.getElementById("statusText");
 const introEyebrowEl = document.getElementById("introEyebrow");
@@ -977,6 +991,145 @@ async function startCheckout(event) {
 }
 
 // ==========================
+// PHOTO UPLOAD
+// ==========================
+
+function showPhotoPaywall() {
+  if (photoPaywallText) {
+    photoPaywallText.innerHTML = t("photoPaywallText").replace("\n", "<br>");
+  }
+  if (photoPaywall) photoPaywall.style.display = "block";
+}
+
+function hidePhotoPaywall() {
+  if (photoPaywall) photoPaywall.style.display = "none";
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = () => reject(new Error("File read failed"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function addUserPhotoMessage(objectUrl) {
+  const el = document.createElement("div");
+  el.className = "message user has-image";
+  el.style.opacity = "0";
+  el.style.transform = "translateY(6px)";
+  el.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+
+  const img = document.createElement("img");
+  img.src = objectUrl;
+  img.className = "chat-image";
+  img.style.cursor = "default";
+  el.appendChild(img);
+
+  chat.appendChild(el);
+  chat.scrollTop = chat.scrollHeight;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.style.opacity = "1";
+      el.style.transform = "translateY(0)";
+    });
+  });
+}
+
+async function sendPhoto(file) {
+  if (locked) { updateUIState(); return; }
+
+  hidePhotoPaywall();
+
+  // Zobrazit náhled fotky od uživatele
+  const objectUrl = URL.createObjectURL(file);
+  addUserPhotoMessage(objectUrl);
+
+  userMessageCount++;
+  saveUserMessageCount();
+  increaseChemistry(2);
+
+  sendBtn.disabled = true;
+  if (photoBtn) photoBtn.disabled = true;
+
+  try {
+    const base64 = await fileToBase64(file);
+    const mediaType = file.type || "image/jpeg";
+
+    // Přidáme foto zprávu do historie
+    const photoMessage = {
+      role: "user",
+      content: [
+        {
+          type: "image_url",
+          image_url: {
+            url: `data:${mediaType};base64,${base64}`
+          }
+        },
+        {
+          type: "text",
+          text: currentLang === "cs"
+            ? "poslal jsem ti fotku"
+            : "i sent you a photo"
+        }
+      ]
+    };
+
+    // Přidáme do messages pro kontext (bez base64 pro úsporu)
+    messages.push({
+      role: "user",
+      content: currentLang === "cs" ? "[poslal fotku]" : "[sent a photo]"
+    });
+    saveMessages();
+
+    setTypingStatus();
+
+    // Pošleme na backend s foto
+    const cleanHistory = messages.slice(0, -1).map(m => ({ role: m.role, content: m.content }));
+    cleanHistory.push(photoMessage);
+
+    const res = await fetch("/.netlify/functions/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: cleanHistory,
+        memory,
+        proactive: false,
+        lang: currentLang,
+        chemistry: Math.round(chemistry),
+        hasPhoto: true
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || "Request failed");
+
+    saveMemory(data);
+    await addAssistantReply(data.reply);
+    scheduleProactiveMessage();
+
+  } catch (err) {
+    hideTypingIndicator();
+    // Pokud OpenAI odmítlo obrázek (moderace)
+    const errMsg = err.message || "";
+    if (errMsg.includes("moderat") || errMsg.includes("policy") || errMsg.includes("safety")) {
+      pushAssistantMessage(t("photoModerationError"));
+    } else {
+      pushAssistantMessage(t("genericError"));
+    }
+    console.error(err);
+  } finally {
+    sendBtn.disabled = false;
+    if (photoBtn) photoBtn.disabled = false;
+    setIdleStatus();
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
+// ==========================
 // SEND
 // ==========================
 async function send() {
@@ -1035,6 +1188,32 @@ sendBtn.addEventListener("click", send);
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") send();
 });
+
+// FOTO TLAČÍTKO
+if (photoBtn) {
+  photoBtn.addEventListener("click", () => {
+    hidePhotoPaywall();
+    if (!isPaid) {
+      showPhotoPaywall();
+      return;
+    }
+    if (locked) { updateUIState(); return; }
+    if (photoInput) photoInput.click();
+  });
+}
+
+if (photoInput) {
+  photoInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    photoInput.value = ""; // reset pro opakované použití
+    await sendPhoto(file);
+  });
+}
+
+if (photoUnlockBtn) {
+  photoUnlockBtn.addEventListener("click", startCheckout);
+}
 
 if (unlockBtn) {
   unlockBtn.addEventListener("click", startCheckout);
