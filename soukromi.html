@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ochrana soukromí — Nina Vale</title>
+<style>
+  :root {
+    --bg: #07070c;
+    --white: #f7f1eb;
+    --white-75: rgba(247,241,235,0.75);
+    --white-45: rgba(247,241,235,0.45);
+    --pink: #e84393;
+    --pink-light: #fd79a8;
+    --white-08: rgba(247,241,235,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg, #09090f 0%, #08080d 100%);
+    color: var(--white-75);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+    padding: 0 0 80px;
+  }
+
+  .topbar {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--white-08);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .topbar a {
+    color: var(--pink-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .topbar a:hover { color: var(--white); }
+  .topbar-brand { color: var(--white); font-weight: 700; font-size: 1rem; margin-left: auto; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 56px 24px 0; }
+
+  h1 { color: var(--white); font-size: 2rem; font-weight: 700; margin-bottom: 8px; line-height: 1.2; }
+  .meta { font-size: 0.85rem; color: var(--white-45); margin-bottom: 48px; }
+  h2 { color: var(--white); font-size: 1.1rem; font-weight: 700; margin: 40px 0 12px; }
+  p { margin-bottom: 14px; font-size: 0.96rem; }
+  ul { margin: 0 0 14px 20px; font-size: 0.96rem; }
+  ul li { margin-bottom: 6px; }
+  a { color: var(--pink-light); }
+
+  .highlight {
+    background: rgba(232,67,147,0.07);
+    border: 1px solid rgba(232,67,147,0.15);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    font-size: 0.92rem;
+  }
+
+  .rights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0 24px;
+  }
+
+  .right-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--white-08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.88rem;
+  }
+
+  .right-item strong { color: var(--white); display: block; margin-bottom: 4px; }
+
+  hr { border: none; border-top: 1px solid var(--white-08); margin: 40px 0; }
+
+  @media (max-width: 600px) {
+    .rights-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/">← Zpět na Nina Vale</a>
+  <span class="topbar-brand">Nina Vale</span>
+</div>
+
+<div class="container">
+
+  <h1>Ochrana soukromí</h1>
+  <p class="meta">Poslední aktualizace: červen 2025</p>
+
+  <div class="highlight">
+    Vaše soukromí bereme vážně. Tento dokument vysvětluje, jaké údaje sbíráme, proč a jak je chráníme — v souladu s nařízením GDPR.
+  </div>
+
+  <h2>1. Správce osobních údajů</h2>
+  <p>
+    Správcem osobních údajů je fyzická osoba podnikající s IČO <strong>09199535</strong>, provozující službu Nina Vale na adrese <a href="https://ninavale.online">ninavale.online</a>.
+  </p>
+  <p>Kontakt: <a href="mailto:peetabourk@gmail.com">peetabourk@gmail.com</a></p>
+
+  <h2>2. Jaké údaje sbíráme</h2>
+  <p>Sbíráme pouze údaje nezbytné pro fungování služby:</p>
+  <ul>
+    <li><strong>E-mailová adresa</strong> — při platbě přes Stripe (pro správu předplatného a komunikaci)</li>
+    <li><strong>Obsah konverzace</strong> — zprávy, které napíšete Nině, jsou dočasně ukládány v prohlížeči (localStorage) pro zachování kontextu konverzace</li>
+    <li><strong>Technické údaje</strong> — IP adresa, typ prohlížeče (automaticky přes serverové logy Netlify)</li>
+    <li><strong>Platební údaje</strong> — zpracovává výhradně Stripe, my k nim nemáme přístup</li>
+  </ul>
+
+  <h2>3. K čemu údaje používáme</h2>
+  <ul>
+    <li>Poskytování a zlepšování služby Nina Vale</li>
+    <li>Správa předplatného a plateb</li>
+    <li>Odpovědi na vaše dotazy a podpora</li>
+    <li>Splnění zákonných povinností</li>
+  </ul>
+  <p>Vaše údaje <strong>neprodáváme</strong> třetím stranám ani je nepoužíváme k reklamním účelům.</p>
+
+  <h2>4. Právní základ zpracování</h2>
+  <ul>
+    <li><strong>Plnění smlouvy</strong> (čl. 6 odst. 1 písm. b GDPR) — zpracování nezbytné pro poskytování služby</li>
+    <li><strong>Oprávněný zájem</strong> (čl. 6 odst. 1 písm. f GDPR) — bezpečnost a provoz služby</li>
+    <li><strong>Splnění právní povinnosti</strong> (čl. 6 odst. 1 písm. c GDPR) — účetní a daňové povinnosti</li>
+  </ul>
+
+  <h2>5. Třetí strany</h2>
+  <p>Používáme tyto třetí strany, které mohou zpracovávat vaše údaje:</p>
+  <ul>
+    <li><strong>Stripe</strong> (stripe.com) — platební brána, zpracovává platební údaje</li>
+    <li><strong>Netlify</strong> (netlify.com) — hosting, ukládá serverové logy</li>
+    <li><strong>OpenAI</strong> (openai.com) — AI engine, zpracovává obsah konverzací pro generování odpovědí</li>
+  </ul>
+  <p>Všichni partneři jsou vázáni vlastními GDPR politikami a zpracovateli v souladu s platnou legislativou.</p>
+
+  <h2>6. Přenos dat mimo EU</h2>
+  <p>
+    OpenAI a Stripe sídlí v USA. Přenos dat probíhá na základě standardních smluvních doložek (SCC) schválených Evropskou komisí, které zajišťují odpovídající úroveň ochrany.
+  </p>
+
+  <h2>7. Jak dlouho údaje uchováváme</h2>
+  <ul>
+    <li><strong>Obsah konverzací</strong> — ukládán lokálně v prohlížeči, nikoli na našich serverech. Smažete ho vymazáním dat prohlížeče.</li>
+    <li><strong>E-mail a platební záznamy</strong> — po dobu trvání předplatného + 3 roky (zákonná povinnost)</li>
+    <li><strong>Serverové logy</strong> — Netlify je uchovává standardně 30 dní</li>
+  </ul>
+
+  <h2>8. Vaše práva</h2>
+  <p>Jako subjekt údajů máte následující práva:</p>
+
+  <div class="rights-grid">
+    <div class="right-item">
+      <strong>Právo na přístup</strong>
+      Kdykoli nás můžete požádat o informace o tom, jaké údaje o vás máme.
+    </div>
+    <div class="right-item">
+      <strong>Právo na opravu</strong>
+      Pokud jsou vaše údaje nepřesné, opravíme je na vaši žádost.
+    </div>
+    <div class="right-item">
+      <strong>Právo na výmaz</strong>
+      Můžete požádat o smazání vašich osobních údajů ("právo být zapomenut").
+    </div>
+    <div class="right-item">
+      <strong>Právo na přenositelnost</strong>
+      Vaše údaje vám poskytneme ve strojově čitelném formátu.
+    </div>
+    <div class="right-item">
+      <strong>Právo vznést námitku</strong>
+      Můžete vznést námitku proti zpracování na základě oprávněného zájmu.
+    </div>
+    <div class="right-item">
+      <strong>Právo podat stížnost</strong>
+      Máte právo podat stížnost u Úřadu pro ochranu osobních údajů (uoou.cz).
+    </div>
+  </div>
+
+  <p>Pro uplatnění práv nás kontaktujte na <a href="mailto:peetabourk@gmail.com">peetabourk@gmail.com</a>. Odpovíme do 30 dnů.</p>
+
+  <h2>9. Cookies</h2>
+  <p>
+    Služba používá pouze technické cookies nezbytné pro fungování (preference jazyka, stav přihlášení). Nepoužíváme reklamní ani sledovací cookies třetích stran.
+  </p>
+  <p>Tyto technické cookies nevyžadují souhlas dle GDPR.</p>
+
+  <h2>10. Bezpečnost</h2>
+  <p>
+    Komunikace se serverem probíhá výhradně přes šifrované HTTPS spojení. Obsah konverzací je ukládán lokálně ve vašem prohlížeči a není přenášen na naše servery nad rámec generování odpovědí.
+  </p>
+
+  <h2>11. Věkové omezení</h2>
+  <p>
+    Služba Nina Vale je určena výhradně osobám starším 18 let. Vědomě neshromažďujeme osobní údaje osob mladších 18 let. Pokud se dozvíme, že jsme takové údaje shromáždili, neprodleně je vymažeme.
+  </p>
+
+  <h2>12. Změny tohoto dokumentu</h2>
+  <p>
+    O změnách v zásadách ochrany soukromí budeme informovat e-mailem nebo upozorněním ve službě. Aktuální verze je vždy dostupná na této stránce.
+  </p>
+
+  <h2>13. Kontakt</h2>
+  <p>
+    Pro jakékoli dotazy týkající se ochrany vašich osobních údajů nás kontaktujte:<br>
+    📧 <a href="mailto:peetabourk@gmail.com">peetabourk@gmail.com</a>
+  </p>
+  <p>Odpovídáme do 48 hodin, v zákonných věcech do 30 dnů.</p>
+
+  <hr>
+  <p style="font-size:0.8rem; color:var(--white-45);">Nina Vale © 2026 • <a href="/podminky.html">Obchodní podmínky</a> • <a href="/soukromi.html">Ochrana soukromí</a></p>
+
+</div>
+</body>
+</html>
