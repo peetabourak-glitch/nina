@@ -185,6 +185,27 @@
     <img id="imageModalImg" class="image-modal-img" alt="Nina photo enlarged" />
   </div>
 
+  <!-- EMAIL LOGIN MODAL -->
+  <div id="emailModal" class="email-modal" aria-hidden="true">
+    <div class="email-modal-inner">
+      <div class="email-modal-icon">💕</div>
+      <h2 class="email-modal-title" id="emailModalTitle">Máš předplatné?</h2>
+      <p class="email-modal-sub" id="emailModalSub">Zadej svůj email a přihlásíme tě zpět.</p>
+      <input
+        id="emailInput"
+        type="email"
+        class="email-modal-input"
+        placeholder="tvuj@email.com"
+        autocomplete="email"
+      />
+      <button id="emailSubmitBtn" class="email-modal-btn" type="button" id="emailModalLoginText">
+        Ověřit přístup
+      </button>
+      <p class="email-modal-error" id="emailModalError" style="display:none;"></p>
+      <p class="email-modal-skip" id="emailModalSkip">Ještě nemám předplatné</p>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
