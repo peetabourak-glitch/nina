@@ -58,6 +58,10 @@
           localStorage.setItem("nina_paid", "true");
           localStorage.setItem("nina_session_id", sessionId);
           localStorage.setItem("nina_ever_paid", "true");
+          // Uložit customer_id pro portal
+          if (data.customerId) {
+            localStorage.setItem("nina_customer_id", data.customerId);
+          }
 
           msg.textContent = "Payment confirmed. Taking you to Nina... 🖤";
           setTimeout(() => {
