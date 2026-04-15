@@ -1288,6 +1288,18 @@ scheduleProactiveMessage();
 })();
 
 // ==========================
+// DEVICE ID
+// ==========================
+function getDeviceId() {
+  let deviceId = localStorage.getItem("nina_device_id");
+  if (!deviceId) {
+    deviceId = "dev_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem("nina_device_id", deviceId);
+  }
+  return deviceId;
+}
+
+// ==========================
 // EMAIL LOGIN MODAL
 // ==========================
 const emailModal = document.getElementById("emailModal");
@@ -1333,10 +1345,24 @@ async function verifyEmail() {
     const res = await fetch("/.netlify/functions/verify-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, deviceId: getDeviceId() }),
     });
 
     const data = await res.json();
+
+    if (data.deviceLimitReached) {
+      if (emailModalError) {
+        emailModalError.textContent = currentLang === "cs"
+          ? "Toto předplatné je již aktivní na 2 zařízeních. Pro pomoc nás kontaktuj na peetabourk@gmail.com."
+          : "This subscription is already active on 2 devices. Contact us at peetabourk@gmail.com for help.";
+        emailModalError.style.display = "block";
+      }
+      if (emailSubmitBtn) {
+        emailSubmitBtn.disabled = false;
+        emailSubmitBtn.textContent = currentLang === "cs" ? "Ověřit přístup" : "Verify access";
+      }
+      return;
+    }
 
     if (data.paid) {
       // Úspěch — nastavíme přístup
