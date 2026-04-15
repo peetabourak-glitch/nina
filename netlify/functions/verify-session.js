@@ -1,20 +1,14 @@
 const Stripe = require("stripe");
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 exports.handler = async (event) => {
   try {
     const sessionId = event.queryStringParameters?.session_id;
-
     if (!sessionId) {
       return {
         statusCode: 400,
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          error: "Missing session_id"
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Missing session_id" })
       };
     }
 
@@ -23,7 +17,6 @@ exports.handler = async (event) => {
     });
 
     const subscriptionStatus = session.subscription?.status || null;
-
     const paid =
       session.payment_status === "paid" ||
       subscriptionStatus === "active" ||
@@ -31,23 +24,18 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         paid: Boolean(paid),
-        subscriptionStatus
+        subscriptionStatus,
+        customerId: session.customer || null
       })
     };
   } catch (err) {
     return {
       statusCode: 500,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        error: err.message
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: err.message })
     };
   }
 };
