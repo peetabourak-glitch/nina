@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unlocking Nina...</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Inter, system-ui, sans-serif;
@@ -23,7 +20,6 @@
       min-height: 100vh;
       padding: 20px;
     }
-
     .card {
       width: min(92vw, 420px);
       padding: 24px;
@@ -33,17 +29,8 @@
       text-align: center;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: 1.2rem;
-    }
-
-    p {
-      margin: 0;
-      color: #d7cce8;
-      line-height: 1.5;
-    }
+    h1 { margin: 0 0 10px; font-size: 1.2rem; }
+    p { margin: 0; color: #d7cce8; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -51,7 +38,6 @@
     <h1>Unlocking Nina... 💕</h1>
     <p id="msg">Checking your payment...</p>
   </div>
-
   <script>
     async function verify() {
       const params = new URLSearchParams(window.location.search);
@@ -68,13 +54,14 @@
         const data = await res.json();
 
         if (data.paid) {
+          // Uložit vše potřebné
           localStorage.setItem("nina_paid", "true");
           localStorage.setItem("nina_session_id", sessionId);
+          localStorage.setItem("nina_ever_paid", "true");
 
-          msg.textContent = "Payment confirmed. Taking you back to Nina...";
-
+          msg.textContent = "Payment confirmed. Taking you to Nina... 🖤";
           setTimeout(() => {
-            window.location.href = "/";
+            window.location.href = "/chat.html";
           }, 1200);
         } else {
           msg.textContent = "Payment not confirmed yet. Please wait a few seconds and refresh.";
