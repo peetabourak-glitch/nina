@@ -30,14 +30,11 @@
           </div>
 
           <div style="display:flex; gap:8px; align-items:center;">
-
-            <!-- LANGUAGE SWITCH -->
             <div class="lang-switch">
               <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
               <button onclick="setLang('en')" id="langEnBtn">EN</button>
             </div>
 
-            <!-- SETTINGS -->
             <a
               href="#"
               class="topbar-btn"
@@ -104,6 +101,25 @@
           <div class="status" id="status"></div>
 
           <div class="input-row">
+            <!-- FOTO TLAČÍTKO -->
+            <button
+              id="photoBtn"
+              type="button"
+              class="photo-btn"
+              aria-label="Poslat fotku"
+              title="Poslat fotku Nině"
+            >
+              📷
+            </button>
+
+            <!-- Skrytý file input -->
+            <input
+              id="photoInput"
+              type="file"
+              accept="image/*"
+              style="display:none;"
+            />
+
             <input
               id="input"
               type="text"
@@ -111,6 +127,19 @@
               autocomplete="off"
             />
             <button id="sendBtn" type="button" aria-label="Send message">➤</button>
+          </div>
+
+          <!-- PHOTO PAYWALL — zobrazí se neplatícím po kliknutí na 📷 -->
+          <div class="photo-paywall" id="photoPaywall" style="display:none;">
+            <div class="photo-paywall-inner">
+              <span class="photo-paywall-lock">📷🔒</span>
+              <p class="photo-paywall-text" id="photoPaywallText">
+                chceš mi poslat fotku?<br>nejdřív si mě odemkni... 😏
+              </p>
+              <a href="#" id="photoUnlockBtn" class="unlock-link" style="margin-top:10px;">
+                Odemknout za €5 ✨
+              </a>
+            </div>
           </div>
 
           <!-- PAYWALL -->
