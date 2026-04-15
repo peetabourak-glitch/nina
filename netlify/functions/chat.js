@@ -223,12 +223,35 @@ Piš jako skutečná holka co textuje. Ne jako asistent.
       ...messages,
     ];
 
-    const response = await openai.responses.create({
-      model: hasPhoto ? "gpt-4o" : "gpt-4.1",
-      input,
-    });
+    let reply = "";
 
-    let reply = response.output_text || "";
+    if (hasPhoto) {
+      // Pro fotky použijeme chat.completions které podporuje vision
+      const chatMessages = input.map((msg) => {
+        if (msg.role === "system") {
+          return { role: "system", content: msg.content };
+        }
+        // Pokud má zpráva array content (fotka), zachováme ho
+        if (Array.isArray(msg.content)) {
+          return { role: msg.role, content: msg.content };
+        }
+        return { role: msg.role, content: msg.content };
+      });
+
+      const chatResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: chatMessages,
+        max_tokens: 300,
+      });
+
+      reply = chatResponse.choices[0]?.message?.content || "";
+    } else {
+      const response = await openai.responses.create({
+        model: "gpt-4.1",
+        input,
+      });
+      reply = response.output_text || "";
+    }
 
     // přirozenější zkrácení
     if (!proactive && Math.random() < 0.35) {
