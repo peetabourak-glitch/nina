@@ -7,9 +7,9 @@ const translations = {
   en: {
     statusTopbar: "online now • waiting for you",
     introEyebrow: "private ai chat that feels personal",
-    introTitle: "she already texted you. now it’s your turn 🖤",
+    introTitle: "she already texted you. now it's your turn 🖤",
     introText:
-      "Nina isn’t just another AI chat. The more you talk, the more she opens up. And once the chemistry starts building, it gets a lot more personal...",
+      "Nina isn't just another AI chat. The more you talk, the more she opens up. And once the chemistry starts building, it gets a lot more personal...",
     inputPlaceholder: "say something that makes her want more...",
     paywallBadge: "🔒 chemistry unlock",
     paywallTitle: "this is where it was getting interesting... 💕",
@@ -22,8 +22,8 @@ const translations = {
     benefit3: "• more personal replies",
     today: "today",
 
-    typing: "Nina is typing...",
-    subscribed: "you’re subscribed 💕",
+    typing: "Nina is typing",
+    subscribed: "you're subscribed 💕",
     portalSessionMissing: "Subscription session not found.",
     portalOpenError: "Could not open subscription management.",
     checkoutOpening: "Opening checkout...",
@@ -37,10 +37,10 @@ const translations = {
     chemistryGrowing: "and rising",
     chemistryMoods: [
       "Nina is curious where this might go...",
-      "you’re starting to interest her more than she expected",
-      "she’s letting you a little closer now",
+      "you're starting to interest her more than she expected",
+      "she's letting you a little closer now",
       "the tension between you is building",
-      "she doesn’t really want to let you go now"
+      "she doesn't really want to let you go now"
     ],
 
     milestone1: "playful",
@@ -49,23 +49,23 @@ const translations = {
     milestone4: "locked",
 
     teaserCaptions: [
-      "don’t get used to this... i don’t do this for everyone 🖤",
+      "don't get used to this... i don't do this for everyone 🖤",
       "okay... just one little sneak peek. be good for me 🖤",
       "this is kinda risky... but i wanted you to have it ✨",
       "only because you asked so nicely... 💕"
     ],
 
     premiumCaptions: [
-      "this one’s just for you... 🖤",
+      "this one's just for you... 🖤",
       "you stayed... so i wanted to give you a little more 💕",
       "mm... i had a better one for you ✨",
-      "don’t make me regret sending this 😏"
+      "don't make me regret sending this 😏"
     ],
 
     softTeaseInterested:
-      "mm... you’re making me want to show you a more private side of me 🖤",
+      "mm... you're making me want to show you a more private side of me 🖤",
     softTeaseDefault:
-      "you’re trouble... i’m starting to get a little too comfortable with you 🖤",
+      "you're trouble... i'm starting to get a little too comfortable with you 🖤",
 
     hardTeaseInterested: [
       "do you really want to see more of me?",
@@ -74,12 +74,12 @@ const translations = {
 
     hardTeaseDefault: [
       "mm... i was just starting to open up to you",
-      "and now i kinda don’t want you to leave 😏"
+      "and now i kinda don't want you to leave 😏"
     ],
 
     almostUnlocked: [
       "i was about to give you a little more...",
-      "but you’ll have to unlock me first 😘"
+      "but you'll have to unlock me first 😘"
     ],
 
     proactiveFallbacks: [
@@ -87,12 +87,12 @@ const translations = {
       "you got quiet on me...",
       "i was just thinking about our chat 💕",
       "come back... i liked your attention 😘",
-      "mm... don’t disappear on me now"
+      "mm... don't disappear on me now"
     ],
 
     lockMoment: [
       "mm... i was just getting comfortable with you 🖤",
-      "unlock me and i’ll show you what i was about to send 😏"
+      "unlock me and i'll show you what i was about to send 😏"
     ]
   },
 
@@ -114,7 +114,7 @@ const translations = {
     benefit3: "• osobnější odpovědi",
     today: "dnes",
 
-    typing: "Nina píše...",
+    typing: "Nina píše",
     subscribed: "máš předplatné 💕",
     portalSessionMissing: "Relace předplatného nebyla nalezena.",
     portalOpenError: "Nepodařilo se otevřít správu předplatného.",
@@ -277,7 +277,6 @@ let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") =
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
 
-// slower chemistry start
 let chemistry = parseFloat(localStorage.getItem("nina_chemistry") || "8");
 if (Number.isNaN(chemistry)) chemistry = 8;
 chemistry = Math.max(8, Math.min(chemistry, 100));
@@ -343,26 +342,70 @@ function pickRandom(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
+// ==========================
+// TYPING DELAY — realističtější
+// ==========================
 function getTypingDelay(text = "") {
-  const base = randomBetween(700, 1400);
-  const textBonus = Math.min((text || "").length * 18, 1800);
-  return base + textBonus;
+  // Simuluje rychlost psaní ~40 znaků/sekundu jako skutečná osoba
+  const charsPerSecond = randomBetween(35, 55);
+  const textLen = (text || "").length;
+  const typeTime = (textLen / charsPerSecond) * 1000;
+
+  // Přidáme "přemýšlení" před psaním
+  const thinkTime = randomBetween(600, 1800);
+
+  // Krátké zprávy mají přirozenou pauzu navíc (jako by se rozmýšlela jestli to napsat)
+  const shortPause = textLen < 20 ? randomBetween(200, 700) : 0;
+
+  return Math.min(thinkTime + typeTime + shortPause, 5000);
 }
 
 function getPhotoDelay() {
-  return randomBetween(1800, 3200);
+  // Hledání fotky trvá déle — budí dojem skutečné akce
+  return randomBetween(2500, 4500);
 }
 
 function getMicroPause() {
-  return randomBetween(300, 900);
+  // Pauza mezi více zprávami za sebou
+  return randomBetween(400, 1000);
+}
+
+// ==========================
+// TYPING INDICATOR — animované tečky
+// ==========================
+let typingIndicatorEl = null;
+
+function showTypingIndicator() {
+  if (typingIndicatorEl) return;
+
+  typingIndicatorEl = document.createElement("div");
+  typingIndicatorEl.className = "message ai typing-indicator";
+  typingIndicatorEl.innerHTML = `
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+    <span class="typing-dot"></span>
+  `;
+
+  chat.appendChild(typingIndicatorEl);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function hideTypingIndicator() {
+  if (typingIndicatorEl) {
+    typingIndicatorEl.remove();
+    typingIndicatorEl = null;
+  }
 }
 
 function setTypingStatus() {
-  statusEl.textContent = t("typing");
+  // Animované tečky v textu statusu
+  if (statusEl) statusEl.textContent = t("typing") + "...";
+  showTypingIndicator();
 }
 
 function setIdleStatus() {
-  statusEl.textContent = isPaid ? t("subscribed") : "";
+  hideTypingIndicator();
+  if (statusEl) statusEl.textContent = isPaid ? t("subscribed") : "";
 }
 
 function updateLangButtons() {
@@ -497,12 +540,8 @@ async function openCustomerPortal() {
 
     const res = await fetch("/.netlify/functions/create-portal-session", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        session_id: sessionId
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId })
     });
 
     const data = await res.json();
@@ -528,8 +567,15 @@ async function openCustomerPortal() {
 // CHAT RENDER
 // ==========================
 function addMessage(role, text, imageUrl = null) {
+  hideTypingIndicator();
+
   const el = document.createElement("div");
   el.className = `message ${role}`;
+
+  // Zpráva se objeví s jemnou animací
+  el.style.opacity = "0";
+  el.style.transform = "translateY(6px)";
+  el.style.transition = "opacity 0.25s ease, transform 0.25s ease";
 
   if (imageUrl) {
     el.classList.add("has-image");
@@ -552,6 +598,14 @@ function addMessage(role, text, imageUrl = null) {
 
   chat.appendChild(el);
   chat.scrollTop = chat.scrollHeight;
+
+  // Animace příchodu zprávy
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      el.style.opacity = "1";
+      el.style.transform = "translateY(0)";
+    });
+  });
 }
 
 function pushAssistantMessage(text, imageUrl = null) {
@@ -624,9 +678,7 @@ async function sendMessageToAI(history, proactive = false) {
 
   const res = await fetch("/.netlify/functions/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       messages: cleanHistory,
       memory,
@@ -654,11 +706,23 @@ function splitReplyIntoParts(reply) {
 async function addAssistantReply(reply) {
   const parts = splitReplyIntoParts(reply);
 
-  for (const part of parts) {
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+
+    // Ukaž typing indicator před každou částí
     setTypingStatus();
+
+    // Čekej realistickou dobu podle délky zprávy
     await wait(getTypingDelay(part));
+
+    // Schovej indicator a zobraz zprávu
+    hideTypingIndicator();
     pushAssistantMessage(part);
-    await wait(getMicroPause());
+
+    // Krátká pauza mezi více zprávami
+    if (i < parts.length - 1) {
+      await wait(getMicroPause());
+    }
   }
 
   increaseChemistry(1);
@@ -720,6 +784,7 @@ async function sendTeaserPhoto() {
 
   setTypingStatus();
   await wait(getPhotoDelay());
+  hideTypingIndicator();
 
   pushAssistantMessage(caption, teaserImage);
   increaseChemistry(2);
@@ -735,6 +800,7 @@ async function sendPremiumPhoto() {
 
   setTypingStatus();
   await wait(getPhotoDelay());
+  hideTypingIndicator();
 
   pushAssistantMessage(caption, imageUrl);
 
@@ -781,6 +847,7 @@ async function maybeShowPrePaywallTease(userText) {
 
     setTypingStatus();
     await wait(getTypingDelay(line));
+    hideTypingIndicator();
     pushAssistantMessage(line);
     increaseChemistry(2);
   }
@@ -796,6 +863,7 @@ async function maybeShowPrePaywallTease(userText) {
     for (const line of lines) {
       setTypingStatus();
       await wait(getTypingDelay(line));
+      hideTypingIndicator();
       pushAssistantMessage(line);
       await wait(getMicroPause());
     }
@@ -812,6 +880,7 @@ async function maybeShowPrePaywallTease(userText) {
     for (const line of lines) {
       setTypingStatus();
       await wait(getTypingDelay(line));
+      hideTypingIndicator();
       pushAssistantMessage(line);
       await wait(getMicroPause());
     }
@@ -845,11 +914,13 @@ function scheduleProactiveMessage() {
       } else {
         const fallback = buildProactiveFallback();
         await wait(getTypingDelay(fallback));
+        hideTypingIndicator();
         pushAssistantMessage(fallback);
         increaseChemistry(1);
       }
     } catch (err) {
       console.error("Proactive message failed:", err);
+      hideTypingIndicator();
     } finally {
       setIdleStatus();
     }
@@ -862,6 +933,7 @@ async function handleLockMoment() {
   for (const line of lines) {
     setTypingStatus();
     await wait(getTypingDelay(line));
+    hideTypingIndicator();
     pushAssistantMessage(line);
     await wait(getMicroPause());
   }
@@ -872,7 +944,7 @@ async function handleLockMoment() {
 
   locked = true;
   updateUIState();
-  statusEl.textContent = "";
+  if (statusEl) statusEl.textContent = "";
 }
 
 async function startCheckout(event) {
@@ -886,9 +958,7 @@ async function startCheckout(event) {
 
     const res = await fetch("/.netlify/functions/create-checkout-session", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     });
 
     const data = await res.json();
@@ -947,6 +1017,7 @@ async function send() {
     await maybeSendPremiumPhoto(text);
     scheduleProactiveMessage();
   } catch (err) {
+    hideTypingIndicator();
     const fallback = t("genericError");
     pushAssistantMessage(fallback);
     console.error(err);
