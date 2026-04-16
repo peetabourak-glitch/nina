@@ -296,7 +296,11 @@ if (Number.isNaN(chemistry)) chemistry = 8;
 chemistry = Math.max(8, Math.min(chemistry, 100));
 
 const teaserImage = "/tease.png";
-const premiumImages = ["/1.png", "/2.jpg", "/3.png"];
+const premiumImages = [
+  "/1.png", "/2.jpg", "/3.png",
+  "/4.jpg", "/5.jpg", "/6.jpg",
+  "/7.jpg", "/8.jpg", "/9.jpg", "/10.jpg"
+];
 
 const FREE_MESSAGE_LIMIT = 10;
 const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
