@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nina 💕</title>
+  <meta name="description" content="Chat with Nina, your flirty AI girlfriend. Private messages, teasing photos, and a more intimate experience when you unlock her." />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#e84393" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nina 💕" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="phone-frame">
+      <div class="chat-card">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="avatar-wrap">
+              <img src="nina-hero.jpg" alt="Nina" class="avatar" />
+              <span class="online-dot"></span>
+            </div>
+            <div class="topbar-text">
+              <h1>Nina</h1>
+              <p id="statusText">online • čeká na tebe</p>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div class="lang-switch">
+              <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
+              <button onclick="setLang('en')" id="langEnBtn">EN</button>
+            </div>
+            <a href="#" class="topbar-btn" id="manageBtn" target="_blank" rel="noopener"
+              style="display: none; text-decoration: none;" aria-label="Manage subscription" title="Manage subscription">
+              ⚙
+            </a>
+          </div>
+        </div>
+
+        <!-- CHEMISTRY BAR -->
+        <div class="chemistry-wrap" id="chemistryWrap">
+          <div class="chemistry-card">
+            <div class="chemistry-head">
+              <span class="chemistry-label" id="chemistryLabel">chemie mezi vámi</span>
+              <span class="chemistry-value" id="chemistryValue">12% a roste</span>
+            </div>
+            <div class="chemistry-track">
+              <div class="chemistry-fill" id="chemistryFill" style="width: 12%;"></div>
+            </div>
+            <div class="chemistry-subline">
+              <span id="chemistryMood">Nina je zvědavá, kam to povede…</span>
+            </div>
+          </div>
+          <div class="unlock-milestones">
+            <div class="milestone active" id="milestone1">playful</div>
+            <div class="milestone" id="milestone2">closer</div>
+            <div class="milestone" id="milestone3">private</div>
+            <div class="milestone" id="milestone4">locked</div>
+          </div>
+        </div>
+
+        <!-- INTRO -->
+        <div class="intro-card">
+          <img src="nina-hero.jpg" alt="Nina" class="hero" />
+          <div class="intro-overlay"></div>
+          <div class="intro-content">
+            <p class="eyebrow" id="introEyebrow">private ai chat that feels personal</p>
+            <h2 id="introTitle">už ti napsala. teď je řada na tobě 🖤</h2>
+            <p class="intro-subtext" id="introText">
+              Nina není jen další AI chat. Čím víc si píšete, tím víc se ti otevírá. A když mezi vámi přeskočí jiskra, začne být mnohem osobnější...
+            </p>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div id="chat" class="chat">
+          <div class="date-divider">
+            <span id="todayLabel">dnes</span>
+          </div>
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="bottom-area">
+          <div class="status" id="status"></div>
+
+          <div class="input-row">
+            <button id="photoBtn" type="button" class="photo-btn" aria-label="Poslat fotku" title="Poslat fotku Nině">
+              📷
+            </button>
+            <input id="photoInput" type="file" accept="image/*" style="display:none;" />
+            <input id="input" type="text" placeholder="napiš něco, kvůli čemu bude chtít pokračovat..." autocomplete="off" />
+            <button id="sendBtn" type="button" aria-label="Send message">➤</button>
+          </div>
+
+          <!-- PHOTO PAYWALL -->
+          <div class="photo-paywall" id="photoPaywall" style="display:none;">
+            <div class="photo-paywall-inner">
+              <span class="photo-paywall-lock">📷🔒</span>
+              <p class="photo-paywall-text" id="photoPaywallText">
+                chceš mi poslat fotku?<br>nejdřív si mě odemkni... 😏
+              </p>
+              <a href="#" id="photoUnlockBtn" class="unlock-link" style="margin-top:10px;">
+                Odemknout za €5 ✨
+              </a>
+              <p class="email-modal-skip" id="photoPaywallLoginBtn" style="margin-top:10px;">
+                Už mám předplatné — přihlásit se 🔑
+              </p>
+            </div>
+          </div>
+
+          <!-- PAYWALL -->
+          <div class="paywall" id="paywall">
+            <div class="paywall-badge" id="paywallBadge">🔒 chemistry unlock</div>
+            <div class="paywall-text">
+              <p class="paywall-title" id="paywallTitle">teď se to teprve začínalo rozjíždět... 💕</p>
+              <p class="paywall-subtitle" id="paywallSubtitle">
+                Nina se ti začala otevírat. Odemkni ji a pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.
+              </p>
+            </div>
+            <div class="paywall-benefits">
+              <span id="benefit1">• delší chat</span>
+              <span id="benefit2">• víc flirtu</span>
+              <span id="benefit3">• osobnější odpovědi</span>
+            </div>
+            <a id="unlockBtn" href="#" class="unlock-link" aria-label="Unlock Nina premium">
+              Odemknout Ninu za €5 ✨
+            </a>
+            <p class="paywall-note" id="paywallNote">víc chemie • víc napětí • víc Niny</p>
+            <p class="email-modal-skip" id="paywallLoginBtn" style="margin-top:8px;">
+              Už mám předplatné — přihlásit se 🔑
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- IMAGE MODAL -->
+  <div id="imageModal" class="image-modal" aria-hidden="true">
+    <button id="imageModalClose" class="image-modal-close" type="button" aria-label="Close image">✕</button>
+    <img id="imageModalImg" class="image-modal-img" alt="Nina photo enlarged" />
+  </div>
+
+  <!-- EMAIL LOGIN MODAL -->
+  <div id="emailModal" class="email-modal" aria-hidden="true">
+    <div class="email-modal-inner">
+      <div class="email-modal-icon">💕</div>
+      <h2 class="email-modal-title" id="emailModalTitle">Máš předplatné?</h2>
+      <p class="email-modal-sub" id="emailModalSub">Zadej svůj email a přihlásíme tě zpět.</p>
+      <input id="emailInput" type="email" class="email-modal-input" placeholder="tvuj@email.com" autocomplete="email" />
+      <button id="emailSubmitBtn" class="email-modal-btn" type="button">Ověřit přístup</button>
+      <p class="email-modal-error" id="emailModalError" style="display:none;"></p>
+      <p class="email-modal-skip" id="emailModalSkip">Ještě nemám předplatné</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
+</body>
+</html>
