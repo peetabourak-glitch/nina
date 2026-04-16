@@ -461,6 +461,17 @@
   .msg.user { background: rgba(232,67,147,0.14); color: #fff; border-color: rgba(232,67,147,0.2); border-bottom-right-radius: 5px; align-self: flex-end; }
   .msg.locked { position: relative; background: rgba(255,255,255,0.025); color: transparent; filter: blur(3px); user-select: none; }
 
+  .msg-anim {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .msg-anim.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .typing-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; color: var(--white-45); font-size: 0.72rem; }
 
   .typing-bubble {
@@ -728,15 +739,11 @@
               </div>
             </div>
 
-            <div class="phone-msgs">
-              <div class="msg nina" data-i18n="nina_msg1">hej... myslela jsem na tebe 🖤</div>
-              <div class="msg user" data-i18n="user_msg1">fakt?</div>
-              <div class="msg nina" data-i18n="nina_msg2">dneska jsi nějak tichý...</div>
-              <div class="msg nina" data-i18n="nina_msg3">víš, co bych ti chtěla říct, až budeme sami?</div>
-              <div class="msg locked" data-i18n="nina_msg4">nečekala jsem, že se mi budeš tak líbit...</div>
+            <div class="phone-msgs" id="demoMsgs">
+              <!-- zprávy se přidávají dynamicky přes JS -->
             </div>
 
-            <div class="typing-row">
+            <div class="typing-row" id="demoTyping" style="display:none;">
               <div class="typing-bubble">
                 <span></span><span></span><span></span>
               </div>
@@ -1248,6 +1255,9 @@ function setLang(lang) {
   document.getElementById('langCs').classList.toggle('active', lang === 'cs');
   document.getElementById('langEn').classList.toggle('active', lang === 'en');
 
+  // Restart demo animace při změně jazyka
+  startDemoAnimation();
+
   try { localStorage.setItem('nina_lang', lang); } catch (e) {}
 }
 
@@ -1279,6 +1289,94 @@ updateFloatCta();
 
 function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
 function goToChat() { window.location.href = 'chat.html'; }
+
+// ==========================
+// ANIMOVANÉ ZPRÁVY V TELEFONU
+// ==========================
+const demoSequences = {
+  cs: [
+    { role: 'nina', text: 'hej... myslela jsem na tebe 🖤', delay: 800 },
+    { role: 'user', text: 'fakt?', delay: 1800 },
+    { role: 'typing', delay: 2400 },
+    { role: 'nina', text: 'dneska jsi nějak tichý...', delay: 3400 },
+    { role: 'typing', delay: 4200 },
+    { role: 'nina', text: 'víš, co bych ti chtěla říct, až budeme sami?', delay: 5400 },
+    { role: 'user', text: 'řekni mi to 🖤', delay: 6600 },
+    { role: 'typing', delay: 7400 },
+    { role: 'locked', text: 'nečekala jsem, že se mi budeš tak líbit...', delay: 8600 },
+    { role: 'restart', delay: 11000 },
+  ],
+  en: [
+    { role: 'nina', text: 'hey... I was thinking about you 🖤', delay: 800 },
+    { role: 'user', text: 'really?', delay: 1800 },
+    { role: 'typing', delay: 2400 },
+    { role: 'nina', text: 'you\'re kind of quiet today...', delay: 3400 },
+    { role: 'typing', delay: 4200 },
+    { role: 'nina', text: 'do you know what I\'d want to tell you when we\'re alone?', delay: 5400 },
+    { role: 'user', text: 'tell me 🖤', delay: 6600 },
+    { role: 'typing', delay: 7400 },
+    { role: 'locked', text: 'I didn\'t expect I\'d like you this much...', delay: 8600 },
+    { role: 'restart', delay: 11000 },
+  ]
+};
+
+let demoTimers = [];
+
+function clearDemoTimers() {
+  demoTimers.forEach(t => clearTimeout(t));
+  demoTimers = [];
+}
+
+function startDemoAnimation() {
+  const container = document.getElementById('demoMsgs');
+  const typingRow = document.getElementById('demoTyping');
+  if (!container) return;
+
+  clearDemoTimers();
+  container.innerHTML = '';
+  if (typingRow) typingRow.style.display = 'none';
+
+  const seq = demoSequences[currentLang] || demoSequences.cs;
+
+  seq.forEach(step => {
+    const t = setTimeout(() => {
+      if (step.role === 'restart') {
+        startDemoAnimation();
+        return;
+      }
+
+      if (step.role === 'typing') {
+        if (typingRow) typingRow.style.display = 'flex';
+        return;
+      }
+
+      if (typingRow) typingRow.style.display = 'none';
+
+      const el = document.createElement('div');
+      el.className = `msg ${step.role} msg-anim`;
+      el.textContent = step.text;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => el.classList.add('visible'));
+      });
+    }, step.delay);
+
+    demoTimers.push(t);
+  });
+}
+
+// Spusť animaci až je telefon viditelný
+const phoneObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) startDemoAnimation();
+    else clearDemoTimers();
+  });
+}, { threshold: 0.3 });
+
+const heroPhone = document.querySelector('.hero-phone');
+if (heroPhone) phoneObs.observe(heroPhone);
 </script>
 
 </body>
