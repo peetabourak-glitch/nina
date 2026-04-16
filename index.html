@@ -236,7 +236,36 @@
 
   .top-bar-cta:hover { transform: translateY(-1px) scale(1.02); }
 
-  .hero { padding: 128px 0 88px; overflow: hidden; }
+  .hero {
+    padding: 128px 0 88px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-bg-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .hero-bg-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    opacity: 0.18;
+    filter: blur(1px) saturate(0.8);
+  }
+
+  .hero-bg-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(9,9,15,0.95) 0%, rgba(9,9,15,0.7) 50%, rgba(9,9,15,0.3) 100%),
+      linear-gradient(180deg, rgba(9,9,15,0.3) 0%, rgba(9,9,15,0.8) 100%);
+  }
 
   .hero-grid {
     display: grid;
@@ -312,7 +341,7 @@
   .cta-btn-secondary { background: rgba(255,255,255,0.03); border: 1px solid var(--white-08); color: var(--white-75); }
   .cta-btn-secondary:hover { background: rgba(255,255,255,0.06); border-color: var(--white-15); }
 
-  .hero-side { display: flex; justify-content: center; position: relative; gap: 24px; align-items: center; }
+  .hero-side { display: flex; justify-content: center; position: relative; }
 
   .hero-nina-photo {
     position: relative;
@@ -625,6 +654,9 @@
 </div>
 
 <section class="hero">
+  <div class="hero-bg-photo">
+    <img src="nina-hero.jpg" alt="" aria-hidden="true" />
+  </div>
   <div class="container">
     <div class="hero-grid">
       <div class="hero-copy">
@@ -657,11 +689,6 @@
 
       <div class="hero-side fade-in">
         <div class="hero-glow"></div>
-
-        <div class="hero-nina-photo">
-          <img src="nina-hero.jpg" alt="Nina Vale" />
-        </div>
-
         <div class="hero-phone">
           <div class="phone-screen">
             <div class="phone-top">
