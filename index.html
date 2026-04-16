@@ -1219,6 +1219,9 @@ const T = {
 
 let currentLang = 'cs';
 
+// Demo animace proměnné — musí být před setLang
+let demoTimers = [];
+
 function detectLang() {
   try {
     let tz = '';
@@ -1320,8 +1323,6 @@ const demoSequences = {
   ]
 };
 
-let demoTimers = [];
-
 function clearDemoTimers() {
   demoTimers.forEach(t => clearTimeout(t));
   demoTimers = [];
@@ -1377,6 +1378,11 @@ const phoneObs = new IntersectionObserver((entries) => {
 
 const heroPhone = document.querySelector('.hero-phone');
 if (heroPhone) phoneObs.observe(heroPhone);
+
+// Fallback — spusť hned po načtení
+window.addEventListener('load', () => {
+  setTimeout(startDemoAnimation, 500);
+});
 </script>
 
 </body>
