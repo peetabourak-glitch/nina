@@ -31,7 +31,14 @@ const translations = {
     checkoutOpenError: "Could not open checkout. Please try again.",
     genericError: "mm... something went wrong. try again for me? 🖤",
 
-    firstMessage: "hey... i was waiting for you 🖤",
+    firstMessage: [
+      "hey... i was waiting for you 🖤",
+      "finally 😏",
+      "i thought you wouldn't come...",
+      "so i have you here 🖤",
+      "hey you... 😌",
+      "i was waiting to see if you'd text first"
+    ],
 
     chemistryLabel: "chemistry between you",
     chemistryGrowing: "and rising",
@@ -127,7 +134,14 @@ const translations = {
     checkoutOpenError: "Nepodařilo se otevřít platbu. Zkus to prosím znovu.",
     genericError: "hmm... něco se pokazilo. zkus to znovu pro mě? 🖤",
 
-    firstMessage: "hej... čekala jsem na tebe 🖤",
+    firstMessage: [
+      "hej... čekala jsem na tebe 🖤",
+      "konečně 😏",
+      "myslela jsem si, že nepřijdeš...",
+      "tak tě mám tady 🖤",
+      "hej ty... 😌",
+      "čekala jsem jestli napíšeš první"
+    ],
 
     chemistryLabel: "chemie mezi vámi",
     chemistryGrowing: "a roste",
@@ -306,12 +320,11 @@ const FREE_MESSAGE_LIMIT = 10;
 const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
 
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
-  messages = [
-    {
-      role: "assistant",
-      content: t("firstMessage")
-    }
-  ];
+  const firstMsgs = t("firstMessage");
+  const firstMsg = Array.isArray(firstMsgs)
+    ? firstMsgs[Math.floor(Math.random() * firstMsgs.length)]
+    : firstMsgs;
+  messages = [{ role: "assistant", content: firstMsg }];
   localStorage.setItem("nina_messages", JSON.stringify(messages));
 }
 
