@@ -1219,9 +1219,6 @@ const T = {
 
 let currentLang = 'cs';
 
-// Demo animace proměnné — musí být před setLang
-let demoTimers = [];
-
 function detectLang() {
   try {
     let tz = '';
@@ -1258,9 +1255,6 @@ function setLang(lang) {
   document.getElementById('langCs').classList.toggle('active', lang === 'cs');
   document.getElementById('langEn').classList.toggle('active', lang === 'en');
 
-  // Restart demo animace při změně jazyka
-  startDemoAnimation();
-
   try { localStorage.setItem('nina_lang', lang); } catch (e) {}
 }
 
@@ -1293,95 +1287,94 @@ updateFloatCta();
 function toggleFaq(el) { el.parentElement.classList.toggle('open'); }
 function goToChat() { window.location.href = 'chat.html'; }
 
-// ==========================
-// ANIMOVANÉ ZPRÁVY V TELEFONU
-// ==========================
-const demoSequences = {
-  cs: [
-    { role: 'nina', text: 'hej... myslela jsem na tebe 🖤', delay: 800 },
-    { role: 'user', text: 'fakt?', delay: 1800 },
-    { role: 'typing', delay: 2400 },
-    { role: 'nina', text: 'dneska jsi nějak tichý...', delay: 3400 },
-    { role: 'typing', delay: 4200 },
-    { role: 'nina', text: 'víš, co bych ti chtěla říct, až budeme sami?', delay: 5400 },
-    { role: 'user', text: 'řekni mi to 🖤', delay: 6600 },
-    { role: 'typing', delay: 7400 },
-    { role: 'locked', text: 'nečekala jsem, že se mi budeš tak líbit...', delay: 8600 },
-    { role: 'restart', delay: 11000 },
-  ],
-  en: [
-    { role: 'nina', text: 'hey... I was thinking about you 🖤', delay: 800 },
-    { role: 'user', text: 'really?', delay: 1800 },
-    { role: 'typing', delay: 2400 },
-    { role: 'nina', text: 'you\'re kind of quiet today...', delay: 3400 },
-    { role: 'typing', delay: 4200 },
-    { role: 'nina', text: 'do you know what I\'d want to tell you when we\'re alone?', delay: 5400 },
-    { role: 'user', text: 'tell me 🖤', delay: 6600 },
-    { role: 'typing', delay: 7400 },
-    { role: 'locked', text: 'I didn\'t expect I\'d like you this much...', delay: 8600 },
-    { role: 'restart', delay: 11000 },
-  ]
-};
+// Animované zprávy — spustí se po načtení
+window.addEventListener('load', function() {
+  var timers = [];
+  var running = false;
 
-function clearDemoTimers() {
-  demoTimers.forEach(t => clearTimeout(t));
-  demoTimers = [];
-}
+  var sequences = {
+    cs: [
+      { role: 'nina', text: 'hej... myslela jsem na tebe 🖤', delay: 800 },
+      { role: 'user', text: 'fakt?', delay: 1800 },
+      { role: 'typing', delay: 2400 },
+      { role: 'nina', text: 'dneska jsi nějak tichý...', delay: 3400 },
+      { role: 'typing', delay: 4200 },
+      { role: 'nina', text: 'víš, co bych ti chtěla říct, až budeme sami?', delay: 5400 },
+      { role: 'user', text: 'řekni mi to 🖤', delay: 6600 },
+      { role: 'typing', delay: 7400 },
+      { role: 'locked', text: 'nečekala jsem, že se mi budeš tak líbit...', delay: 8600 },
+    ],
+    en: [
+      { role: 'nina', text: 'hey... I was thinking about you 🖤', delay: 800 },
+      { role: 'user', text: 'really?', delay: 1800 },
+      { role: 'typing', delay: 2400 },
+      { role: 'nina', text: "you're kind of quiet today...", delay: 3400 },
+      { role: 'typing', delay: 4200 },
+      { role: 'nina', text: "do you know what I'd want to tell you?", delay: 5400 },
+      { role: 'user', text: 'tell me 🖤', delay: 6600 },
+      { role: 'typing', delay: 7400 },
+      { role: 'locked', text: "I didn't expect I'd like you this much...", delay: 8600 },
+    ]
+  };
 
-function startDemoAnimation() {
-  const container = document.getElementById('demoMsgs');
-  const typingRow = document.getElementById('demoTyping');
-  if (!container) return;
+  function clearTimers() {
+    timers.forEach(function(t) { clearTimeout(t); });
+    timers = [];
+  }
 
-  clearDemoTimers();
-  container.innerHTML = '';
-  if (typingRow) typingRow.style.display = 'none';
+  function runDemo() {
+    var container = document.getElementById('demoMsgs');
+    var typingRow = document.getElementById('demoTyping');
+    if (!container) return;
 
-  const seq = demoSequences[currentLang] || demoSequences.cs;
+    clearTimers();
+    container.innerHTML = '';
+    if (typingRow) typingRow.style.display = 'none';
 
-  seq.forEach(step => {
-    const t = setTimeout(() => {
-      if (step.role === 'restart') {
-        startDemoAnimation();
-        return;
-      }
+    var lang = currentLang || 'cs';
+    var seq = sequences[lang] || sequences.cs;
 
-      if (step.role === 'typing') {
-        if (typingRow) typingRow.style.display = 'flex';
-        return;
-      }
+    seq.forEach(function(step) {
+      var t = setTimeout(function() {
+        if (step.role === 'typing') {
+          if (typingRow) typingRow.style.display = 'flex';
+          return;
+        }
+        if (typingRow) typingRow.style.display = 'none';
+        var el = document.createElement('div');
+        el.className = 'msg ' + step.role;
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        el.textContent = step.text;
+        container.appendChild(el);
+        container.scrollTop = container.scrollHeight;
+        requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          });
+        });
+      }, step.delay);
+      timers.push(t);
+    });
 
-      if (typingRow) typingRow.style.display = 'none';
+    // Restart po 12 sekundách
+    var restart = setTimeout(function() {
+      runDemo();
+    }, 12000);
+    timers.push(restart);
+  }
 
-      const el = document.createElement('div');
-      el.className = `msg ${step.role} msg-anim`;
-      el.textContent = step.text;
-      container.appendChild(el);
-      container.scrollTop = container.scrollHeight;
+  // Spusť animaci
+  setTimeout(runDemo, 600);
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => el.classList.add('visible'));
-      });
-    }, step.delay);
-
-    demoTimers.push(t);
-  });
-}
-
-// Spusť animaci až je telefon viditelný
-const phoneObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) startDemoAnimation();
-    else clearDemoTimers();
-  });
-}, { threshold: 0.3 });
-
-const heroPhone = document.querySelector('.hero-phone');
-if (heroPhone) phoneObs.observe(heroPhone);
-
-// Fallback — spusť hned po načtení
-window.addEventListener('load', () => {
-  setTimeout(startDemoAnimation, 500);
+  // Restart při změně jazyka
+  var origSetLang = window.setLang;
+  window.setLang = function(lang) {
+    if (origSetLang) origSetLang(lang);
+    setTimeout(runDemo, 100);
+  };
 });
 </script>
 
