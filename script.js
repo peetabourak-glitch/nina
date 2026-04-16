@@ -139,10 +139,10 @@ const translations = {
       "teď už tě vlastně nechce pustit"
     ],
 
-    milestone1: "playful",
-    milestone2: "closer",
-    milestone3: "private",
-    milestone4: "locked",
+    milestone1: "hravá",
+    milestone2: "blíž",
+    milestone3: "intimní",
+    milestone4: "zamčeno",
 
     teaserCaptions: [
       "nezvykni si na to... tohle nedělám pro každého 🖤",
@@ -291,9 +291,9 @@ let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") =
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
 let almostUnlockedMomentShown = localStorage.getItem("nina_almostUnlockedMomentShown") === "true";
 
-let chemistry = parseFloat(localStorage.getItem("nina_chemistry") || "8");
-if (Number.isNaN(chemistry)) chemistry = 8;
-chemistry = Math.max(8, Math.min(chemistry, 100));
+let chemistry = parseFloat(localStorage.getItem("nina_chemistry") || "5");
+if (Number.isNaN(chemistry)) chemistry = 5;
+chemistry = Math.max(5, Math.min(chemistry, 100));
 
 const teaserImage = "/tease.png";
 const premiumImages = [
@@ -467,9 +467,10 @@ function increaseChemistry(amount) {
   const safeAmount = Number(amount) || 0;
 
   if (isPaid) {
-    chemistry = Math.min(100, chemistry + safeAmount);
+    chemistry = Math.min(100, chemistry + safeAmount * 0.33);
   } else {
-    chemistry = Math.min(55, chemistry + safeAmount);
+    // Free max 10 zpráv → max ~25% chemie
+    chemistry = Math.min(25, chemistry + safeAmount * 0.25);
   }
 
   saveChemistry();
@@ -478,15 +479,15 @@ function increaseChemistry(amount) {
 
 function getChemistryGainFromText(text) {
   const len = (text || "").trim().length;
-  let gain = 1;
+  let gain = 0.5;
 
-  if (len > 20) gain += 1;
-  if (len > 60) gain += 1;
+  if (len > 40) gain += 0.3;
+  if (len > 100) gain += 0.2;
 
-  if (shouldTriggerPhotoInterest(text)) gain += 1;
-  if (shouldTriggerEmotionalHook(text)) gain += 1;
+  if (shouldTriggerPhotoInterest(text)) gain += 0.3;
+  if (shouldTriggerEmotionalHook(text)) gain += 0.3;
 
-  return Math.min(gain, 3);
+  return Math.min(gain, 1.5);
 }
 
 // ==========================
@@ -762,7 +763,19 @@ function saveMemory(data) {
 // PHOTO SYSTEM
 // ==========================
 function getRandomPremiumImage() {
-  return premiumImages[Math.floor(Math.random() * premiumImages.length)];
+  // Fotky podle úrovně chemie — čím vyšší chemie, tím intimnější fotky
+  if (chemistry >= 75) {
+    // Intimate úroveň — všechny fotky
+    return premiumImages[Math.floor(Math.random() * premiumImages.length)];
+  } else if (chemistry >= 50) {
+    // Close úroveň — první 2/3 fotek
+    const available = premiumImages.slice(0, Math.ceil(premiumImages.length * 0.66));
+    return available[Math.floor(Math.random() * available.length)];
+  } else {
+    // Tension úroveň — první 1/3 fotek
+    const available = premiumImages.slice(0, Math.ceil(premiumImages.length * 0.33));
+    return available[Math.floor(Math.random() * available.length)];
+  }
 }
 
 function shouldTriggerPhotoInterest(userText) {
@@ -809,7 +822,7 @@ async function sendTeaserPhoto() {
   hideTypingIndicator();
 
   pushAssistantMessage(caption, teaserImage);
-  increaseChemistry(2);
+  increaseChemistry(1);
   setIdleStatus();
 }
 
@@ -828,7 +841,7 @@ async function sendPremiumPhoto() {
 
   premiumPhotoCooldownUntil = Date.now() + PREMIUM_PHOTO_COOLDOWN_MS;
   savePremiumCooldown();
-  increaseChemistry(3);
+  increaseChemistry(1.5);
 
   setIdleStatus();
 }
