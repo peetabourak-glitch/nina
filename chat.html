@@ -247,9 +247,9 @@
     const isMobile = isIOS || isAndroid;
     const installBtn = document.getElementById("installBtn");
 
-    // Zobraz install tlačítko na mobilech
-    if (isMobile) {
-      if (installBtn) installBtn.style.display = "inline-flex";
+    // Zobraz install tlačítko vždy na mobilech
+    if (isMobile && installBtn) {
+      installBtn.style.display = "inline-flex";
     }
 
     // Android — zachyť prompt
