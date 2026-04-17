@@ -316,10 +316,14 @@ const premiumImages = [
   "/7.jpg", "/8.jpg", "/9.jpg", "/10.jpg"
 ];
 
-const FREE_MESSAGE_LIMIT = 10;
+const FREE_MESSAGE_LIMIT = 20;
 const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
 
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
+  // Nový chat — smažeme i paměť aby Nina nezačínala se starým jménem
+  memory = {};
+  localStorage.removeItem("nina_memory");
+
   const firstMsgs = t("firstMessage");
   const firstMsg = Array.isArray(firstMsgs)
     ? firstMsgs[Math.floor(Math.random() * firstMsgs.length)]
@@ -884,7 +888,7 @@ async function maybeSendPremiumPhoto(userText) {
 async function maybeShowPrePaywallTease(userText) {
   if (isPaid) return;
 
-  if (userMessageCount === 7 && !paywallSoftTeaseShown) {
+  if (userMessageCount === 17 && !paywallSoftTeaseShown) {
     paywallSoftTeaseShown = true;
     saveFlowFlags();
 
@@ -900,7 +904,7 @@ async function maybeShowPrePaywallTease(userText) {
     increaseChemistry(2);
   }
 
-  if (userMessageCount === 8 && !paywallHardTeaseShown) {
+  if (userMessageCount === 18 && !paywallHardTeaseShown) {
     paywallHardTeaseShown = true;
     saveFlowFlags();
 
@@ -919,7 +923,7 @@ async function maybeShowPrePaywallTease(userText) {
     increaseChemistry(2);
   }
 
-  if (userMessageCount === 9 && !almostUnlockedMomentShown) {
+  if (userMessageCount === 19 && !almostUnlockedMomentShown) {
     almostUnlockedMomentShown = true;
     saveFlowFlags();
 
