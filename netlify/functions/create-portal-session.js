@@ -29,7 +29,7 @@ exports.handler = async (event) => {
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer,
-      return_url: process.env.URL + "/chat.html"
+      return_url: process.env.URL + "/"
     });
 
     return {
