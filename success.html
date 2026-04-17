@@ -58,14 +58,32 @@
           localStorage.setItem("nina_paid", "true");
           localStorage.setItem("nina_session_id", sessionId);
           localStorage.setItem("nina_ever_paid", "true");
-          // Uložit customer_id pro portal
           if (data.customerId) {
             localStorage.setItem("nina_customer_id", data.customerId);
           }
 
+          // Zaregistrovat toto zařízení
+          let deviceId = localStorage.getItem("nina_device_id");
+          if (!deviceId) {
+            deviceId = "dev_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+            localStorage.setItem("nina_device_id", deviceId);
+          }
+
+          if (data.customerId && deviceId) {
+            try {
+              await fetch("/.netlify/functions/register-device", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ customerId: data.customerId, deviceId }),
+              });
+            } catch (e) {
+              // tiché selhání — přístup je již uložen
+            }
+          }
+
           msg.textContent = "Payment confirmed. Taking you to Nina... 🖤";
           setTimeout(() => {
-            window.location.href = "/chat.html";
+            window.location.href = "/";
           }, 1200);
         } else {
           msg.textContent = "Payment not confirmed yet. Please wait a few seconds and refresh.";
