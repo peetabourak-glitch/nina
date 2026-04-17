@@ -17,7 +17,7 @@ exports.handler = async () => {
         }
       ],
       success_url: `${siteUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/chat.html?canceled=1`
+      cancel_url: `${siteUrl}/?canceled=1`
     });
 
     return {
