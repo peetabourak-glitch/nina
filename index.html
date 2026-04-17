@@ -6,6 +6,15 @@
   <title>Nina 💕</title>
   <meta name="description" content="Chat with Nina, your flirty AI girlfriend. Private messages, teasing photos, and a more intimate experience when you unlock her." />
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MTEBD4HBMZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-MTEBD4HBMZ');
+  </script>
+
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#e84393" />
@@ -13,6 +22,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Nina 💕" />
   <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="icon" href="/icon-192.png" type="image/png" />
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -145,6 +155,7 @@
       </div>
     </section>
   </main>
+
   <!-- IMAGE MODAL -->
   <div id="imageModal" class="image-modal" aria-hidden="true">
     <button id="imageModalClose" class="image-modal-close" type="button" aria-label="Close image">✕</button>
@@ -158,7 +169,6 @@
     <div style="width:100%; max-width:480px; background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));
       border:1px solid rgba(255,79,163,0.2); border-radius:28px 28px 0 0; padding:28px 24px 40px;
       box-shadow:0 -10px 60px rgba(0,0,0,0.5);">
-
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <div style="display:flex; align-items:center; gap:12px;">
           <img src="icon-192.png" style="width:44px; height:44px; border-radius:12px;" />
@@ -170,15 +180,12 @@
         <button onclick="closeInstallModal()" style="background:rgba(255,255,255,0.08); border:none; color:white;
           width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem;">✕</button>
       </div>
-
       <div style="color:white; font-weight:700; font-size:1.1rem; font-family:sans-serif; margin-bottom:6px;">
         Přidej Ninu na plochu 💕
       </div>
       <div style="color:rgba(255,255,255,0.6); font-size:0.88rem; font-family:sans-serif; margin-bottom:24px; line-height:1.5;">
         Otevři ji přímo jako appku — bez prohlížeče, bez hledání.
       </div>
-
-      <!-- Android -->
       <div id="installAndroid">
         <button onclick="installApp()" style="width:100%; padding:16px; background:linear-gradient(135deg,#e84393,#c15cff);
           color:white; border:none; border-radius:14px; font-size:1rem; font-weight:800;
@@ -186,21 +193,16 @@
           Nainstalovat appku ⬇️
         </button>
       </div>
-
-      <!-- iPhone -->
       <div id="installIOS" style="display:none;">
         <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
           border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:14px;">
-
           <div style="display:flex; align-items:center; gap:12px;">
             <div style="width:36px; height:36px; background:rgba(232,67,147,0.15); border-radius:10px;
               display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">1</div>
             <div style="color:rgba(255,255,255,0.8); font-size:0.88rem; font-family:sans-serif; line-height:1.4;">
-              Klikni na <strong style="color:white;">sdílet</strong> ikonku dole v Safari
-              <span style="font-size:1.1rem;"> □↑</span>
+              Klikni na <strong style="color:white;">sdílet</strong> ikonku dole v Safari <span style="font-size:1.1rem;"> □↑</span>
             </div>
           </div>
-
           <div style="display:flex; align-items:center; gap:12px;">
             <div style="width:36px; height:36px; background:rgba(232,67,147,0.15); border-radius:10px;
               display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">2</div>
@@ -208,7 +210,6 @@
               Vyber <strong style="color:white;">"Přidat na plochu"</strong>
             </div>
           </div>
-
           <div style="display:flex; align-items:center; gap:12px;">
             <div style="width:36px; height:36px; background:rgba(232,67,147,0.15); border-radius:10px;
               display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">3</div>
@@ -218,7 +219,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -247,23 +247,18 @@
     const isMobile = isIOS || isAndroid;
     const installBtn = document.getElementById("installBtn");
 
-    // Zobraz install tlačítko vždy na mobilech
     if (isMobile && installBtn) {
       installBtn.style.display = "inline-flex";
     }
 
-    // Android — zachyť prompt
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
     });
 
-    // Otevření modalu
     installBtn && installBtn.addEventListener("click", () => {
       const modal = document.getElementById("installModal");
       modal.style.display = "flex";
-
-      // Zobraz správnou sekci
       if (isIOS) {
         document.getElementById("installAndroid").style.display = "none";
         document.getElementById("installIOS").style.display = "block";
@@ -273,7 +268,6 @@
       }
     });
 
-    // Zavření modalu kliknutím na pozadí
     document.getElementById("installModal").addEventListener("click", (e) => {
       if (e.target === e.currentTarget) closeInstallModal();
     });
