@@ -1,6 +1,6 @@
 const CACHE = "nina-v1";
 const ASSETS = [
-  "/chat.html",
+  "/",
   "/style.css",
   "/script.js",
   "/nina-hero.jpg",
@@ -37,6 +37,6 @@ self.addEventListener("fetch", e => {
         caches.open(CACHE).then(c => c.put(e.request, clone));
         return res;
       });
-    }).catch(() => caches.match("/chat.html"))
+    }).catch(() => caches.match("/"))
   );
 });
