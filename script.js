@@ -325,13 +325,23 @@ if (!messages || !Array.isArray(messages) || messages.length === 0) {
   // Nový chat — smažeme i paměť aby Nina nezačínala se starým jménem
   memory = {};
   localStorage.removeItem("nina_memory");
-
-  const firstMsgs = t("firstMessage");
-  const firstMsg = Array.isArray(firstMsgs)
-    ? firstMsgs[Math.floor(Math.random() * firstMsgs.length)]
-    : firstMsgs;
-  messages = [{ role: "assistant", content: firstMsg }];
+  messages = [];
   localStorage.setItem("nina_messages", JSON.stringify(messages));
+
+  // Nina napíše první po krátké pauze — přirozenější než okamžitá zpráva
+  setTimeout(async () => {
+    const firstMsgs = t("firstMessage");
+    const firstMsg = Array.isArray(firstMsgs)
+      ? firstMsgs[Math.floor(Math.random() * firstMsgs.length)]
+      : firstMsgs;
+
+    setTypingStatus();
+    await wait(randomBetween(1800, 3200));
+    hideTypingIndicator();
+    pushAssistantMessage(firstMsg);
+    setIdleStatus();
+    scheduleProactiveMessage();
+  }, 1200);
 }
 
 if (userMessageCount >= FREE_MESSAGE_LIMIT && !isPaid) {
