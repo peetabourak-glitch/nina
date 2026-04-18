@@ -48,7 +48,7 @@
               <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
               <button onclick="setLang('en')" id="langEnBtn">EN</button>
             </div>
-            <a href="/landing.html" class="topbar-btn" style="text-decoration:none; font-size:0.75rem; font-weight:800; color:rgba(255,255,255,0.6); font-style:italic;" aria-label="Info" title="O aplikaci">
+            <a href="/landing.html" class="topbar-btn" id="infoBtn" style="text-decoration:none; font-size:0.75rem; font-weight:800; color:rgba(255,255,255,0.6); font-style:italic;" aria-label="Info" title="O aplikaci">
               i
             </a>
             <a href="#" class="topbar-btn" id="manageBtn" target="_blank" rel="noopener"
@@ -124,7 +124,7 @@
                 chceš mi poslat fotku?<br>nejdřív si mě odemkni... 😏
               </p>
               <a href="#" id="photoUnlockBtn" class="unlock-link" style="margin-top:10px;">
-                Odemknout za 129 Kč ✨
+                Odemknout za 49 Kč ✨
               </a>
               <p class="email-modal-skip" id="photoPaywallLoginBtn" style="margin-top:10px;">
                 Už mám předplatné — přihlásit se 🔑
@@ -147,7 +147,7 @@
               <span id="benefit3">• fotky od Niny</span>
             </div>
             <a id="unlockBtn" href="#" class="unlock-link" aria-label="Unlock Nina premium">
-              Odemknout Ninu za 129 Kč ✨
+              Odemknout Ninu za 49 Kč ✨
             </a>
             <p class="paywall-note" id="paywallNote">víc chemie • víc napětí • víc Niny</p>
             <p id="paywallLoginBtn" style="margin-top:10px; text-align:center; color:rgba(255,255,255,0.5); font-size:0.85rem; cursor:pointer;">
@@ -252,6 +252,12 @@
 
     if (isMobile && installBtn) {
       installBtn.style.display = "inline-flex";
+    }
+
+    // Info tlačítko — na mobilu skrýt
+    const infoBtn = document.getElementById("infoBtn");
+    if (infoBtn && isMobile) {
+      infoBtn.style.display = "none";
     }
 
     window.addEventListener("beforeinstallprompt", (e) => {
