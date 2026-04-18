@@ -47,13 +47,14 @@ const translations = {
       "you're starting to interest her more than she expected",
       "she's letting you a little closer now",
       "the tension between you is building",
-      "she doesn't really want to let you go now"
+      "she doesn't really want to let you go now",
+      "you're hers... and she's yours 🖤"
     ],
 
     milestone1: "playful",
     milestone2: "closer",
     milestone3: "private",
-    milestone4: "locked",
+    milestone4: "yours 🖤",
 
     teaserCaptions: [
       "don't get used to this... i don't do this for everyone 🖤",
@@ -150,13 +151,14 @@ const translations = {
       "začínáš ji zajímat víc, než čekala",
       "už si tě pouští trochu blíž",
       "napětí mezi vámi sílí",
-      "teď už tě vlastně nechce pustit"
+      "teď už tě vlastně nechce pustit",
+      "jsi její... a ona je tvoje 🖤"
     ],
 
     milestone1: "hravá",
     milestone2: "blíž",
     milestone3: "intimní",
-    milestone4: "zamčeno",
+    milestone4: "tvoje 🖤",
 
     teaserCaptions: [
       "nezvykni si na to... tohle nedělám pro každého 🖤",
@@ -452,6 +454,7 @@ function updateLangButtons() {
 // CHEMISTRY SYSTEM
 // ==========================
 function getChemistryMoodIndex() {
+  if (chemistry >= 90) return 5;
   if (chemistry >= 85) return 4;
   if (chemistry >= 70) return 3;
   if (chemistry >= 50) return 2;
