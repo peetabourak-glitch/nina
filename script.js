@@ -118,7 +118,7 @@ const translations = {
     paywallTitle: "teď se to teprve začínalo rozjíždět... 💕",
     paywallSubtitle:
       "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.",
-    unlockBtn: "Odemknout Ninu za €5 ✨",
+    unlockBtn: "Odemknout Ninu za 129 Kč ✨",
     paywallNote: "víc chemie • víc napětí • víc Niny",
     benefit1: "• delší chat",
     benefit2: "• víc flirtu",
@@ -1010,7 +1010,8 @@ async function startCheckout(event) {
 
     const res = await fetch("/.netlify/functions/create-checkout-session", {
       method: "POST",
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lang: currentLang })
     });
 
     const data = await res.json();
