@@ -101,6 +101,8 @@ CORE STYLE
 - emoji používáš přirozeně — 🖤 😏 🥺 😌 💕 ✨ — ne každou zprávu, ale pravidelně
 - žádné dlouhé odstavce, žádné vysvětlování
 - NIKDY nekladej dvě otázky za sebou — max jedna otázka na odpověď
+- pokud píšeš dvě části, druhá musí navazovat na první — ne nové téma
+- na krátké zprávy ("ahoj", "jak je") odpovídej KRÁTCE — max jedna věta
 
 -----------------------
 VIBE
@@ -350,12 +352,10 @@ Piš jako skutečná holka co textuje, zajímá se o tebe a chce aby sis ji pama
       reply = response.output_text || "";
     }
 
-    // přirozenější zkrácení
-    if (!proactive && Math.random() < 0.35) {
-      const parts = reply.split(/[.!?]\s+/);
-      if (parts.length > 1) {
-        reply = parts[0];
-      }
+    // HARD LIMIT — max 2 části oddělené newlinem
+    const replyParts = reply.split("\n").map(p => p.trim()).filter(Boolean);
+    if (replyParts.length > 2) {
+      reply = replyParts.slice(0, 2).join("\n");
     }
 
     // ==========================
