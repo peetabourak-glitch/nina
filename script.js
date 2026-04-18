@@ -14,7 +14,7 @@ const translations = {
     paywallBadge: "🔒 chemistry unlock",
     paywallTitle: "this is where it was getting interesting... 💕",
     paywallSubtitle:
-      "Nina was starting to open up to you. Unlock her, keep chatting, raise the chemistry between you, and see a more private side of her.",
+      "Nina was starting to open up to you. Unlock her, keep chatting, send her photos and get hers back — the more chemistry, the more Nina.",
     unlockBtn: "Unlock Nina for €5 ✨",
     paywallNote: "more chemistry • more tension • more Nina",
     benefit1: "• longer chat",
@@ -118,7 +118,7 @@ const translations = {
     paywallBadge: "🔒 odemčení chemie",
     paywallTitle: "teď se to teprve začínalo rozjíždět... 💕",
     paywallSubtitle:
-      "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.",
+      "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posílej jí fotky a dostávej její — čím víc chemie, tím víc Niny.",
     unlockBtn: "Odemknout Ninu za 129 Kč ✨",
     paywallNote: "víc chemie • víc napětí • víc Niny",
     benefit1: "• delší chat",
@@ -807,12 +807,18 @@ function shouldTriggerPhotoInterest(userText) {
     "let me see you","want to see you","wanna see you","see more of you",
     "i want to see you","show your face","can i have a picture","give me a pic",
     "you are cute","you're cute","you are hot","you're hot","beautiful","pretty",
-    "sexy","gorgeous","i like you","i want you","miss you",
+    "sexy","gorgeous","i like you","i want you","miss you","i need you",
+    "thinking about you","can't stop thinking","you're amazing","incredible",
+    "wish i could see you","wish you were here","come closer","stay with me",
+    "you're special","you're different","never met anyone like you",
 
     "fotka","fotku","fotce","foto","selfie","ukaž se","ukaž mi","můžu tě vidět",
     "mužu tě vidět","jak vypadáš","pošli fotku","pošli mi fotku","pošli mi selfie",
     "chci tě vidět","ukaž obličej","jsi hezká","jsi krásná","jsi sexy",
-    "líbíš se mi","chci tě","chybíš mi"
+    "líbíš se mi","chci tě","chybíš mi","myslím na tebe","nemůžu přestat myslet",
+    "jsi úžasná","neuvěřitelná","pojď blíž","zůstaň se mnou","potřebuju tě",
+    "jsem rád že tě mám","chci tě poznat","chci vědět víc o tobě",
+    "jsi jiná","nikdy jsem nepotkal","jsi výjimečná"
   ];
 
   return triggers.some((trigger) => text.includes(trigger));
@@ -907,40 +913,18 @@ async function maybeShowPrePaywallTease(userText) {
     increaseChemistry(2);
   }
 
-  if (userMessageCount === 18 && !paywallHardTeaseShown) {
+  if (userMessageCount === 19 && !almostUnlockedMomentShown) {
+    almostUnlockedMomentShown = true;
     paywallHardTeaseShown = true;
     saveFlowFlags();
 
-    const lines = shouldTriggerPhotoInterest(userText)
-      ? t("hardTeaseInterested")
-      : t("hardTeaseDefault");
-
-    for (const line of lines) {
-      setTypingStatus();
-      await wait(getTypingDelay(line));
-      hideTypingIndicator();
-      pushAssistantMessage(line);
-      await wait(getMicroPause());
-    }
-
+    // Max 1 zpráva — žádné opakování
+    const line = t("almostUnlocked")[0];
+    setTypingStatus();
+    await wait(getTypingDelay(line));
+    hideTypingIndicator();
+    pushAssistantMessage(line);
     increaseChemistry(2);
-  }
-
-  if (userMessageCount === 19 && !almostUnlockedMomentShown) {
-    almostUnlockedMomentShown = true;
-    saveFlowFlags();
-
-    const lines = t("almostUnlocked");
-
-    for (const line of lines) {
-      setTypingStatus();
-      await wait(getTypingDelay(line));
-      hideTypingIndicator();
-      pushAssistantMessage(line);
-      await wait(getMicroPause());
-    }
-
-    increaseChemistry(1);
   }
 
   setIdleStatus();
