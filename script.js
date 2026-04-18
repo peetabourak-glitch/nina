@@ -119,7 +119,7 @@ const translations = {
     paywallTitle: "teď se to teprve začínalo rozjíždět... 💕",
     paywallSubtitle:
       "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posílej jí fotky a dostávej její — čím víc chemie, tím víc Niny.",
-    unlockBtn: "Odemknout Ninu za 129 Kč ✨",
+    unlockBtn: "Odemknout Ninu za 49 Kč ✨",
     paywallNote: "víc chemie • víc napětí • víc Niny",
     benefit1: "• delší chat",
     benefit2: "• víc flirtu",
