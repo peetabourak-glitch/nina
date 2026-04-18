@@ -43,11 +43,14 @@
               <p id="statusText">online • čeká na tebe</p>
             </div>
           </div>
-          <div style="display:flex; gap:8px; align-items:center;">
+          <div style="display:flex; gap:6px; align-items:center;">
             <div class="lang-switch">
               <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
               <button onclick="setLang('en')" id="langEnBtn">EN</button>
             </div>
+            <a href="/landing.html" class="topbar-btn" style="text-decoration:none; font-size:0.75rem;" aria-label="Info" title="O aplikaci">
+              ℹ️
+            </a>
             <a href="#" class="topbar-btn" id="manageBtn" target="_blank" rel="noopener"
               style="display: none; text-decoration: none;" aria-label="Manage subscription" title="Manage subscription">
               ⚙
@@ -135,19 +138,19 @@
             <div class="paywall-text">
               <p class="paywall-title" id="paywallTitle">teď se to teprve začínalo rozjíždět... 💕</p>
               <p class="paywall-subtitle" id="paywallSubtitle">
-                Nina se ti začala otevírat. Odemkni ji a pokračuj v chatu, posuň chemii mezi vámi výš a uvidíš i její soukromější stránku.
+                Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posílej jí fotky a dostávej její — čím víc chemie, tím víc Niny.
               </p>
             </div>
             <div class="paywall-benefits">
               <span id="benefit1">• delší chat</span>
               <span id="benefit2">• víc flirtu</span>
-              <span id="benefit3">• osobnější odpovědi</span>
+              <span id="benefit3">• fotky od Niny</span>
             </div>
             <a id="unlockBtn" href="#" class="unlock-link" aria-label="Unlock Nina premium">
               Odemknout Ninu za 129 Kč ✨
             </a>
             <p class="paywall-note" id="paywallNote">víc chemie • víc napětí • víc Niny</p>
-            <p class="email-modal-skip" id="paywallLoginBtn" style="margin-top:8px;">
+            <p id="paywallLoginBtn" style="margin-top:10px; text-align:center; color:rgba(255,255,255,0.5); font-size:0.85rem; cursor:pointer;">
               Už mám předplatné — přihlásit se 🔑
             </p>
           </div>
