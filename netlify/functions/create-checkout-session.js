@@ -2,7 +2,7 @@ const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const PRICE_EUR = process.env.STRIPE_PRICE_ID;         // €5/měsíc
-const PRICE_CZK = "price_1TNVHEHYY0GUjgxdtBuIT7oL";   // 129 Kč/měsíc
+const PRICE_CZK = "price_1TNX8iHYY0GUjgxdfE1Ap7rP";   // 49 Kč/měsíc
 
 exports.handler = async (event) => {
   try {
