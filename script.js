@@ -751,9 +751,10 @@ async function sendMessageToAI(history, proactive = false) {
 }
 
 function splitReplyIntoParts(reply) {
-  return reply
-    ? reply.split("\n").map((p) => p.trim()).filter(Boolean)
-    : [];
+  if (!reply) return [];
+  const parts = reply.split("\n").map((p) => p.trim()).filter(Boolean);
+  // MAX 1 zpráva — vše sloučit do jedné bubliny
+  return [parts.join(" ")];
 }
 
 async function addAssistantReply(reply) {
