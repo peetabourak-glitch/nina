@@ -318,7 +318,7 @@ const premiumImages = [
   "/7.jpg", "/8.jpg", "/9.jpg", "/10.jpg"
 ];
 
-const FREE_MESSAGE_LIMIT = 20;
+const FREE_MESSAGE_LIMIT = 15;
 const PREMIUM_PHOTO_COOLDOWN_MS = 1000 * 60 * 3;
 
 if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -907,7 +907,7 @@ async function maybeSendPremiumPhoto(userText) {
 async function maybeShowPrePaywallTease(userText) {
   if (isPaid) return;
 
-  if (userMessageCount === 17 && !paywallSoftTeaseShown) {
+  if (userMessageCount === 13 && !paywallSoftTeaseShown) {
     paywallSoftTeaseShown = true;
     saveFlowFlags();
 
@@ -923,7 +923,7 @@ async function maybeShowPrePaywallTease(userText) {
     increaseChemistry(2);
   }
 
-  if (userMessageCount === 19 && !almostUnlockedMomentShown) {
+  if (userMessageCount === 14 && !almostUnlockedMomentShown) {
     almostUnlockedMomentShown = true;
     paywallHardTeaseShown = true;
     saveFlowFlags();
