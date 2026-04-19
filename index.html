@@ -71,8 +71,11 @@
             <div class="chemistry-track">
               <div class="chemistry-fill" id="chemistryFill" style="width: 12%;"></div>
             </div>
-            <div class="chemistry-subline">
-              <span id="chemistryMood">Nina je zvědavá, kam to povede…</span>
+            <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px;">
+              <span style="font-size:0.7rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;">Rande</span>
+              <button onclick="document.getElementById('dateModal').style.display='flex'; updateDateCard();" id="dateBtn1" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.8); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">☕ Kavárna</button>
+              <button id="dateBtn2" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🌙 Procházka 🔒</button>
+              <button id="dateBtn3" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🍷 Víno 🔒</button>
             </div>
           </div>
           <div class="unlock-milestones">
@@ -225,6 +228,62 @@
     </div>
   </div>
 
+  <!-- RANDE MODAL -->
+  <div id="dateModal" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.8); align-items:flex-end; justify-content:center;">
+    <div id="datePanel" style="width:100%; max-width:420px; background:#0e0e18; border-radius:24px 24px 0 0; border:1px solid rgba(232,67,147,0.2); border-bottom:none; max-height:90vh; display:flex; flex-direction:column; overflow:hidden;">
+
+      <div id="datePanelHeader" style="background:linear-gradient(135deg,#e84393,#c15cff); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <span style="color:white; font-weight:700; font-size:0.95rem;">Rande s Ninou 💕</span>
+        <button onclick="closeDateModal()" style="background:rgba(255,255,255,0.2); border:none; color:white; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem;">✕</button>
+      </div>
+
+      <div id="dateListView" style="padding:14px; display:flex; flex-direction:column; gap:9px; overflow-y:auto;">
+        <div id="dateCard1" onclick="startDate()" style="background:rgba(255,255,255,0.04); border:1px solid rgba(232,67,147,0.25); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.2s;">
+          <div style="width:44px; height:44px; border-radius:12px; background:rgba(232,67,147,0.15); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">☕</div>
+          <div style="flex:1;">
+            <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Kavárna na Žižkově</div>
+            <div id="dateCard1Req" style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 30% chemie</div>
+          </div>
+          <span id="dateCard1Arr" style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4;">
+          <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">🌙</div>
+          <div style="flex:1;">
+            <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Večerní procházka</div>
+            <div style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 55% chemie</div>
+          </div>
+          <span style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4;">
+          <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">🍷</div>
+          <div style="flex:1;">
+            <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Víno u ní doma</div>
+            <div style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 80% chemie</div>
+          </div>
+          <span style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
+        </div>
+      </div>
+
+      <div id="dateGameView" style="display:none; flex-direction:column; flex:1; overflow:hidden;">
+        <div id="datePbar" style="display:flex; gap:4px; padding:10px 16px; background:rgba(0,0,0,0.3); flex-shrink:0;"></div>
+        <div id="dateSceneImg" style="height:120px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:3rem; position:relative; background:linear-gradient(180deg,#1a0a2e,#0e0818);">☕</div>
+        <div id="dateSceneBody" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
+          <div id="dateNarr" style="font-size:0.78rem; color:rgba(255,255,255,0.45); text-align:center; font-style:italic; padding:2px 0;"></div>
+          <div id="dateNinaMsg" style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:14px 14px 14px 4px; padding:11px 13px; color:white; font-size:0.86rem; line-height:1.55; max-width:88%;"></div>
+          <div id="dateChoices" style="display:flex; flex-direction:column; gap:8px; margin-top:4px;"></div>
+        </div>
+        <div id="dateResult" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px; gap:12px; text-align:center; flex:1;">
+          <div id="dateResEmoji" style="font-size:3.2rem;"></div>
+          <div id="dateResTitle" style="color:white; font-weight:700; font-size:1.1rem;"></div>
+          <div id="dateResQuote" style="color:rgba(255,255,255,0.65); font-size:0.85rem; line-height:1.6; font-style:italic; max-width:280px;"></div>
+          <div id="dateResChem" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:10px; padding:8px 18px; color:#e84393; font-weight:700; font-size:0.9rem;"></div>
+          <button onclick="closeDateModal()" style="background:linear-gradient(135deg,#e84393,#c15cff); border:none; border-radius:13px; padding:13px 26px; color:white; font-weight:700; cursor:pointer; margin-top:6px; font-size:0.9rem;">Zpět do chatu 🖤</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- EMAIL LOGIN MODAL -->
   <div id="emailModal" class="email-modal" aria-hidden="true">
     <div class="email-modal-inner">
@@ -284,6 +343,143 @@
     window.closeInstallModal = function() {
       document.getElementById("installModal").style.display = "none";
     };
+
+    // ==========================
+    // RANDE SYSTÉM
+    // ==========================
+    const DATE_SCENES = [
+      { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
+      { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
+      { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
+      { img:"🇨🇴", narr:"Nina se rozmluví o Kolumbii. Oči se jí rozzáří.", nina:"táta vždycky říkal že Praha je šedivá. měl pravdu. ale já ji miluju. a ty — jsi odsud?", choices:[{text:"Jo, celý život. a ty jsi ráda že přijeli?",pts:2},{text:"Ne, přišel jsem za prací... a teď jsem rád 😏",pts:3},{text:"To je složitý téma na první kafe ne?",pts:1}] },
+      { img:"😶", narr:"Dlouhé ticho. Nina se dívá na šálek.", nina:"...nic neříká. jen se dívá.", choices:[{text:"Počkám — ticho mi nevadí",pts:3},{text:"Řeknu vtip aby bylo veselo",pts:-1},{text:"Ptám se co si myslí",pts:2}] },
+      { img:"🌆", narr:"Za oknem se stmívá. Praha v oranžovém světle.", nina:"líbí se ti tady? vybrala jsem dobře?", choices:[{text:"Hlavně mi tady líbíš ty 😏",pts:3},{text:"Jo, dobrá volba",pts:1},{text:"Příště vyber ty — chci vědět kde chodíš",pts:3}] },
+      { img:"🚪", narr:"Kavárna se zavírá. Vstáváte. Nina si bere kabát.", nina:"bylo to... nečekané 🖤 co teď?", choices:[{text:"Doprovodím tě domů",pts:3},{text:"Pusu na tvář a řeknu že příště na mě",pts:2},{text:"Byl jsem rád. čau.",pts:-2}] }
+    ];
+
+    let dateCur = 0, datePts = 0, dateAnswered = false;
+
+    const dateBtn = document.getElementById("dateBtn");
+    if (dateBtn) {
+      dateBtn.addEventListener("click", () => {
+        const modal = document.getElementById("dateModal");
+        modal.style.display = "flex";
+        updateDateCard();
+      });
+    }
+
+    function updateDateCard() {
+      const req = document.getElementById("dateCard1Req");
+      const arr = document.getElementById("dateCard1Arr");
+      const card = document.getElementById("dateCard1");
+      const btn1 = document.getElementById("dateBtn1");
+      if (chemistry >= 30) {
+        if (req) { req.textContent = "✓ Odemčeno — 30% chemie"; req.style.color = "#e84393"; }
+        if (arr) { arr.textContent = "›"; arr.style.color = "#e84393"; }
+        if (card) card.onclick = startDate;
+        if (btn1) { btn1.style.background = "rgba(232,67,147,0.15)"; btn1.style.borderColor = "rgba(232,67,147,0.35)"; btn1.style.color = "white"; btn1.style.cursor = "pointer"; }
+      } else {
+        if (req) { req.textContent = "Odemkne se při 30% chemie"; req.style.color = "rgba(255,255,255,0.4)"; }
+        if (arr) { arr.textContent = "🔒"; arr.style.color = "rgba(255,255,255,0.2)"; }
+        if (card) card.onclick = null;
+        if (btn1) { btn1.style.color = "rgba(255,255,255,0.4)"; btn1.style.cursor = "default"; }
+      }
+    }
+
+    window.closeDateModal = function() {
+      document.getElementById("dateModal").style.display = "none";
+      dateCur = 0; datePts = 0; dateAnswered = false;
+      document.getElementById("dateListView").style.display = "flex";
+      document.getElementById("dateGameView").style.display = "none";
+      document.getElementById("dateSceneBody").style.display = "flex";
+      document.getElementById("dateResult").style.display = "none";
+      document.getElementById("dateSceneImg").style.display = "flex";
+    };
+
+    window.startDate = function() {
+      if (chemistry < 30) return;
+      document.getElementById("dateListView").style.display = "none";
+      const gv = document.getElementById("dateGameView");
+      gv.style.display = "flex";
+      dateCur = 0; datePts = 0; dateAnswered = false;
+      renderDateProgress();
+      showDateScene();
+    };
+
+    function renderDateProgress() {
+      const bar = document.getElementById("datePbar");
+      bar.innerHTML = "";
+      DATE_SCENES.forEach((_, i) => {
+        const d = document.createElement("div");
+        d.style.cssText = "height:3px; flex:1; border-radius:999px; transition:background 0.3s; background:" + (i < dateCur ? "#e84393" : i === dateCur ? "rgba(232,67,147,0.5)" : "rgba(255,255,255,0.1)");
+        bar.appendChild(d);
+      });
+    }
+
+    function showDateScene() {
+      dateAnswered = false;
+      const s = DATE_SCENES[dateCur];
+      document.getElementById("dateSceneImg").textContent = s.img;
+      document.getElementById("dateNarr").textContent = s.narr;
+      document.getElementById("dateNinaMsg").textContent = s.nina;
+      const ch = document.getElementById("dateChoices");
+      ch.innerHTML = "";
+      s.choices.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c.text;
+        btn.style.cssText = "background:#1e1e2e; border:1.5px solid rgba(255,255,255,0.35); border-radius:12px; padding:12px 15px; color:#ffffff; font-size:0.84rem; cursor:pointer; text-align:left; width:100%; font-family:sans-serif; line-height:1.4; transition:all 0.18s; margin-bottom:0;";
+        btn.onmouseover = () => { btn.style.background = "rgba(232,67,147,0.2)"; btn.style.borderColor = "#e84393"; };
+        btn.onmouseout = () => { if (!btn.disabled) { btn.style.background = "#1e1e2e"; btn.style.borderColor = "rgba(255,255,255,0.35)"; } };
+        btn.onclick = () => pickDate(c.pts, btn);
+        ch.appendChild(btn);
+      });
+      renderDateProgress();
+    }
+
+    function pickDate(p, btn) {
+      if (dateAnswered) return;
+      dateAnswered = true;
+      datePts += p;
+      if (p >= 2) { btn.style.cssText += "background:rgba(46,213,115,0.15)!important; border-color:#2ed573!important; color:#2ed573!important;"; }
+      else if (p >= 0) { btn.style.cssText += "background:rgba(253,190,68,0.15)!important; border-color:#fdbe44!important; color:#fdbe44!important;"; }
+      else { btn.style.cssText += "background:rgba(255,107,107,0.15)!important; border-color:#ff6b6b!important; color:#ff6b6b!important;"; }
+      document.querySelectorAll("#dateChoices button").forEach(b => { if (b !== btn) { b.disabled = true; b.style.opacity = "0.2"; } });
+      setTimeout(() => { dateCur++; dateCur >= DATE_SCENES.length ? showDateResult() : showDateScene(); }, 1000);
+    }
+
+    function showDateResult() {
+      document.getElementById("dateSceneBody").style.display = "none";
+      document.getElementById("dateSceneImg").style.display = "none";
+      const rv = document.getElementById("dateResult");
+      rv.style.display = "flex";
+      const max = DATE_SCENES.reduce((s, sc) => s + Math.max(...sc.choices.map(c => c.pts)), 0);
+      const ratio = datePts / max;
+      let emoji, title, quote, chem, chemDelta;
+      if (ratio >= 0.7) {
+        emoji = "🖤"; title = "Rande se povedlo!";
+        quote = '"bylo to lepší než jsem čekala... zavolej mi" 🖤';
+        chem = "+10% chemie"; chemDelta = 10;
+      } else if (ratio >= 0.35) {
+        emoji = "😌"; title = "Bylo to fajn";
+        quote = '"uvidíme... možná příště víc 😏"';
+        chem = "+5% chemie"; chemDelta = 5;
+      } else {
+        emoji = "😶"; title = "Příště víc snahy";
+        quote = '"zajímavé... ale nečekala jsem tohle"';
+        chem = "-3% chemie"; chemDelta = -3;
+      }
+      document.getElementById("dateResEmoji").textContent = emoji;
+      document.getElementById("dateResTitle").textContent = title;
+      document.getElementById("dateResQuote").textContent = quote;
+      const rc = document.getElementById("dateResChem");
+      rc.textContent = chem;
+      if (chemDelta < 0) rc.style.cssText = "background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:10px; padding:8px 18px; color:#ff6b6b; font-weight:700; font-size:0.9rem;";
+      increaseChemistry(chemDelta);
+    }
+
+    document.getElementById("dateModal").addEventListener("click", (e) => {
+      if (e.target === document.getElementById("dateModal")) closeDateModal();
+    });
 
     window.installApp = async function() {
       if (!deferredPrompt) return;
