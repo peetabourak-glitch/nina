@@ -302,6 +302,7 @@ let teaserPhotoSent = localStorage.getItem("nina_teaserPhotoSent") === "true";
 let premiumPhotoCooldownUntil = parseInt(localStorage.getItem("nina_premiumPhotoCooldownUntil") || "0", 10);
 
 let locked = false;
+let isNinaResponding = false; // ochrana proti dvojím odpovědím
 
 let paywallSoftTeaseShown = localStorage.getItem("nina_paywallSoftTeaseShown") === "true";
 let paywallHardTeaseShown = localStorage.getItem("nina_paywallHardTeaseShown") === "true";
@@ -951,6 +952,7 @@ function scheduleProactiveMessage() {
     if (locked) return;
     if (messages.length < 3) return;
     if (Math.random() < 0.55) return;
+    if (isNinaResponding) return; // Nina už odpovídá
 
     try {
       setTypingStatus();
@@ -1197,16 +1199,19 @@ async function send() {
     }
 
     setTypingStatus();
+    isNinaResponding = true;
 
     const data = await sendMessageToAI(messages);
 
     saveMemory(data);
     await addAssistantReply(data.reply);
+    isNinaResponding = false;
 
     await maybeSendPremiumPhoto(text);
     scheduleProactiveMessage();
   } catch (err) {
     hideTypingIndicator();
+    isNinaResponding = false;
     const fallback = t("genericError");
     pushAssistantMessage(fallback);
     console.error(err);
