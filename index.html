@@ -72,9 +72,8 @@
               <div class="chemistry-fill" id="chemistryFill" style="width: 12%;"></div>
             </div>
             <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto;">
-              <span style="font-size:0.7rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;">Rande</span>
               <button id="dateOpenBtn" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 12px; color:rgba(255,255,255,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">💕 Pozvat Ninu</button>
-              <button id="giftOpenBtn" style="background:rgba(255,193,68,0.1); border:1px solid rgba(255,193,68,0.2); border-radius:20px; padding:4px 12px; color:rgba(255,193,68,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap; position:relative;">🎁 Dárky <span id="tokenBadge" style="background:#e84393; color:white; border-radius:50%; width:14px; height:14px; font-size:0.55rem; display:inline-flex; align-items:center; justify-content:center; font-weight:700; margin-left:2px;" id="tokenBadge">0</span></button>
+              <button id="giftOpenBtn" style="background:rgba(255,193,68,0.1); border:1px solid rgba(255,193,68,0.2); border-radius:20px; padding:4px 12px; color:rgba(255,193,68,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap; position:relative;">🎁 Dárky <span style="background:#e84393; color:white; border-radius:50%; width:14px; height:14px; font-size:0.55rem; display:inline-flex; align-items:center; justify-content:center; font-weight:700; margin-left:2px;" id="tokenBadge">0</span></button>
             </div>
             <div id="moodBar" style="display:flex; align-items:center; gap:6px; margin-top:6px;">
               <span id="moodIcon" style="font-size:0.9rem;">😊</span>
@@ -756,6 +755,11 @@
     });
 
     // Gift button event listener
+    document.addEventListener("DOMContentLoaded", function() {
+      const _giftBtn = document.getElementById("giftOpenBtn");
+      if (_giftBtn) _giftBtn.addEventListener("click", function() { window.openGiftModal(); });
+    });
+    // Fallback pro případ že DOMContentLoaded už proběhl
     const _giftOpenBtn = document.getElementById("giftOpenBtn");
     if (_giftOpenBtn) _giftOpenBtn.addEventListener("click", function() { window.openGiftModal(); });
 
