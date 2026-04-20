@@ -382,10 +382,10 @@
       installBtn.style.display = "inline-flex";
     }
 
-    // Info tlačítko — na mobilu skrýt
+    // Info tlačítko — zobrazit vždy
     const infoBtn = document.getElementById("infoBtn");
-    if (infoBtn && isMobile) {
-      infoBtn.style.display = "none";
+    if (infoBtn) {
+      infoBtn.style.display = "inline-flex";
     }
 
     window.addEventListener("beforeinstallprompt", (e) => {
