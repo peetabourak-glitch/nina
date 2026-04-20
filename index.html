@@ -71,11 +71,9 @@
             <div class="chemistry-track">
               <div class="chemistry-fill" id="chemistryFill" style="width: 12%;"></div>
             </div>
-            <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px;">
+            <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center;">
               <span style="font-size:0.7rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;">Rande</span>
-              <button id="dateBtn1" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.8); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">☕ Kavárna</button>
-              <button id="dateBtn2" onclick="startDate('prochazka')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🌙 Procházka 🔒</button>
-              <button id="dateBtn3" onclick="startDate('vino')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🍷 Víno 🔒</button>
+              <button id="dateOpenBtn" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 12px; color:rgba(255,255,255,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">💕 Pozvat Ninu</button>
             </div>
           </div>
           <div class="unlock-milestones">
@@ -410,7 +408,7 @@
 
     window.updateDateCard = updateDateCard;
 
-    const _dateBtn1 = document.getElementById("dateBtn1");
+    const _dateBtn1 = document.getElementById("dateOpenBtn");
     if (_dateBtn1) _dateBtn1.addEventListener("click", function() { window.openDateModal(); });
 
     window.closeDateModal = function() {
@@ -431,18 +429,10 @@
       const chemLabels = { kavarna:"25%", prochazka:"50%", vino:"75%" };
       Object.keys(limits).forEach(key => {
         const i = ids[key];
-        const btn = document.getElementById("dateBtn"+i);
         const card = document.getElementById("dateCard"+i);
         const req = document.getElementById("dateCard"+i+"Req");
         const arr = document.getElementById("dateCard"+i+"Arr");
         const unlocked = chemistry >= limits[key];
-        if (btn) {
-          btn.textContent = labels[key] + (unlocked ? "" : " 🔒");
-          btn.style.background = unlocked ? "rgba(232,67,147,0.15)" : "rgba(255,255,255,0.04)";
-          btn.style.borderColor = unlocked ? "rgba(232,67,147,0.35)" : "rgba(255,255,255,0.08)";
-          btn.style.color = unlocked ? "white" : "rgba(255,255,255,0.3)";
-          btn.style.cursor = unlocked ? "pointer" : "default";
-        }
         if (card) {
           card.style.opacity = unlocked ? "1" : "0.4";
           card.style.cursor = unlocked ? "pointer" : "default";
@@ -528,56 +518,6 @@
     document.getElementById("dateModal").addEventListener("click", e=>{
       if(e.target===document.getElementById("dateModal")) closeDateModal();
     });
-          { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
-          { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
-          { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
-          { img:"🇨🇴", narr:"Nina se rozmluví o Kolumbii. Oči se jí rozzáří.", nina:"táta vždycky říkal že Praha je šedivá. měl pravdu. ale já ji miluju. a ty — jsi odsud?", choices:[{text:"Jo, celý život. a ty jsi ráda že přijeli?",pts:2},{text:"Ne, přišel jsem za prací... a teď jsem rád 😏",pts:3},{text:"To je složitý téma na první kafe ne?",pts:1}] },
-          { img:"😶", narr:"Dlouhé ticho. Nina se dívá na šálek.", nina:"...nic neříká. jen se dívá.", choices:[{text:"Počkám — ticho mi nevadí",pts:3},{text:"Řeknu vtip aby bylo veselo",pts:-1},{text:"Ptám se co si myslí",pts:2}] },
-          { img:"🌆", narr:"Za oknem se stmívá. Praha v oranžovém světle.", nina:"líbí se ti tady? vybrala jsem dobře?", choices:[{text:"Hlavně mi tady líbíš ty 😏",pts:3},{text:"Jo, dobrá volba",pts:1},{text:"Příště vyber ty — chci vědět kde chodíš",pts:3}] },
-          { img:"🚪", narr:"Kavárna se zavírá. Vstáváte. Nina si bere kabát.", nina:"bylo to... nečekané 🖤 co teď?", choices:[{text:"Doprovodím tě domů",pts:3},{text:"Pusu na tvář a řeknu že příště na mě",pts:2},{text:"Byl jsem rád. čau.",pts:-2}] }
-        ],
-        results: {
-          good: { emoji:"🖤", title:"Rande se povedlo!", quote:'"bylo to lepší než jsem čekala... zavolej mi" 🖤', chem:10, memory:"Byli jsme spolu na kávě v kavárně — bylo to skvělé, líbil se mi." },
-          ok:   { emoji:"😌", title:"Bylo to fajn", quote:'"uvidíme... možná příště víc 😏"', chem:5, memory:"Byli jsme spolu na kávě — bylo to příjemné." },
-          bad:  { emoji:"😶", title:"Příště víc snahy", quote:'"zajímavé... ale nečekala jsem tohle"', chem:-3, memory:"Šli jsme na kafe — nedopadlo to nejlépe." }
-        }
-      },
-      prochazka: {
-        name: "prochazka",
-        scenes: [
-          { img:"🌉", narr:"Potkáváte se u Náplavky. Slunce právě zapadlo.", nina:"přišel jsi... 🖤 kam půjdeme?", choices:[{text:"Podél řeky — chci vidět světla",pts:3},{text:"Ty vyber, znáš tu víc",pts:3},{text:"Nevím, někam kde bude klid",pts:1}] },
-          { img:"🚶‍♀️", narr:"Jdete podél Vltavy. Nina si dá ruce do kapes.", nina:"Praha je v noci jiná... mám ji takhle nejradši", choices:[{text:"Jsi jiná než Praha nebo stejná? 😏",pts:3},{text:"Souhlasím, mám ji rád takhle taky",pts:2},{text:"Mně je lepší přes den",pts:-1}] },
-          { img:"🌬️", narr:"Zastavíte se u mostu. Vítr trochu zesílil.", nina:"je ti zima? 🥺", choices:[{text:"Trochu... ale nelituji že jsem přišel",pts:3},{text:"Ne, jsem zvyklý",pts:1},{text:"Jo, mohli jsme zůstat někde uvnitř",pts:-2}] },
-          { img:"📸", narr:"Nina se zastaví a fotí noční město.", nina:"moment... tenhle záběr musím mít", choices:[{text:"Počkám a dívám se jak pracuje 🖤",pts:3},{text:"Jsi na té fotce i ty? 😏",pts:2},{text:"Hurry up, je tu zima 😅",pts:-2}] },
-          { img:"🪑", narr:"Sedíte na schodech u řeky. Ticho. Ramena se dotýkají.", nina:"...co teď myslíš? 🖤", choices:[{text:"Že jsem rád že jsem tady s tebou",pts:3},{text:"Přemýšlím o té fotce co jsi udělala",pts:2},{text:"Nic konkrétního, prostě relaxuju",pts:1}] },
-          { img:"👀", narr:"Nina se na tebe podívá. Poprvé přímo. Dlouze.", nina:"...víš co? jsi jiný než jsem čekala", choices:[{text:"Dobrý nebo špatný jiný? 😏",pts:3},{text:"Co jsi čekala?",pts:2},{text:"Díky... myslím",pts:1}] },
-          { img:"💋", narr:"Ticho. Jste blízko u sebe. Nina se nepohne.", nina:"...nic neříká. jen se dívá na tebe.", choices:[{text:"Přiblížím se a políbím ji 🖤",pts:3},{text:"Pohladím ji po tváři",pts:2},{text:"Řeknu dobrou noc a odejdu",pts:-2}] }
-        ],
-        results: {
-          good: { emoji:"🖤", title:"Ten polibek... nezapomeneš", quote:'"to jsem nečekala... a nelituji toho" 🖤', chem:10, memory:"Políbili jsme se na procházce u Vltavy. Nezapomenu na to. Bylo to silné." },
-          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"příjemná procházka... příště víc 😏"', chem:5, memory:"Byli jsme na procházce u Náplavky — bylo to příjemné." },
-          bad:  { emoji:"😶", title:"Příště víc odvahy", quote:'"škoda... cítila jsem že něco mohlo být"', chem:-3, memory:"Šli jsme na procházku — nedopadlo to jak jsem čekala." }
-        }
-      },
-      vino: {
-        name: "vino",
-        scenes: [
-          { img:"🚪", narr:"Jsi před jejím bytem na Žižkově. Zvoníš.", nina:"moment... 🖤 pojď dál, jen si odlož", choices:[{text:"Pěkný byt... je to ty nebo Haze? 😏",pts:3},{text:"Díky za pozvání",pts:1},{text:"Kde mám sednout?",pts:0}] },
-          { img:"🐱", narr:"Nina přináší víno. Haze přichází tě očichat.", nina:"Haze tě prověřuje... zatím ji ignoruj, jinak bude žárlit 😏", choices:[{text:"Sedím klidně — respektuji pravidla 🖤",pts:3},{text:"Jemně ji pohladím",pts:1},{text:"Nemám moc rád kočky...",pts:-3}] },
-          { img:"🎵", narr:"Nina zapíná hudbu. The Weeknd hraje potichu.", nina:"znáš tohle? 🖤", choices:[{text:"Jo — jeden z nejlepších alb vůbec",pts:3},{text:"Přehraj mi co máš nejraději",pts:3},{text:"Moc ne, ale líbí se mi to",pts:1}] },
-          { img:"🍷", narr:"Druhá sklenička. Nina se posadí blíž.", nina:"proč sis mě vlastně vybral? 🥺", choices:[{text:"Protože jsi zajímavá — a to se nestává často",pts:3},{text:"Nevybral jsem já... to ty sis vybrala mě 😏",pts:3},{text:"Líbíš se mi",pts:1}] },
-          { img:"🇨🇴", narr:"Nina ukáže fotky z Kolumbie. Oči se jí rozzáří.", nina:"tady jsem vyrostla... chybí mi to někdy", choices:[{text:"Vypadá to krásně. proč jsi nezůstala?",pts:3},{text:"Koukám jak se tváříš když o tom mluvíš 🖤",pts:3},{text:"A jsou tam dobrá jídla?",pts:-1}] },
-          { img:"🌙", narr:"Pozdě v noci. Hudba hraje. Nina se dívá na tebe.", nina:"...co teď? 🖤", choices:[{text:"Zůstanu dokud mě nevyhodíš 😏",pts:3},{text:"Přiblížím se k ní",pts:3},{text:"Asi bych měl jít... je pozdě",pts:-2}] },
-          { img:"🌅", narr:"Ráno. Světlo proniká záclonami. Nina spí vedle tebe.", nina:"...otevře oči. podívá se na tebe. usmívá se.", choices:[{text:"Dobré ráno 🖤 šla bys na kafe?",pts:3},{text:"Pohladím ji a přitáhnu k sobě",pts:3},{text:"Rychle se oblékám a jdu",pts:-3}] }
-        ],
-        results: {
-          good: { emoji:"🖤", title:"Ta noc... navždy", quote:'"na tohle nezapomenu. nikdy." 🖤', chem:10, memory:"Zůstal u mě přes noc. Bylo to nádherné — na tu noc nikdy nezapomenu. Je pro mě někdo výjimečný." },
-          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"bylo to fajn... příště víc odvahy 😏"', chem:5, memory:"Byli jsme spolu u mě doma — bylo to příjemné." },
-          bad:  { emoji:"😶", title:"Škoda", quote:'"čekala jsem víc... možná příště"', chem:-3, memory:"Byl u mě doma — nedopadlo to jak jsem doufala." }
-        }
-      }
-    };
-
     window.installApp = async function() {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
