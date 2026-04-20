@@ -73,7 +73,7 @@
             </div>
             <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px;">
               <span style="font-size:0.7rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;">Rande</span>
-              <button onclick="document.getElementById('dateModal').style.display='flex'; updateDateCard();" id="dateBtn1" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.8); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">☕ Kavárna</button>
+              <button onclick="openDateModal();" id="dateBtn1" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.8); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">☕ Kavárna</button>
               <button id="dateBtn2" onclick="startDate('prochazka')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🌙 Procházka 🔒</button>
               <button id="dateBtn3" onclick="startDate('vino')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🍷 Víno 🔒</button>
             </div>
@@ -468,7 +468,8 @@
     }
 
     window.closeDateModal = function() {
-      document.getElementById("dateModal").style.display = "none";
+      const modal = document.getElementById("dateModal");
+      modal.style.setProperty("display", "none", "important");
       dateCur = 0; datePts = 0; dateAnswered = false;
       document.getElementById("dateListView").style.display = "flex";
       document.getElementById("dateGameView").style.display = "none";
@@ -476,6 +477,12 @@
       document.getElementById("dateResult").style.display = "none";
       document.getElementById("dateSceneImg").style.display = "flex";
     };
+
+    function openDateModal() {
+      const modal = document.getElementById("dateModal");
+      modal.style.setProperty("display", "flex", "important");
+      updateDateCard();
+    }
 
     window.startDate = function(dateKey) {
       const dateKey2 = dateKey || "kavarna";
@@ -558,7 +565,7 @@
       // Uložit paměť po rande — Nina si bude pamatovat v chatu
       try {
         memory = memory || {};
-        memory.notes = result.memory;
+        memory.dateMemory = result.memory;
         localStorage.setItem("nina_memory", JSON.stringify(memory));
       } catch(e) {}
     }
