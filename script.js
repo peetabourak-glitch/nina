@@ -1406,6 +1406,15 @@ async function verifyEmail() {
       if (data.customerId) {
         localStorage.setItem("nina_customer_id", data.customerId);
       }
+      // Přidat 50 tokenů pokud ještě nedostal tento měsíc
+      const lastTokenGrant = localStorage.getItem("nina_token_grant");
+      const thisMonth = new Date().toISOString().slice(0, 7);
+      if (lastTokenGrant !== thisMonth) {
+        const current = parseInt(localStorage.getItem("nina_tokens") || "0");
+        localStorage.setItem("nina_tokens", String(current + 50));
+        localStorage.setItem("nina_token_grant", thisMonth);
+        if (window.updateTokenDisplay) window.updateTokenDisplay();
+      }
       hideEmailModal();
       updateUIState();
     } else {
