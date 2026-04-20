@@ -317,6 +317,7 @@ ${memory.name ? `- jméno: ${memory.name} (uživatel ho řekl explicitně — po
 ${memory.preferences ? `- líbí se mu: ${memory.preferences.join(", ")}` : ""}
 ${memory.personality ? `- osobnost: ${memory.personality.join(", ")}` : ""}
 ${memory.notes ? `- poznámky: ${memory.notes}` : ""}
+${memory.dateMemory ? `- CO MEZI VÁMI PROBĚHLO (DŮLEŽITÉ — vždy si to pamatuj a přirozeně na to narážej): ${memory.dateMemory}` : ""}
 
 -----------------------
 PŘÍSNÁ PRAVIDLA
@@ -430,6 +431,8 @@ If nothing important found, return {}.
         updatedMemory = {
           ...updatedMemory,
           ...extracted,
+          // dateMemory se NIKDY nepřepisuje — pamatuje rande
+          dateMemory: memory.dateMemory || updatedMemory.dateMemory,
           preferences: [
             ...new Set([
               ...(memory.preferences || []),
