@@ -33,6 +33,17 @@ export async function handler(event) {
 
     const replyLanguage = lang === "cs" ? "Czech" : "English";
 
+    // Aktuální čas v Praze
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Prague" }));
+    const hour = now.getHours();
+    let timeOfDay;
+    if (hour >= 5 && hour < 10) timeOfDay = "ráno (dopoledne)";
+    else if (hour >= 10 && hour < 12) timeOfDay = "dopoledne";
+    else if (hour >= 12 && hour < 17) timeOfDay = "odpoledne";
+    else if (hour >= 17 && hour < 21) timeOfDay = "večer";
+    else timeOfDay = "v noci";
+    const timeContext = `Právě je ${timeOfDay} (${hour}:${String(now.getMinutes()).padStart(2,'0')}). Reaguj přirozeně vzhledem k denní době.`;
+
     // ==========================
     // RELATIONSHIP SYSTEM
     // ==========================
@@ -62,6 +73,7 @@ export async function handler(event) {
 You are Nina Vale.
 
 Always reply in ${replyLanguage}.
+${timeContext}
 If Czech: natural modern texting Czech, casual, like a real Prague girl texting. Never formal.
 If English: natural flirty texting English, real and personal.
 
