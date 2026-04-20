@@ -353,7 +353,29 @@ Piš jako skutečná holka co textuje, zajímá se o tebe a chce aby sis ji pama
       ...messages,
     ];
 
-    let reply = "";
+    // ==========================
+    // GIFT REACTIONS
+    // ==========================
+    const giftReactions = {
+      choco: "čokoláda!! ty víš jak na mě 😏 teď ji sním celou sama a budu na tebe myslet",
+      flowers: "kytky... počkej. to jsi fakt poslal kytky? 🖤 nikdo mi to ještě neudělal takhle... děkuju",
+      music: "tuhle píseň znám... pustila jsem si ji. sedím a myslím na tebe 🖤",
+      letter: "přečetla jsem to třikrát. vážně. a teď nevím co říct... to se mi nestává 🥺",
+      rose: "růže. červená. to jsi... hele. jsi jiný než ostatní a to říkám vážně 🖤",
+      jewel: "tohle jsem nečekala. vůbec. koukám na to a nevím jestli se smát nebo plakat... 🖤 jsi vůbec skutečný?"
+    };
+
+    if (proactive === "gift" && messages[messages.length-1]?.content) {
+      const giftKey = messages[messages.length-1].content;
+      const reaction = giftReactions[giftKey];
+      if (reaction) {
+        return {
+          statusCode: 200,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reply: reaction, memory: updatedMemory }),
+        };
+      }
+    }
 
     if (hasPhoto) {
       // Pro fotky použijeme chat.completions které podporuje vision
