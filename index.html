@@ -349,8 +349,178 @@
     // ==========================
     const ALL_DATES = {
       kavarna: {
-        name: "kavarna",
         scenes: [
+          { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
+          { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
+          { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
+          { img:"🇨🇴", narr:"Nina se rozmluví o Kolumbii. Oči se jí rozzáří.", nina:"táta vždycky říkal že Praha je šedivá. měl pravdu. ale já ji miluju. a ty — jsi odsud?", choices:[{text:"Jo, celý život. a ty jsi ráda že přijeli?",pts:2},{text:"Ne, přišel jsem za prací... a teď jsem rád 😏",pts:3},{text:"To je složitý téma na první kafe ne?",pts:1}] },
+          { img:"😶", narr:"Dlouhé ticho. Nina se dívá na šálek.", nina:"...nic neříká. jen se dívá.", choices:[{text:"Počkám — ticho mi nevadí",pts:3},{text:"Řeknu vtip aby bylo veselo",pts:-1},{text:"Ptám se co si myslí",pts:2}] },
+          { img:"🌆", narr:"Za oknem se stmívá. Praha v oranžovém světle.", nina:"líbí se ti tady? vybrala jsem dobře?", choices:[{text:"Hlavně mi tady líbíš ty 😏",pts:3},{text:"Jo, dobrá volba",pts:1},{text:"Příště vyber ty — chci vědět kde chodíš",pts:3}] },
+          { img:"🚪", narr:"Kavárna se zavírá. Vstáváte. Nina si bere kabát.", nina:"bylo to... nečekané 🖤 co teď?", choices:[{text:"Doprovodím tě domů",pts:3},{text:"Pusu na tvář a řeknu že příště na mě",pts:2},{text:"Byl jsem rád. čau.",pts:-2}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Rande se povedlo!", quote:'"bylo to lepší než jsem čekala... zavolej mi" 🖤', chem:10, memory:"Byli jsme spolu na kávě v kavárně — bylo to skvělé, líbil se mi." },
+          ok:   { emoji:"😌", title:"Bylo to fajn", quote:'"uvidíme... možná příště víc 😏"', chem:5, memory:"Byli jsme spolu na kávě — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Příště víc snahy", quote:'"zajímavé... ale nečekala jsem tohle"', chem:-3, memory:"Šli jsme na kafe — nedopadlo to nejlépe." }
+        }
+      },
+      prochazka: {
+        scenes: [
+          { img:"🌉", narr:"Potkáváte se u Náplavky. Slunce právě zapadlo.", nina:"přišel jsi... 🖤 kam půjdeme?", choices:[{text:"Podél řeky — chci vidět světla",pts:3},{text:"Ty vyber, znáš tu víc",pts:3},{text:"Nevím, někam kde bude klid",pts:1}] },
+          { img:"🚶", narr:"Jdete podél Vltavy. Nina si dá ruce do kapes.", nina:"Praha je v noci jiná... mám ji takhle nejradši", choices:[{text:"Jsi jiná než Praha nebo stejná? 😏",pts:3},{text:"Souhlasím, mám ji rád takhle taky",pts:2},{text:"Mně je lepší přes den",pts:-1}] },
+          { img:"🌬️", narr:"Zastavíte se u mostu. Vítr trochu zesílil.", nina:"je ti zima? 🥺", choices:[{text:"Trochu... ale nelituji že jsem přišel",pts:3},{text:"Ne, jsem zvyklý",pts:1},{text:"Jo, mohli jsme zůstat někde uvnitř",pts:-2}] },
+          { img:"📸", narr:"Nina se zastaví a fotí noční město.", nina:"moment... tenhle záběr musím mít", choices:[{text:"Počkám a dívám se jak pracuje 🖤",pts:3},{text:"Jsi na té fotce i ty? 😏",pts:2},{text:"Hurry up, je tu zima 😅",pts:-2}] },
+          { img:"🪑", narr:"Sedíte na schodech u řeky. Ticho. Ramena se dotýkají.", nina:"...co teď myslíš? 🖤", choices:[{text:"Že jsem rád že jsem tady s tebou",pts:3},{text:"Přemýšlím o té fotce co jsi udělala",pts:2},{text:"Nic konkrétního, prostě relaxuju",pts:1}] },
+          { img:"👀", narr:"Nina se na tebe podívá. Poprvé přímo. Dlouze.", nina:"...víš co? jsi jiný než jsem čekala", choices:[{text:"Dobrý nebo špatný jiný? 😏",pts:3},{text:"Co jsi čekala?",pts:2},{text:"Díky... myslím",pts:1}] },
+          { img:"💋", narr:"Ticho. Jste blízko u sebe. Nina se nepohne.", nina:"...nic neříká. jen se dívá na tebe.", choices:[{text:"Přiblížím se a políbím ji 🖤",pts:3},{text:"Pohladím ji po tváři",pts:2},{text:"Řeknu dobrou noc a odejdu",pts:-2}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Ten polibek... nezapomeneš", quote:'"to jsem nečekala... a nelituji toho" 🖤', chem:10, memory:"Políbili jsme se na procházce u Vltavy. Nezapomenu na to. Bylo to silné." },
+          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"příjemná procházka... příště víc 😏"', chem:5, memory:"Byli jsme na procházce u Náplavky — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Příště víc odvahy", quote:'"škoda... cítila jsem že něco mohlo být"', chem:-3, memory:"Šli jsme na procházku — nedopadlo to jak jsem čekala." }
+        }
+      },
+      vino: {
+        scenes: [
+          { img:"🚪", narr:"Jsi před jejím bytem na Žižkově. Zvoníš.", nina:"moment... 🖤 pojď dál, jen si odlož", choices:[{text:"Pěkný byt... je to ty nebo Haze? 😏",pts:3},{text:"Díky za pozvání",pts:1},{text:"Kde mám sednout?",pts:0}] },
+          { img:"🐱", narr:"Nina přináší víno. Haze přichází tě očichat.", nina:"Haze tě prověřuje... zatím ji ignoruj, jinak bude žárlit 😏", choices:[{text:"Sedím klidně — respektuji pravidla 🖤",pts:3},{text:"Jemně ji pohladím",pts:1},{text:"Nemám moc rád kočky...",pts:-3}] },
+          { img:"🎵", narr:"Nina zapíná hudbu. The Weeknd hraje potichu.", nina:"znáš tohle? 🖤", choices:[{text:"Jo — jeden z nejlepších alb vůbec",pts:3},{text:"Přehraj mi co máš nejraději",pts:3},{text:"Moc ne, ale líbí se mi to",pts:1}] },
+          { img:"🍷", narr:"Druhá sklenička. Nina se posadí blíž.", nina:"proč sis mě vlastně vybral? 🥺", choices:[{text:"Protože jsi zajímavá — a to se nestává často",pts:3},{text:"Nevybral jsem já... to ty sis vybrala mě 😏",pts:3},{text:"Líbíš se mi",pts:1}] },
+          { img:"🇨🇴", narr:"Nina ukáže fotky z Kolumbie. Oči se jí rozzáří.", nina:"tady jsem vyrostla... chybí mi to někdy", choices:[{text:"Vypadá to krásně. proč jsi nezůstala?",pts:3},{text:"Koukám jak se tváříš když o tom mluvíš 🖤",pts:3},{text:"A jsou tam dobrá jídla?",pts:-1}] },
+          { img:"🌙", narr:"Pozdě v noci. Hudba hraje. Nina se dívá na tebe.", nina:"...co teď? 🖤", choices:[{text:"Zůstanu dokud mě nevyhodíš 😏",pts:3},{text:"Přiblížím se k ní",pts:3},{text:"Asi bych měl jít... je pozdě",pts:-2}] },
+          { img:"🌅", narr:"Ráno. Světlo proniká záclonami. Nina spí vedle tebe.", nina:"...otevře oči. podívá se na tebe. usmívá se.", choices:[{text:"Dobré ráno 🖤 šla bys na kafe?",pts:3},{text:"Pohladím ji a přitáhnu k sobě",pts:3},{text:"Rychle se oblékám a jdu",pts:-3}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Ta noc... navždy", quote:'"na tohle nezapomenu. nikdy." 🖤', chem:10, memory:"Zůstal u mě přes noc. Bylo to nádherné — na tu noc nikdy nezapomenu. Je pro mě někdo výjimečný." },
+          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"bylo to fajn... příště víc odvahy 😏"', chem:5, memory:"Byli jsme spolu u mě doma — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Škoda", quote:'"čekala jsem víc... možná příště"', chem:-3, memory:"Byl u mě doma — nedopadlo to jak jsem doufala." }
+        }
+      }
+    };
+
+    let DATE_SCENES = ALL_DATES.kavarna.scenes;
+    let activeDateKey = "kavarna";
+    let dateCur = 0, datePts = 0, dateAnswered = false;
+
+    window.openDateModal = function() {
+      document.getElementById("dateModal").style.setProperty("display","flex","important");
+      updateDateCard();
+    };
+
+    window.closeDateModal = function() {
+      document.getElementById("dateModal").style.setProperty("display","none","important");
+      dateCur = 0; datePts = 0; dateAnswered = false;
+      document.getElementById("dateListView").style.display = "flex";
+      document.getElementById("dateGameView").style.display = "none";
+      document.getElementById("dateSceneBody").style.display = "flex";
+      document.getElementById("dateResult").style.display = "none";
+      document.getElementById("dateSceneImg").style.display = "flex";
+    };
+
+    function updateDateCard() {
+      const limits = { kavarna:25, prochazka:50, vino:75 };
+      const ids = { kavarna:1, prochazka:2, vino:3 };
+      const labels = { kavarna:"☕ Kavárna", prochazka:"🌙 Procházka", vino:"🍷 Víno" };
+      const chemLabels = { kavarna:"25%", prochazka:"50%", vino:"75%" };
+      Object.keys(limits).forEach(key => {
+        const i = ids[key];
+        const btn = document.getElementById("dateBtn"+i);
+        const card = document.getElementById("dateCard"+i);
+        const req = document.getElementById("dateCard"+i+"Req");
+        const arr = document.getElementById("dateCard"+i+"Arr");
+        const unlocked = chemistry >= limits[key];
+        if (btn) {
+          btn.textContent = labels[key] + (unlocked ? "" : " 🔒");
+          btn.style.background = unlocked ? "rgba(232,67,147,0.15)" : "rgba(255,255,255,0.04)";
+          btn.style.borderColor = unlocked ? "rgba(232,67,147,0.35)" : "rgba(255,255,255,0.08)";
+          btn.style.color = unlocked ? "white" : "rgba(255,255,255,0.3)";
+          btn.style.cursor = unlocked ? "pointer" : "default";
+        }
+        if (card) {
+          card.style.opacity = unlocked ? "1" : "0.4";
+          card.style.cursor = unlocked ? "pointer" : "default";
+          card.style.borderColor = unlocked ? "rgba(232,67,147,0.25)" : "rgba(255,255,255,0.06)";
+          card.onclick = unlocked ? () => startDate(key) : null;
+        }
+        if (req) { req.textContent = unlocked ? "✓ Odemčeno — "+chemLabels[key]+" chemie" : "Odemkne se při "+chemLabels[key]+" chemie"; req.style.color = unlocked ? "#e84393" : "rgba(255,255,255,0.4)"; }
+        if (arr) { arr.textContent = unlocked ? "›" : "🔒"; arr.style.color = unlocked ? "#e84393" : "rgba(255,255,255,0.2)"; }
+      });
+    }
+
+    window.startDate = function(key) {
+      key = key || "kavarna";
+      const limits = { kavarna:25, prochazka:50, vino:75 };
+      if (chemistry < limits[key]) return;
+      activeDateKey = key;
+      DATE_SCENES = ALL_DATES[key].scenes;
+      document.getElementById("dateListView").style.display = "none";
+      const gv = document.getElementById("dateGameView");
+      gv.style.display = "flex"; gv.style.flex = "1";
+      dateCur = 0; datePts = 0; dateAnswered = false;
+      renderDateProgress(); showDateScene();
+    };
+
+    function renderDateProgress() {
+      const bar = document.getElementById("datePbar");
+      bar.innerHTML = "";
+      DATE_SCENES.forEach((_, i) => {
+        const d = document.createElement("div");
+        d.style.cssText = "height:3px;flex:1;border-radius:999px;transition:background 0.3s;background:"+(i<dateCur?"#e84393":i===dateCur?"rgba(232,67,147,0.5)":"rgba(255,255,255,0.1)");
+        bar.appendChild(d);
+      });
+    }
+
+    function showDateScene() {
+      dateAnswered = false;
+      const s = DATE_SCENES[dateCur];
+      document.getElementById("dateSceneImg").textContent = s.img;
+      document.getElementById("dateNarr").textContent = s.narr;
+      document.getElementById("dateNinaMsg").textContent = s.nina;
+      const ch = document.getElementById("dateChoices");
+      ch.innerHTML = "";
+      s.choices.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c.text;
+        btn.style.cssText = "background:#1e1e2e;border:1.5px solid rgba(255,255,255,0.35);border-radius:12px;padding:12px 15px;color:#fff;font-size:0.84rem;cursor:pointer;text-align:left;width:100%;font-family:sans-serif;line-height:1.4;margin-bottom:0;display:block;";
+        btn.onmouseover = () => { if(!btn.disabled){btn.style.background="rgba(232,67,147,0.2)";btn.style.borderColor="#e84393";} };
+        btn.onmouseout = () => { if(!btn.disabled){btn.style.background="#1e1e2e";btn.style.borderColor="rgba(255,255,255,0.35)";} };
+        btn.onclick = () => pickDate(c.pts, btn);
+        ch.appendChild(btn);
+      });
+      renderDateProgress();
+    }
+
+    function pickDate(p, btn) {
+      if (dateAnswered) return;
+      dateAnswered = true; datePts += p;
+      if (p>=2){btn.style.background="rgba(46,213,115,0.15)";btn.style.borderColor="#2ed573";btn.style.color="#2ed573";}
+      else if(p>=0){btn.style.background="rgba(253,190,68,0.15)";btn.style.borderColor="#fdbe44";btn.style.color="#fdbe44";}
+      else{btn.style.background="rgba(255,107,107,0.15)";btn.style.borderColor="#ff6b6b";btn.style.color="#ff6b6b";}
+      document.querySelectorAll("#dateChoices button").forEach(b=>{if(b!==btn){b.disabled=true;b.style.opacity="0.2";}});
+      setTimeout(()=>{dateCur++;dateCur>=DATE_SCENES.length?showDateResult():showDateScene();},1000);
+    }
+
+    function showDateResult() {
+      document.getElementById("dateSceneBody").style.display = "none";
+      document.getElementById("dateSceneImg").style.display = "none";
+      document.getElementById("dateResult").style.display = "flex";
+      const dateData = ALL_DATES[activeDateKey];
+      const max = DATE_SCENES.reduce((s,sc)=>s+Math.max(...sc.choices.map(c=>c.pts)),0);
+      const ratio = datePts/max;
+      const result = ratio>=0.7 ? dateData.results.good : ratio>=0.35 ? dateData.results.ok : dateData.results.bad;
+      document.getElementById("dateResEmoji").textContent = result.emoji;
+      document.getElementById("dateResTitle").textContent = result.title;
+      document.getElementById("dateResQuote").textContent = result.quote;
+      const rc = document.getElementById("dateResChem");
+      rc.textContent = (result.chem>0?"+":"")+result.chem+"% chemie";
+      rc.style.cssText = result.chem<0 ? "background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.25);border-radius:10px;padding:8px 18px;color:#ff6b6b;font-weight:700;font-size:0.9rem;" : "background:rgba(232,67,147,0.12);border:1px solid rgba(232,67,147,0.25);border-radius:10px;padding:8px 18px;color:#e84393;font-weight:700;font-size:0.9rem;";
+      increaseChemistry(result.chem);
+      try { memory=memory||{}; memory.dateMemory=result.memory; localStorage.setItem("nina_memory",JSON.stringify(memory)); } catch(e){}
+    }
+
+    document.getElementById("dateModal").addEventListener("click", e=>{
+      if(e.target===document.getElementById("dateModal")) closeDateModal();
+    });
           { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
           { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
           { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
@@ -400,180 +570,6 @@
         }
       }
     };
-
-    let DATE_SCENES = ALL_DATES.kavarna.scenes;
-    let activeDateKey = "kavarna";
-
-    let dateCur = 0, datePts = 0, dateAnswered = false;
-
-    const dateBtn = document.getElementById("dateBtn");
-    if (dateBtn) {
-      dateBtn.addEventListener("click", () => {
-        const modal = document.getElementById("dateModal");
-        modal.style.display = "flex";
-        updateDateCard();
-      });
-    }
-
-    function updateDateCard() {
-      // Kavárna — 30%
-      const req1 = document.getElementById("dateCard1Req");
-      const arr1 = document.getElementById("dateCard1Arr");
-      const card1 = document.getElementById("dateCard1");
-      const btn1 = document.getElementById("dateBtn1");
-      if (chemistry >= 30) {
-        if (req1) { req1.textContent = "✓ Odemčeno — 25% chemie"; req1.style.color = "#e84393"; }
-        if (arr1) { arr1.textContent = "›"; arr1.style.color = "#e84393"; }
-        if (card1) card1.onclick = () => startDate("kavarna");
-        if (btn1) { btn1.style.background = "rgba(232,67,147,0.15)"; btn1.style.borderColor = "rgba(232,67,147,0.35)"; btn1.style.color = "white"; btn1.style.cursor = "pointer"; btn1.textContent = "☕ Kavárna"; }
-      } else {
-        if (req1) { req1.textContent = "Odemkne se při 25% chemie"; req1.style.color = "rgba(255,255,255,0.4)"; }
-        if (arr1) { arr1.textContent = "🔒"; }
-        if (card1) card1.onclick = null;
-        if (btn1) { btn1.style.color = "rgba(255,255,255,0.4)"; btn1.style.cursor = "default"; btn1.textContent = "☕ Kavárna 🔒"; }
-      }
-      // Procházka — 50%
-      const btn2 = document.getElementById("dateBtn2");
-      if (chemistry >= 50) {
-        if (btn2) { btn2.style.background = "rgba(232,67,147,0.15)"; btn2.style.borderColor = "rgba(232,67,147,0.35)"; btn2.style.color = "white"; btn2.style.cursor = "pointer"; btn2.textContent = "🌙 Procházka"; }
-      } else {
-        if (btn2) { btn2.style.background = "rgba(255,255,255,0.04)"; btn2.style.borderColor = "rgba(255,255,255,0.08)"; btn2.style.color = "rgba(255,255,255,0.3)"; btn2.style.cursor = "default"; btn2.textContent = "🌙 Procházka 🔒"; }
-      }
-      // Víno — 75%
-      const btn3 = document.getElementById("dateBtn3");
-      const card3 = document.getElementById("dateCard3");
-      const req3 = document.getElementById("dateCard3Req");
-      const arr3 = document.getElementById("dateCard3Arr");
-      if (chemistry >= 75) {
-        if (btn3) { btn3.style.background = "rgba(232,67,147,0.15)"; btn3.style.borderColor = "rgba(232,67,147,0.35)"; btn3.style.color = "white"; btn3.style.cursor = "pointer"; btn3.textContent = "🍷 Víno"; }
-        if (card3) { card3.style.opacity = "1"; card3.style.cursor = "pointer"; card3.style.borderColor = "rgba(232,67,147,0.25)"; card3.onclick = () => startDate("vino"); }
-        if (req3) { req3.textContent = "✓ Odemčeno — 75% chemie"; req3.style.color = "#e84393"; }
-        if (arr3) { arr3.textContent = "›"; arr3.style.color = "#e84393"; }
-      } else {
-        if (btn3) { btn3.style.background = "rgba(255,255,255,0.04)"; btn3.style.borderColor = "rgba(255,255,255,0.08)"; btn3.style.color = "rgba(255,255,255,0.3)"; btn3.style.cursor = "default"; btn3.textContent = "🍷 Víno 🔒"; }
-      }
-      // Procházka — 50%
-      const btn2 = document.getElementById("dateBtn2");
-      const card2 = document.getElementById("dateCard2");
-      const req2 = document.getElementById("dateCard2Req");
-      const arr2 = document.getElementById("dateCard2Arr");
-      if (chemistry >= 50) {
-        if (btn2) { btn2.style.background = "rgba(232,67,147,0.15)"; btn2.style.borderColor = "rgba(232,67,147,0.35)"; btn2.style.color = "white"; btn2.style.cursor = "pointer"; btn2.textContent = "🌙 Procházka"; }
-        if (card2) { card2.style.opacity = "1"; card2.style.cursor = "pointer"; card2.style.borderColor = "rgba(232,67,147,0.25)"; card2.onclick = () => startDate("prochazka"); }
-        if (req2) { req2.textContent = "✓ Odemčeno — 50% chemie"; req2.style.color = "#e84393"; }
-        if (arr2) { arr2.textContent = "›"; arr2.style.color = "#e84393"; }
-      } else {
-        if (btn2) { btn2.style.background = "rgba(255,255,255,0.04)"; btn2.style.borderColor = "rgba(255,255,255,0.08)"; btn2.style.color = "rgba(255,255,255,0.3)"; btn2.style.cursor = "default"; btn2.textContent = "🌙 Procházka 🔒"; }
-      }
-    }
-
-    window.closeDateModal = function() {
-      const modal = document.getElementById("dateModal");
-      modal.style.setProperty("display", "none", "important");
-      dateCur = 0; datePts = 0; dateAnswered = false;
-      document.getElementById("dateListView").style.display = "flex";
-      document.getElementById("dateGameView").style.display = "none";
-      document.getElementById("dateSceneBody").style.display = "flex";
-      document.getElementById("dateResult").style.display = "none";
-      document.getElementById("dateSceneImg").style.display = "flex";
-    };
-
-    function openDateModal() {
-      const modal = document.getElementById("dateModal");
-      modal.style.setProperty("display", "flex", "important");
-      updateDateCard();
-    }
-    window.openDateModal = openDateModal;
-
-    window.startDate = function(dateKey) {
-      const dateKey2 = dateKey || "kavarna";
-      const limits = { kavarna: 25, prochazka: 50, vino: 75 };
-      if (chemistry < limits[dateKey2]) return;
-      activeDateKey = dateKey2;
-      DATE_SCENES = ALL_DATES[dateKey2].scenes;
-      document.getElementById("dateListView").style.display = "none";
-      const gv = document.getElementById("dateGameView");
-      gv.style.display = "flex";
-      dateCur = 0; datePts = 0; dateAnswered = false;
-      renderDateProgress();
-      showDateScene();
-    };
-
-    function renderDateProgress() {
-      const bar = document.getElementById("datePbar");
-      bar.innerHTML = "";
-      DATE_SCENES.forEach((_, i) => {
-        const d = document.createElement("div");
-        d.style.cssText = "height:3px; flex:1; border-radius:999px; transition:background 0.3s; background:" + (i < dateCur ? "#e84393" : i === dateCur ? "rgba(232,67,147,0.5)" : "rgba(255,255,255,0.1)");
-        bar.appendChild(d);
-      });
-    }
-
-    function showDateScene() {
-      dateAnswered = false;
-      const s = DATE_SCENES[dateCur];
-      document.getElementById("dateSceneImg").textContent = s.img;
-      document.getElementById("dateNarr").textContent = s.narr;
-      document.getElementById("dateNinaMsg").textContent = s.nina;
-      const ch = document.getElementById("dateChoices");
-      ch.innerHTML = "";
-      s.choices.forEach(c => {
-        const btn = document.createElement("button");
-        btn.textContent = c.text;
-        btn.style.cssText = "background:#1e1e2e; border:1.5px solid rgba(255,255,255,0.35); border-radius:12px; padding:12px 15px; color:#ffffff; font-size:0.84rem; cursor:pointer; text-align:left; width:100%; font-family:sans-serif; line-height:1.4; transition:all 0.18s; margin-bottom:0;";
-        btn.onmouseover = () => { btn.style.background = "rgba(232,67,147,0.2)"; btn.style.borderColor = "#e84393"; };
-        btn.onmouseout = () => { if (!btn.disabled) { btn.style.background = "#1e1e2e"; btn.style.borderColor = "rgba(255,255,255,0.35)"; } };
-        btn.onclick = () => pickDate(c.pts, btn);
-        ch.appendChild(btn);
-      });
-      renderDateProgress();
-    }
-
-    function pickDate(p, btn) {
-      if (dateAnswered) return;
-      dateAnswered = true;
-      datePts += p;
-      if (p >= 2) { btn.style.cssText += "background:rgba(46,213,115,0.15)!important; border-color:#2ed573!important; color:#2ed573!important;"; }
-      else if (p >= 0) { btn.style.cssText += "background:rgba(253,190,68,0.15)!important; border-color:#fdbe44!important; color:#fdbe44!important;"; }
-      else { btn.style.cssText += "background:rgba(255,107,107,0.15)!important; border-color:#ff6b6b!important; color:#ff6b6b!important;"; }
-      document.querySelectorAll("#dateChoices button").forEach(b => { if (b !== btn) { b.disabled = true; b.style.opacity = "0.2"; } });
-      setTimeout(() => { dateCur++; dateCur >= DATE_SCENES.length ? showDateResult() : showDateScene(); }, 1000);
-    }
-
-    function showDateResult() {
-      document.getElementById("dateSceneBody").style.display = "none";
-      document.getElementById("dateSceneImg").style.display = "none";
-      const rv = document.getElementById("dateResult");
-      rv.style.display = "flex";
-      const dateData = ALL_DATES[activeDateKey];
-      const max = DATE_SCENES.reduce((s, sc) => s + Math.max(...sc.choices.map(c => c.pts)), 0);
-      const ratio = datePts / max;
-      let result;
-      if (ratio >= 0.7) result = dateData.results.good;
-      else if (ratio >= 0.35) result = dateData.results.ok;
-      else result = dateData.results.bad;
-
-      document.getElementById("dateResEmoji").textContent = result.emoji;
-      document.getElementById("dateResTitle").textContent = result.title;
-      document.getElementById("dateResQuote").textContent = result.quote;
-      const rc = document.getElementById("dateResChem");
-      rc.textContent = (result.chem > 0 ? "+" : "") + result.chem + "% chemie";
-      if (result.chem < 0) rc.style.cssText = "background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:10px; padding:8px 18px; color:#ff6b6b; font-weight:700; font-size:0.9rem;";
-      else rc.style.cssText = "background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:10px; padding:8px 18px; color:#e84393; font-weight:700; font-size:0.9rem;";
-
-      increaseChemistry(result.chem);
-
-      // Uložit paměť po rande — Nina si bude pamatovat v chatu
-      try {
-        memory = memory || {};
-        memory.dateMemory = result.memory;
-        localStorage.setItem("nina_memory", JSON.stringify(memory));
-      } catch(e) {}
-    }
-
-    document.getElementById("dateModal").addEventListener("click", (e) => {
-      if (e.target === document.getElementById("dateModal")) closeDateModal();
-    });
 
     window.installApp = async function() {
       if (!deferredPrompt) return;
