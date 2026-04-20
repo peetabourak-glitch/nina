@@ -403,18 +403,19 @@
     let dateCur = 0, datePts = 0, dateAnswered = false;
 
     window.openDateModal = function() {
-      document.getElementById("dateModal").style.setProperty("display","flex","important");
+      const m = document.getElementById("dateModal");
+      m.style.display = "flex";
       updateDateCard();
     };
 
-    window._openDate = window.openDateModal;
     window.updateDateCard = updateDateCard;
 
     const _dateBtn1 = document.getElementById("dateBtn1");
     if (_dateBtn1) _dateBtn1.addEventListener("click", function() { window.openDateModal(); });
 
     window.closeDateModal = function() {
-      document.getElementById("dateModal").style.setProperty("display","none","important");
+      const m = document.getElementById("dateModal");
+      m.style.display = "none";
       dateCur = 0; datePts = 0; dateAnswered = false;
       document.getElementById("dateListView").style.display = "flex";
       document.getElementById("dateGameView").style.display = "none";
