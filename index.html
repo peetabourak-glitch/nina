@@ -269,6 +269,23 @@
         <div id="currentMoodDisplay" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px; font-size:0.8rem; color:rgba(255,255,255,0.6); text-align:center; font-style:italic;">
           Nálada se mění přirozeně — ovlivní ji čas, konverzace i dárky které posíláš.
         </div>
+
+        <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.06); padding-top:12px;">
+          <div style="font-size:0.68rem; color:rgba(255,255,255,0.3); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;">Koupit tokeny 🪙</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button onclick="buyTokens(50)" style="background:rgba(255,193,68,0.08); border:1px solid rgba(255,193,68,0.2); border-radius:12px; padding:12px; cursor:pointer; text-align:center;">
+              <div style="font-size:1.3rem; margin-bottom:4px;">🪙</div>
+              <div style="color:white; font-weight:700; font-size:0.84rem;">50 tokenů</div>
+              <div style="color:#fdc144; font-size:0.75rem; margin-top:2px;">39 Kč</div>
+            </button>
+            <button onclick="buyTokens(150)" style="background:rgba(255,193,68,0.12); border:2px solid rgba(255,193,68,0.35); border-radius:12px; padding:12px; cursor:pointer; text-align:center; position:relative;">
+              <div style="position:absolute; top:-8px; left:50%; transform:translateX(-50%); background:#fdc144; color:#412402; font-size:0.58rem; font-weight:700; padding:2px 8px; border-radius:20px; white-space:nowrap;">Nejlepší hodnota</div>
+              <div style="font-size:1.3rem; margin-bottom:4px;">🪙🪙🪙</div>
+              <div style="color:white; font-weight:700; font-size:0.84rem;">150 tokenů</div>
+              <div style="color:#fdc144; font-size:0.75rem; margin-top:2px;">89 Kč</div>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div id="giftView2" style="display:none; overflow-y:auto; padding:14px;">
@@ -759,8 +776,38 @@
     const _giftOpenBtn = document.getElementById("giftOpenBtn");
     if (_giftOpenBtn) _giftOpenBtn.addEventListener("click", function() { window.openGiftModal(); });
 
-    // Init
-    loadGiftData();
+    // Koupit tokeny
+    window.buyTokens = async function(amount) {
+      try {
+        const res = await fetch("/.netlify/functions/create-token-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: String(amount) })
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+      } catch(e) {
+        console.error("Token checkout error:", e);
+      }
+    };
+
+    // Zpracování tokenů po návratu ze Stripe
+    (function checkTokensFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const tokens = params.get("tokens");
+        if (tokens) {
+          const amount = parseInt(tokens);
+          if (amount > 0) {
+            ninaTokens += amount;
+            saveGiftData();
+            updateTokenDisplay();
+            // Vyčisti URL
+            window.history.replaceState({}, "", "/");
+          }
+        }
+      } catch(e) {}
+    })();
 
     window.installApp = async function() {
       if (!deferredPrompt) return;
