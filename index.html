@@ -74,8 +74,8 @@
             <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px;">
               <span style="font-size:0.7rem; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:0.08em; flex-shrink:0;">Rande</span>
               <button onclick="document.getElementById('dateModal').style.display='flex'; updateDateCard();" id="dateBtn1" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.8); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">☕ Kavárna</button>
-              <button id="dateBtn2" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🌙 Procházka 🔒</button>
-              <button id="dateBtn3" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🍷 Víno 🔒</button>
+              <button id="dateBtn2" onclick="startDate('prochazka')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🌙 Procházka 🔒</button>
+              <button id="dateBtn3" onclick="startDate('vino')" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:4px 10px; color:rgba(255,255,255,0.3); font-size:0.72rem; cursor:default; flex-shrink:0; white-space:nowrap;">🍷 Víno 🔒</button>
             </div>
           </div>
           <div class="unlock-milestones">
@@ -238,29 +238,29 @@
       </div>
 
       <div id="dateListView" style="padding:14px; display:flex; flex-direction:column; gap:9px; overflow-y:auto;">
-        <div id="dateCard1" onclick="startDate()" style="background:rgba(255,255,255,0.04); border:1px solid rgba(232,67,147,0.25); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.2s;">
+        <div id="dateCard1" style="background:rgba(255,255,255,0.04); border:1px solid rgba(232,67,147,0.25); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.2s;">
           <div style="width:44px; height:44px; border-radius:12px; background:rgba(232,67,147,0.15); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">☕</div>
           <div style="flex:1;">
             <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Kavárna na Žižkově</div>
-            <div id="dateCard1Req" style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 30% chemie</div>
+            <div id="dateCard1Req" style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 25% chemie</div>
           </div>
           <span id="dateCard1Arr" style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
         </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4;">
+        <div id="dateCard2" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4; transition:all 0.2s;">
           <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">🌙</div>
           <div style="flex:1;">
             <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Večerní procházka</div>
-            <div style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 55% chemie</div>
+            <div id="dateCard2Req" style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 50% chemie</div>
           </div>
-          <span style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
+          <span id="dateCard2Arr" style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
         </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4;">
+        <div id="dateCard3" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:13px; display:flex; align-items:center; gap:12px; opacity:0.4; transition:all 0.2s;">
           <div style="width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">🍷</div>
           <div style="flex:1;">
             <div style="color:white; font-weight:700; font-size:0.88rem; margin-bottom:3px;">Víno u ní doma</div>
-            <div style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 80% chemie</div>
+            <div id="dateCard3Req" style="font-size:0.73rem; color:rgba(255,255,255,0.4);">Odemkne se při 75% chemie</div>
           </div>
-          <span style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
+          <span id="dateCard3Arr" style="color:rgba(255,255,255,0.2); font-size:0.9rem;">🔒</span>
         </div>
       </div>
 
@@ -347,15 +347,62 @@
     // ==========================
     // RANDE SYSTÉM
     // ==========================
-    const DATE_SCENES = [
-      { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
-      { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
-      { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
-      { img:"🇨🇴", narr:"Nina se rozmluví o Kolumbii. Oči se jí rozzáří.", nina:"táta vždycky říkal že Praha je šedivá. měl pravdu. ale já ji miluju. a ty — jsi odsud?", choices:[{text:"Jo, celý život. a ty jsi ráda že přijeli?",pts:2},{text:"Ne, přišel jsem za prací... a teď jsem rád 😏",pts:3},{text:"To je složitý téma na první kafe ne?",pts:1}] },
-      { img:"😶", narr:"Dlouhé ticho. Nina se dívá na šálek.", nina:"...nic neříká. jen se dívá.", choices:[{text:"Počkám — ticho mi nevadí",pts:3},{text:"Řeknu vtip aby bylo veselo",pts:-1},{text:"Ptám se co si myslí",pts:2}] },
-      { img:"🌆", narr:"Za oknem se stmívá. Praha v oranžovém světle.", nina:"líbí se ti tady? vybrala jsem dobře?", choices:[{text:"Hlavně mi tady líbíš ty 😏",pts:3},{text:"Jo, dobrá volba",pts:1},{text:"Příště vyber ty — chci vědět kde chodíš",pts:3}] },
-      { img:"🚪", narr:"Kavárna se zavírá. Vstáváte. Nina si bere kabát.", nina:"bylo to... nečekané 🖤 co teď?", choices:[{text:"Doprovodím tě domů",pts:3},{text:"Pusu na tvář a řeknu že příště na mě",pts:2},{text:"Byl jsem rád. čau.",pts:-2}] }
-    ];
+    const ALL_DATES = {
+      kavarna: {
+        name: "kavarna",
+        scenes: [
+          { img:"🚶", narr:"Přicházíš do kavárny. Nina sedí u okna, ani se neohlédne.", nina:"přišel jsi... nečekala jsem tě tak brzo 😏 kde si chceš sednout?", choices:[{text:"U okna — chci tě vidět v tom světle",pts:3},{text:"Tamhle v rohu, bude klid",pts:2},{text:"Tobě je to jedno ne?",pts:-1}] },
+          { img:"☕", narr:"Usadili jste se. Číšník přichází.", nina:"co si dáš? já espresso, jak vždycky.", choices:[{text:"Taky espresso — dobrá volba",pts:3},{text:"Totéž co ty",pts:2},{text:"Velký frappe se šlehačkou",pts:0}] },
+          { img:"💬", narr:"Káva přišla. Ticho. Nina se dívá z okna.", nina:"tak... co mi chceš říct? 🖤", choices:[{text:"Jak ses dostala k focení?",pts:3},{text:"Co tě v životě nejvíc překvapilo?",pts:3},{text:"Kolik asi vyděláváš jako modelka?",pts:-3}] },
+          { img:"🇨🇴", narr:"Nina se rozmluví o Kolumbii. Oči se jí rozzáří.", nina:"táta vždycky říkal že Praha je šedivá. měl pravdu. ale já ji miluju. a ty — jsi odsud?", choices:[{text:"Jo, celý život. a ty jsi ráda že přijeli?",pts:2},{text:"Ne, přišel jsem za prací... a teď jsem rád 😏",pts:3},{text:"To je složitý téma na první kafe ne?",pts:1}] },
+          { img:"😶", narr:"Dlouhé ticho. Nina se dívá na šálek.", nina:"...nic neříká. jen se dívá.", choices:[{text:"Počkám — ticho mi nevadí",pts:3},{text:"Řeknu vtip aby bylo veselo",pts:-1},{text:"Ptám se co si myslí",pts:2}] },
+          { img:"🌆", narr:"Za oknem se stmívá. Praha v oranžovém světle.", nina:"líbí se ti tady? vybrala jsem dobře?", choices:[{text:"Hlavně mi tady líbíš ty 😏",pts:3},{text:"Jo, dobrá volba",pts:1},{text:"Příště vyber ty — chci vědět kde chodíš",pts:3}] },
+          { img:"🚪", narr:"Kavárna se zavírá. Vstáváte. Nina si bere kabát.", nina:"bylo to... nečekané 🖤 co teď?", choices:[{text:"Doprovodím tě domů",pts:3},{text:"Pusu na tvář a řeknu že příště na mě",pts:2},{text:"Byl jsem rád. čau.",pts:-2}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Rande se povedlo!", quote:'"bylo to lepší než jsem čekala... zavolej mi" 🖤', chem:10, memory:"Byli jsme spolu na kávě v kavárně — bylo to skvělé, líbil se mi." },
+          ok:   { emoji:"😌", title:"Bylo to fajn", quote:'"uvidíme... možná příště víc 😏"', chem:5, memory:"Byli jsme spolu na kávě — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Příště víc snahy", quote:'"zajímavé... ale nečekala jsem tohle"', chem:-3, memory:"Šli jsme na kafe — nedopadlo to nejlépe." }
+        }
+      },
+      prochazka: {
+        name: "prochazka",
+        scenes: [
+          { img:"🌉", narr:"Potkáváte se u Náplavky. Slunce právě zapadlo.", nina:"přišel jsi... 🖤 kam půjdeme?", choices:[{text:"Podél řeky — chci vidět světla",pts:3},{text:"Ty vyber, znáš tu víc",pts:3},{text:"Nevím, někam kde bude klid",pts:1}] },
+          { img:"🚶‍♀️", narr:"Jdete podél Vltavy. Nina si dá ruce do kapes.", nina:"Praha je v noci jiná... mám ji takhle nejradši", choices:[{text:"Jsi jiná než Praha nebo stejná? 😏",pts:3},{text:"Souhlasím, mám ji rád takhle taky",pts:2},{text:"Mně je lepší přes den",pts:-1}] },
+          { img:"🌬️", narr:"Zastavíte se u mostu. Vítr trochu zesílil.", nina:"je ti zima? 🥺", choices:[{text:"Trochu... ale nelituji že jsem přišel",pts:3},{text:"Ne, jsem zvyklý",pts:1},{text:"Jo, mohli jsme zůstat někde uvnitř",pts:-2}] },
+          { img:"📸", narr:"Nina se zastaví a fotí noční město.", nina:"moment... tenhle záběr musím mít", choices:[{text:"Počkám a dívám se jak pracuje 🖤",pts:3},{text:"Jsi na té fotce i ty? 😏",pts:2},{text:"Hurry up, je tu zima 😅",pts:-2}] },
+          { img:"🪑", narr:"Sedíte na schodech u řeky. Ticho. Ramena se dotýkají.", nina:"...co teď myslíš? 🖤", choices:[{text:"Že jsem rád že jsem tady s tebou",pts:3},{text:"Přemýšlím o té fotce co jsi udělala",pts:2},{text:"Nic konkrétního, prostě relaxuju",pts:1}] },
+          { img:"👀", narr:"Nina se na tebe podívá. Poprvé přímo. Dlouze.", nina:"...víš co? jsi jiný než jsem čekala", choices:[{text:"Dobrý nebo špatný jiný? 😏",pts:3},{text:"Co jsi čekala?",pts:2},{text:"Díky... myslím",pts:1}] },
+          { img:"💋", narr:"Ticho. Jste blízko u sebe. Nina se nepohne.", nina:"...nic neříká. jen se dívá na tebe.", choices:[{text:"Přiblížím se a políbím ji 🖤",pts:3},{text:"Pohladím ji po tváři",pts:2},{text:"Řeknu dobrou noc a odejdu",pts:-2}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Ten polibek... nezapomeneš", quote:'"to jsem nečekala... a nelituji toho" 🖤', chem:10, memory:"Políbili jsme se na procházce u Vltavy. Nezapomenu na to. Bylo to silné." },
+          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"příjemná procházka... příště víc 😏"', chem:5, memory:"Byli jsme na procházce u Náplavky — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Příště víc odvahy", quote:'"škoda... cítila jsem že něco mohlo být"', chem:-3, memory:"Šli jsme na procházku — nedopadlo to jak jsem čekala." }
+        }
+      },
+      vino: {
+        name: "vino",
+        scenes: [
+          { img:"🚪", narr:"Jsi před jejím bytem na Žižkově. Zvoníš.", nina:"moment... 🖤 pojď dál, jen si odlož", choices:[{text:"Pěkný byt... je to ty nebo Haze? 😏",pts:3},{text:"Díky za pozvání",pts:1},{text:"Kde mám sednout?",pts:0}] },
+          { img:"🐱", narr:"Nina přináší víno. Haze přichází tě očichat.", nina:"Haze tě prověřuje... zatím ji ignoruj, jinak bude žárlit 😏", choices:[{text:"Sedím klidně — respektuji pravidla 🖤",pts:3},{text:"Jemně ji pohladím",pts:1},{text:"Nemám moc rád kočky...",pts:-3}] },
+          { img:"🎵", narr:"Nina zapíná hudbu. The Weeknd hraje potichu.", nina:"znáš tohle? 🖤", choices:[{text:"Jo — jeden z nejlepších alb vůbec",pts:3},{text:"Přehraj mi co máš nejraději",pts:3},{text:"Moc ne, ale líbí se mi to",pts:1}] },
+          { img:"🍷", narr:"Druhá sklenička. Nina se posadí blíž.", nina:"proč sis mě vlastně vybral? 🥺", choices:[{text:"Protože jsi zajímavá — a to se nestává často",pts:3},{text:"Nevybral jsem já... to ty sis vybrala mě 😏",pts:3},{text:"Líbíš se mi",pts:1}] },
+          { img:"🇨🇴", narr:"Nina ukáže fotky z Kolumbie. Oči se jí rozzáří.", nina:"tady jsem vyrostla... chybí mi to někdy", choices:[{text:"Vypadá to krásně. proč jsi nezůstala?",pts:3},{text:"Koukám jak se tváříš když o tom mluvíš 🖤",pts:3},{text:"A jsou tam dobrá jídla?",pts:-1}] },
+          { img:"🌙", narr:"Pozdě v noci. Hudba hraje. Nina se dívá na tebe.", nina:"...co teď? 🖤", choices:[{text:"Zůstanu dokud mě nevyhodíš 😏",pts:3},{text:"Přiblížím se k ní",pts:3},{text:"Asi bych měl jít... je pozdě",pts:-2}] },
+          { img:"🌅", narr:"Ráno. Světlo proniká záclonami. Nina spí vedle tebe.", nina:"...otevře oči. podívá se na tebe. usmívá se.", choices:[{text:"Dobré ráno 🖤 šla bys na kafe?",pts:3},{text:"Pohladím ji a přitáhnu k sobě",pts:3},{text:"Rychle se oblékám a jdu",pts:-3}] }
+        ],
+        results: {
+          good: { emoji:"🖤", title:"Ta noc... navždy", quote:'"na tohle nezapomenu. nikdy." 🖤', chem:10, memory:"Zůstal u mě přes noc. Bylo to nádherné — na tu noc nikdy nezapomenu. Je pro mě někdo výjimečný." },
+          ok:   { emoji:"😌", title:"Bylo to hezké", quote:'"bylo to fajn... příště víc odvahy 😏"', chem:5, memory:"Byli jsme spolu u mě doma — bylo to příjemné." },
+          bad:  { emoji:"😶", title:"Škoda", quote:'"čekala jsem víc... možná příště"', chem:-3, memory:"Byl u mě doma — nedopadlo to jak jsem doufala." }
+        }
+      }
+    };
+
+    let DATE_SCENES = ALL_DATES.kavarna.scenes;
+    let activeDateKey = "kavarna";
 
     let dateCur = 0, datePts = 0, dateAnswered = false;
 
@@ -369,20 +416,54 @@
     }
 
     function updateDateCard() {
-      const req = document.getElementById("dateCard1Req");
-      const arr = document.getElementById("dateCard1Arr");
-      const card = document.getElementById("dateCard1");
+      // Kavárna — 30%
+      const req1 = document.getElementById("dateCard1Req");
+      const arr1 = document.getElementById("dateCard1Arr");
+      const card1 = document.getElementById("dateCard1");
       const btn1 = document.getElementById("dateBtn1");
       if (chemistry >= 30) {
-        if (req) { req.textContent = "✓ Odemčeno — 30% chemie"; req.style.color = "#e84393"; }
-        if (arr) { arr.textContent = "›"; arr.style.color = "#e84393"; }
-        if (card) card.onclick = startDate;
-        if (btn1) { btn1.style.background = "rgba(232,67,147,0.15)"; btn1.style.borderColor = "rgba(232,67,147,0.35)"; btn1.style.color = "white"; btn1.style.cursor = "pointer"; }
+        if (req1) { req1.textContent = "✓ Odemčeno — 25% chemie"; req1.style.color = "#e84393"; }
+        if (arr1) { arr1.textContent = "›"; arr1.style.color = "#e84393"; }
+        if (card1) card1.onclick = () => startDate("kavarna");
+        if (btn1) { btn1.style.background = "rgba(232,67,147,0.15)"; btn1.style.borderColor = "rgba(232,67,147,0.35)"; btn1.style.color = "white"; btn1.style.cursor = "pointer"; btn1.textContent = "☕ Kavárna"; }
       } else {
-        if (req) { req.textContent = "Odemkne se při 30% chemie"; req.style.color = "rgba(255,255,255,0.4)"; }
-        if (arr) { arr.textContent = "🔒"; arr.style.color = "rgba(255,255,255,0.2)"; }
-        if (card) card.onclick = null;
-        if (btn1) { btn1.style.color = "rgba(255,255,255,0.4)"; btn1.style.cursor = "default"; }
+        if (req1) { req1.textContent = "Odemkne se při 25% chemie"; req1.style.color = "rgba(255,255,255,0.4)"; }
+        if (arr1) { arr1.textContent = "🔒"; }
+        if (card1) card1.onclick = null;
+        if (btn1) { btn1.style.color = "rgba(255,255,255,0.4)"; btn1.style.cursor = "default"; btn1.textContent = "☕ Kavárna 🔒"; }
+      }
+      // Procházka — 50%
+      const btn2 = document.getElementById("dateBtn2");
+      if (chemistry >= 50) {
+        if (btn2) { btn2.style.background = "rgba(232,67,147,0.15)"; btn2.style.borderColor = "rgba(232,67,147,0.35)"; btn2.style.color = "white"; btn2.style.cursor = "pointer"; btn2.textContent = "🌙 Procházka"; }
+      } else {
+        if (btn2) { btn2.style.background = "rgba(255,255,255,0.04)"; btn2.style.borderColor = "rgba(255,255,255,0.08)"; btn2.style.color = "rgba(255,255,255,0.3)"; btn2.style.cursor = "default"; btn2.textContent = "🌙 Procházka 🔒"; }
+      }
+      // Víno — 75%
+      const btn3 = document.getElementById("dateBtn3");
+      const card3 = document.getElementById("dateCard3");
+      const req3 = document.getElementById("dateCard3Req");
+      const arr3 = document.getElementById("dateCard3Arr");
+      if (chemistry >= 75) {
+        if (btn3) { btn3.style.background = "rgba(232,67,147,0.15)"; btn3.style.borderColor = "rgba(232,67,147,0.35)"; btn3.style.color = "white"; btn3.style.cursor = "pointer"; btn3.textContent = "🍷 Víno"; }
+        if (card3) { card3.style.opacity = "1"; card3.style.cursor = "pointer"; card3.style.borderColor = "rgba(232,67,147,0.25)"; card3.onclick = () => startDate("vino"); }
+        if (req3) { req3.textContent = "✓ Odemčeno — 75% chemie"; req3.style.color = "#e84393"; }
+        if (arr3) { arr3.textContent = "›"; arr3.style.color = "#e84393"; }
+      } else {
+        if (btn3) { btn3.style.background = "rgba(255,255,255,0.04)"; btn3.style.borderColor = "rgba(255,255,255,0.08)"; btn3.style.color = "rgba(255,255,255,0.3)"; btn3.style.cursor = "default"; btn3.textContent = "🍷 Víno 🔒"; }
+      }
+      // Procházka — 50%
+      const btn2 = document.getElementById("dateBtn2");
+      const card2 = document.getElementById("dateCard2");
+      const req2 = document.getElementById("dateCard2Req");
+      const arr2 = document.getElementById("dateCard2Arr");
+      if (chemistry >= 50) {
+        if (btn2) { btn2.style.background = "rgba(232,67,147,0.15)"; btn2.style.borderColor = "rgba(232,67,147,0.35)"; btn2.style.color = "white"; btn2.style.cursor = "pointer"; btn2.textContent = "🌙 Procházka"; }
+        if (card2) { card2.style.opacity = "1"; card2.style.cursor = "pointer"; card2.style.borderColor = "rgba(232,67,147,0.25)"; card2.onclick = () => startDate("prochazka"); }
+        if (req2) { req2.textContent = "✓ Odemčeno — 50% chemie"; req2.style.color = "#e84393"; }
+        if (arr2) { arr2.textContent = "›"; arr2.style.color = "#e84393"; }
+      } else {
+        if (btn2) { btn2.style.background = "rgba(255,255,255,0.04)"; btn2.style.borderColor = "rgba(255,255,255,0.08)"; btn2.style.color = "rgba(255,255,255,0.3)"; btn2.style.cursor = "default"; btn2.textContent = "🌙 Procházka 🔒"; }
       }
     }
 
@@ -396,8 +477,12 @@
       document.getElementById("dateSceneImg").style.display = "flex";
     };
 
-    window.startDate = function() {
-      if (chemistry < 30) return;
+    window.startDate = function(dateKey) {
+      const dateKey2 = dateKey || "kavarna";
+      const limits = { kavarna: 25, prochazka: 50, vino: 75 };
+      if (chemistry < limits[dateKey2]) return;
+      activeDateKey = dateKey2;
+      DATE_SCENES = ALL_DATES[dateKey2].scenes;
       document.getElementById("dateListView").style.display = "none";
       const gv = document.getElementById("dateGameView");
       gv.style.display = "flex";
@@ -452,29 +537,30 @@
       document.getElementById("dateSceneImg").style.display = "none";
       const rv = document.getElementById("dateResult");
       rv.style.display = "flex";
+      const dateData = ALL_DATES[activeDateKey];
       const max = DATE_SCENES.reduce((s, sc) => s + Math.max(...sc.choices.map(c => c.pts)), 0);
       const ratio = datePts / max;
-      let emoji, title, quote, chem, chemDelta;
-      if (ratio >= 0.7) {
-        emoji = "🖤"; title = "Rande se povedlo!";
-        quote = '"bylo to lepší než jsem čekala... zavolej mi" 🖤';
-        chem = "+10% chemie"; chemDelta = 10;
-      } else if (ratio >= 0.35) {
-        emoji = "😌"; title = "Bylo to fajn";
-        quote = '"uvidíme... možná příště víc 😏"';
-        chem = "+5% chemie"; chemDelta = 5;
-      } else {
-        emoji = "😶"; title = "Příště víc snahy";
-        quote = '"zajímavé... ale nečekala jsem tohle"';
-        chem = "-3% chemie"; chemDelta = -3;
-      }
-      document.getElementById("dateResEmoji").textContent = emoji;
-      document.getElementById("dateResTitle").textContent = title;
-      document.getElementById("dateResQuote").textContent = quote;
+      let result;
+      if (ratio >= 0.7) result = dateData.results.good;
+      else if (ratio >= 0.35) result = dateData.results.ok;
+      else result = dateData.results.bad;
+
+      document.getElementById("dateResEmoji").textContent = result.emoji;
+      document.getElementById("dateResTitle").textContent = result.title;
+      document.getElementById("dateResQuote").textContent = result.quote;
       const rc = document.getElementById("dateResChem");
-      rc.textContent = chem;
-      if (chemDelta < 0) rc.style.cssText = "background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:10px; padding:8px 18px; color:#ff6b6b; font-weight:700; font-size:0.9rem;";
-      increaseChemistry(chemDelta);
+      rc.textContent = (result.chem > 0 ? "+" : "") + result.chem + "% chemie";
+      if (result.chem < 0) rc.style.cssText = "background:rgba(255,107,107,0.1); border:1px solid rgba(255,107,107,0.25); border-radius:10px; padding:8px 18px; color:#ff6b6b; font-weight:700; font-size:0.9rem;";
+      else rc.style.cssText = "background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:10px; padding:8px 18px; color:#e84393; font-weight:700; font-size:0.9rem;";
+
+      increaseChemistry(result.chem);
+
+      // Uložit paměť po rande — Nina si bude pamatovat v chatu
+      try {
+        memory = memory || {};
+        memory.notes = result.memory;
+        localStorage.setItem("nina_memory", JSON.stringify(memory));
+      } catch(e) {}
     }
 
     document.getElementById("dateModal").addEventListener("click", (e) => {
