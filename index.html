@@ -48,17 +48,13 @@
               <button onclick="setLang('cs')" id="langCsBtn">CZ</button>
               <button onclick="setLang('en')" id="langEnBtn">EN</button>
             </div>
-            <a href="/landing.html" class="topbar-btn" id="infoBtn" style="text-decoration:none; font-size:0.75rem; font-weight:800; color:rgba(255,255,255,0.6); font-style:italic;" aria-label="Info" title="O aplikaci">
-              i
-            </a>
-            <a href="#" class="topbar-btn" id="manageBtn" target="_blank" rel="noopener"
-              style="display: none; text-decoration: none;" aria-label="Manage subscription" title="Manage subscription">
-              ⚙
-            </a>
-            <button id="installBtn" class="topbar-btn" type="button" aria-label="Přidat na plochu" title="Přidat na plochu" style="display:none;">
-              ⬇️
-            </button>
+            <button id="menuBtn" class="topbar-btn" type="button" aria-label="Menu" style="font-size:1rem;">☰</button>
           </div>
+
+          <!-- Skrytá tlačítka zachována pro JS kompatibilitu -->
+          <a href="#" id="manageBtn" target="_blank" rel="noopener" style="display:none;">⚙</a>
+          <button id="installBtn" style="display:none;">⬇️</button>
+          <a href="/landing.html" id="infoBtn" style="display:none;">i</a>
         </div>
 
         <!-- CHEMISTRY BAR -->
@@ -350,6 +346,55 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- MENU MODAL -->
+  <div id="menuModal" style="display:none; position:fixed; inset:0; z-index:3000; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center;">
+    <div style="width:100%; max-width:420px; background:#0e0e18; border-radius:24px 24px 0 0; border:1px solid rgba(255,255,255,0.08); border-bottom:none; padding-bottom:env(safe-area-inset-bottom,0);">
+      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:space-between;">
+        <span style="color:white; font-weight:700; font-size:0.95rem;">Menu</span>
+        <button onclick="closeMenu()" style="background:rgba(255,255,255,0.08); border:none; color:white; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem;">✕</button>
+      </div>
+
+      <!-- Email sekce -->
+      <div id="menuEmailSection" style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div id="menuEmailLoggedOut">
+          <p style="color:rgba(255,255,255,0.45); font-size:0.78rem; margin-bottom:10px;">Ulož si postup — přihlas se emailem</p>
+          <div style="display:flex; gap:8px;">
+            <input id="menuEmailInput" type="email" placeholder="tvuj@email.com" style="flex:1; padding:10px 12px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:10px; color:white; font-size:0.84rem; outline:none;" />
+            <button id="menuEmailSubmit" style="background:linear-gradient(135deg,#e84393,#c15cff); border:none; border-radius:10px; padding:10px 14px; color:white; font-weight:700; font-size:0.82rem; cursor:pointer; white-space:nowrap;">Uložit</button>
+          </div>
+          <p id="menuEmailError" style="display:none; color:#ff6b6b; font-size:0.74rem; margin-top:6px;"></p>
+        </div>
+        <div id="menuEmailLoggedIn" style="display:none;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#e84393,#c15cff); display:flex; align-items:center; justify-content:center; font-size:0.8rem; color:white; font-weight:700;" id="menuEmailAvatar">?</div>
+            <div>
+              <div style="color:white; font-size:0.84rem; font-weight:700;" id="menuEmailDisplay">–</div>
+              <div style="color:rgba(255,255,255,0.4); font-size:0.72rem;">přihlášen</div>
+            </div>
+            <button onclick="logoutEmail()" style="margin-left:auto; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:5px 10px; color:rgba(255,255,255,0.5); font-size:0.72rem; cursor:pointer;">Odhlásit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu položky -->
+      <div style="padding:10px 12px; display:flex; flex-direction:column; gap:4px;">
+        <button onclick="window.location.href='/landing.html'" style="background:transparent; border:none; border-radius:12px; padding:13px 14px; color:rgba(255,255,255,0.8); font-size:0.88rem; cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.1rem;">ℹ️</span> O aplikaci
+        </button>
+        <button id="menuInstallBtn" onclick="openInstallFromMenu()" style="background:transparent; border:none; border-radius:12px; padding:13px 14px; color:rgba(255,255,255,0.8); font-size:0.88rem; cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.1rem;">⬇️</span> Přidat na plochu
+        </button>
+        <button id="menuManageBtn" onclick="openManageFromMenu()" style="display:none; background:transparent; border:none; border-radius:12px; padding:13px 14px; color:rgba(255,255,255,0.8); font-size:0.88rem; cursor:pointer; text-align:left; align-items:center; gap:12px;">
+          <span style="font-size:1.1rem;">⚙️</span> Spravovat předplatné
+        </button>
+        <button onclick="resetChat()" style="background:transparent; border:none; border-radius:12px; padding:13px 14px; color:rgba(255,100,100,0.7); font-size:0.88rem; cursor:pointer; text-align:left; display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.1rem;">🗑️</span> Resetovat chat
+        </button>
+      </div>
+      <div style="height:20px;"></div>
     </div>
   </div>
 
@@ -808,6 +853,121 @@
         }
       } catch(e) {}
     })();
+
+    // ==========================
+    // MENU
+    // ==========================
+    function openMenu() {
+      const modal = document.getElementById("menuModal");
+      if (!modal) return;
+      modal.style.display = "flex";
+      updateMenuEmailState();
+      // Zobraz manage tlačítko jen pro platící
+      const manageMenuBtn = document.getElementById("menuManageBtn");
+      if (manageMenuBtn) manageMenuBtn.style.display = isPaid ? "flex" : "none";
+    }
+
+    function closeMenu() {
+      const modal = document.getElementById("menuModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function updateMenuEmailState() {
+      const email = localStorage.getItem("nina_email");
+      const loggedOut = document.getElementById("menuEmailLoggedOut");
+      const loggedIn = document.getElementById("menuEmailLoggedIn");
+      const display = document.getElementById("menuEmailDisplay");
+      const avatar = document.getElementById("menuEmailAvatar");
+      if (email) {
+        if (loggedOut) loggedOut.style.display = "none";
+        if (loggedIn) loggedIn.style.display = "block";
+        if (display) display.textContent = email;
+        if (avatar) avatar.textContent = email[0].toUpperCase();
+      } else {
+        if (loggedOut) loggedOut.style.display = "block";
+        if (loggedIn) loggedIn.style.display = "none";
+      }
+    }
+
+    function logoutEmail() {
+      localStorage.removeItem("nina_email");
+      updateMenuEmailState();
+    }
+
+    function openInstallFromMenu() {
+      closeMenu();
+      const installModal = document.getElementById("installModal");
+      if (installModal) installModal.style.display = "flex";
+    }
+
+    function openManageFromMenu() {
+      closeMenu();
+      const btn = document.getElementById("manageBtn");
+      if (btn && btn.href && btn.href !== "#") window.open(btn.href, "_blank");
+    }
+
+    function resetChat() {
+      if (!confirm("Opravdu chceš resetovat chat? Přijdeš o všechny zprávy.")) return;
+      localStorage.removeItem("nina_messages");
+      localStorage.removeItem("nina_memory");
+      localStorage.removeItem("nina_chemistry");
+      localStorage.removeItem("nina_userMessageCount");
+      closeMenu();
+      window.location.reload();
+    }
+
+    const menuBtn = document.getElementById("menuBtn");
+    if (menuBtn) menuBtn.addEventListener("click", openMenu);
+
+    document.getElementById("menuModal").addEventListener("click", e => {
+      if (e.target === document.getElementById("menuModal")) closeMenu();
+    });
+
+    // Menu email submit
+    const menuEmailSubmit = document.getElementById("menuEmailSubmit");
+    const menuEmailInput = document.getElementById("menuEmailInput");
+    const menuEmailError = document.getElementById("menuEmailError");
+
+    if (menuEmailSubmit) {
+      menuEmailSubmit.addEventListener("click", async function() {
+        const email = menuEmailInput ? menuEmailInput.value.trim() : "";
+        if (!email || !email.includes("@")) {
+          if (menuEmailError) { menuEmailError.textContent = "Zadej platný email."; menuEmailError.style.display = "block"; }
+          return;
+        }
+        if (menuEmailError) menuEmailError.style.display = "none";
+        menuEmailSubmit.textContent = "...";
+        menuEmailSubmit.disabled = true;
+        localStorage.setItem("nina_email", email);
+        try {
+          const res = await fetch("/.netlify/functions/load-user-data", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+          });
+          const json = await res.json();
+          if (json.data) {
+            const d = json.data;
+            if (d.messages && d.messages.length > 0) localStorage.setItem("nina_messages", JSON.stringify(d.messages));
+            if (d.memory) localStorage.setItem("nina_memory", JSON.stringify(d.memory));
+            if (d.chemistry) localStorage.setItem("nina_chemistry", String(d.chemistry));
+            if (d.tokens) localStorage.setItem("nina_tokens", String(d.tokens));
+            if (d.mood) localStorage.setItem("nina_mood", d.mood);
+            closeMenu();
+            window.location.reload();
+            return;
+          }
+        } catch(e) {}
+        updateMenuEmailState();
+        menuEmailSubmit.textContent = "Uložit";
+        menuEmailSubmit.disabled = false;
+        closeMenu();
+      });
+    }
+
+    if (menuEmailInput) {
+      menuEmailInput.addEventListener("keydown", e => { if (e.key === "Enter") menuEmailSubmit && menuEmailSubmit.click(); });
+    }
 
     window.installApp = async function() {
       if (!deferredPrompt) return;
