@@ -363,18 +363,19 @@ let syncTimer = null;
 
 function scheduleServerSync() {
   if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(syncToServer, 3000); // debounce 3s
+  syncTimer = setTimeout(syncToServer, 3000);
 }
+window.scheduleServerSync = scheduleServerSync;
 
 async function syncToServer() {
   try {
     const email = localStorage.getItem("nina_email");
     if (!email) return;
+    if (localStorage.getItem("nina_paid") !== "true") return; // jen pro platící
 
     const data = {
-      messages: messages.slice(-50), // max 50 zpráv
-      memory,
       chemistry: Math.round(chemistry),
+      memory,
       tokens: parseInt(localStorage.getItem("nina_tokens") || "0"),
       mood: localStorage.getItem("nina_mood") || "calm",
       userMessageCount,
