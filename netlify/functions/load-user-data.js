@@ -13,12 +13,11 @@ exports.handler = async (event) => {
     const key = `nina:user:${email.toLowerCase().trim()}`;
 
     const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${encodeURIComponent(key)}`, {
+      method: "GET",
       headers: {
         Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
       },
     });
-
-    if (!res.ok) throw new Error("Redis load failed");
 
     const json = await res.json();
 
@@ -30,7 +29,22 @@ exports.handler = async (event) => {
       };
     }
 
-    const data = JSON.parse(json.result);
+    let data;
+    try {
+      const parsed = JSON.parse(json.result);
+      // Zprávy jsou soukromé — nepřenášíme je mezi zařízeními
+      // Přenášíme jen postup: chemie, paměť, tokeny, nálada
+      data = {
+        chemistry: parsed.chemistry,
+        memory: parsed.memory,
+        tokens: parsed.tokens,
+        mood: parsed.mood,
+        userMessageCount: parsed.userMessageCount,
+        updatedAt: parsed.updatedAt,
+      };
+    } catch(e) {
+      data = null;
+    }
 
     return {
       statusCode: 200,
