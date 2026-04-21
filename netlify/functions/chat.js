@@ -21,6 +21,8 @@ export async function handler(event) {
       lang = "en",
       chemistry = 10,
       hasPhoto = false,
+      mood = "calm",
+      lastGift = null,
     } = JSON.parse(event.body || "{}");
 
     if (!messages || !Array.isArray(messages)) {
@@ -64,10 +66,8 @@ export async function handler(event) {
     else chemistryStage = "early";
 
     // ==========================
-    // NÁLADA A DÁREK (z requestu)
+    // NÁLADA A DÁREK
     // ==========================
-    const mood = body.mood || "calm";
-    const lastGift = body.lastGift || null;
 
     const moodMap = {
       happy:   "veselá a plná energie",
