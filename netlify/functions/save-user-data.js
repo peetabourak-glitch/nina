@@ -11,17 +11,20 @@ exports.handler = async (event) => {
     }
 
     const key = `nina:user:${email.toLowerCase().trim()}`;
+    const value = JSON.stringify(data);
 
+    // Upstash REST API — POST s JSON body
     const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${encodeURIComponent(key)}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(JSON.stringify(data)),
+      body: JSON.stringify([value]),
     });
 
-    if (!res.ok) throw new Error("Redis save failed");
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
 
     return {
       statusCode: 200,
