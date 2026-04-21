@@ -809,6 +809,10 @@
       // Změna nálady
       setMood(gift.mood);
 
+      // Uložit poslední dárek (vyprší po 2 hodinách)
+      localStorage.setItem("nina_last_gift", gift.key);
+      setTimeout(() => localStorage.removeItem("nina_last_gift"), 2 * 60 * 60 * 1000);
+
       // Chemie bonus
       if (gift.key === "flowers") increaseChemistry(5);
       if (gift.key === "rose") increaseChemistry(15);
