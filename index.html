@@ -423,15 +423,7 @@
     const isMobile = isIOS || isAndroid;
     const installBtn = document.getElementById("installBtn");
 
-    if (isMobile && installBtn) {
-      installBtn.style.display = "inline-flex";
-    }
-
-    // Info tlačítko — zobrazit vždy
-    const infoBtn = document.getElementById("infoBtn");
-    if (infoBtn) {
-      infoBtn.style.display = "inline-flex";
-    }
+    // installBtn a infoBtn jsou teď v menu — nezobrazujeme v topbaru
 
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
