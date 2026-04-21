@@ -1148,8 +1148,7 @@
 
     function openManageFromMenu() {
       closeMenu();
-      const btn = document.getElementById("manageBtn");
-      if (btn && btn.href && btn.href !== "#") window.open(btn.href, "_blank");
+      if (window.openCustomerPortal) window.openCustomerPortal();
     }
 
     function resetChat() {
@@ -1182,7 +1181,7 @@
           return;
         }
         if (menuEmailError) menuEmailError.style.display = "none";
-        menuEmailSubmit.textContent = "...";
+        menuEmailSubmit.textContent = "Načítám...";
         menuEmailSubmit.disabled = true;
         localStorage.setItem("nina_email", email);
         try {
@@ -1194,16 +1193,17 @@
           const json = await res.json();
           if (json.data) {
             const d = json.data;
-            if (d.messages && d.messages.length > 0) localStorage.setItem("nina_messages", JSON.stringify(d.messages));
-            if (d.memory) localStorage.setItem("nina_memory", JSON.stringify(d.memory));
-            if (d.chemistry) localStorage.setItem("nina_chemistry", String(d.chemistry));
-            if (d.tokens) localStorage.setItem("nina_tokens", String(d.tokens));
+            // Zprávy nenačítáme — chat začne znovu, ale Nina si tě pamatuje
+            if (d.memory && Object.keys(d.memory).length > 0) localStorage.setItem("nina_memory", JSON.stringify(d.memory));
+            if (d.chemistry !== undefined && d.chemistry !== null) localStorage.setItem("nina_chemistry", String(d.chemistry));
+            if (d.tokens !== undefined && d.tokens !== null) localStorage.setItem("nina_tokens", String(d.tokens));
             if (d.mood) localStorage.setItem("nina_mood", d.mood);
             closeMenu();
             window.location.reload();
             return;
           }
         } catch(e) {}
+        // Nová data na serveru nejsou — jen zavři menu
         updateMenuEmailState();
         menuEmailSubmit.textContent = "Uložit";
         menuEmailSubmit.disabled = false;
