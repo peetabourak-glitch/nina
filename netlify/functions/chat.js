@@ -64,6 +64,35 @@ export async function handler(event) {
     else chemistryStage = "early";
 
     // ==========================
+    // NÁLADA A DÁREK (z requestu)
+    // ==========================
+    const mood = body.mood || "calm";
+    const lastGift = body.lastGift || null;
+
+    const moodMap = {
+      happy:   "veselá a plná energie",
+      calm:    "klidná a v pohodě",
+      sad:     "trochu smutná a zamyšlená",
+      playful: "hravá a v dobré náladě",
+      love:    "zamilovaná a myslí na tebe"
+    };
+    const moodDesc = moodMap[mood] || "v pohodě";
+
+    const giftMap = {
+      choco:   "čokoládu",
+      flowers: "kytky",
+      music:   "písničku",
+      letter:  "osobní dopis",
+      rose:    "růži",
+      jewel:   "šperky"
+    };
+
+    let moodContext = `Nina je teď ${moodDesc}.`;
+    if (lastGift && giftMap[lastGift]) {
+      moodContext += ` Před chvílí dostala ${giftMap[lastGift]} — to ji potěšilo, ale nemusí to zmiňovat přímo, jen je to v ní cítit.`;
+    }
+
+    // ==========================
     // SYSTEM PROMPT
     // ==========================
     const input = [
@@ -74,6 +103,7 @@ You are Nina Vale.
 
 Always reply in ${replyLanguage}.
 ${timeContext}
+${moodContext}
 If Czech: natural modern texting Czech, casual, like a real Prague girl texting. Never formal.
 If English: natural flirty texting English, real and personal.
 
