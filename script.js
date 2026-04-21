@@ -404,21 +404,27 @@ async function loadFromServer(email) {
 
     const d = json.data;
 
-    // Načti data ze serveru pouze pokud jsou novější
-    const serverTime = d.updatedAt || 0;
-    const localTime = parseInt(localStorage.getItem("nina_last_sync") || "0");
-
-    if (serverTime > localTime) {
-      if (d.messages) { messages = d.messages; localStorage.setItem("nina_messages", JSON.stringify(messages)); }
-      if (d.memory) { memory = d.memory; localStorage.setItem("nina_memory", JSON.stringify(memory)); }
-      if (d.chemistry) { chemistry = d.chemistry; localStorage.setItem("nina_chemistry", String(chemistry)); }
-      if (d.tokens) { localStorage.setItem("nina_tokens", String(d.tokens)); }
-      if (d.mood) { localStorage.setItem("nina_mood", d.mood); }
-      if (d.userMessageCount) { userMessageCount = d.userMessageCount; localStorage.setItem("nina_userMessageCount", String(userMessageCount)); }
-      localStorage.setItem("nina_last_sync", String(serverTime));
-      return true;
+    // Zprávy nenačítáme — chat začne znovu, ale Nina si tě pamatuje
+    if (d.memory && Object.keys(d.memory).length > 0) {
+      memory = d.memory;
+      localStorage.setItem("nina_memory", JSON.stringify(memory));
     }
-    return false;
+    if (d.chemistry !== undefined && d.chemistry !== null) {
+      chemistry = d.chemistry;
+      localStorage.setItem("nina_chemistry", String(chemistry));
+    }
+    if (d.tokens !== undefined && d.tokens !== null) {
+      localStorage.setItem("nina_tokens", String(d.tokens));
+    }
+    if (d.mood) {
+      localStorage.setItem("nina_mood", d.mood);
+    }
+    if (d.userMessageCount !== undefined && d.userMessageCount !== null) {
+      userMessageCount = d.userMessageCount;
+      localStorage.setItem("nina_userMessageCount", String(userMessageCount));
+    }
+    localStorage.setItem("nina_last_sync", String(d.updatedAt || Date.now()));
+    return true;
   } catch (e) {
     return false;
   }
@@ -684,6 +690,7 @@ async function openCustomerPortal() {
     alert(t("portalOpenError"));
   }
 }
+window.openCustomerPortal = openCustomerPortal;
 
 // ==========================
 // CHAT RENDER
@@ -765,11 +772,8 @@ function renderMessages() {
 function showSubscriptionStatus() {
   if (isPaid) {
     statusEl.textContent = t("subscribed");
-
-    if (manageBtn) {
-      manageBtn.style.display = "inline-flex";
-      manageBtn.href = "#";
-    }
+    // manageBtn je teď v menu (☰) — v topbaru ho nezobrazujeme
+    if (manageBtn) manageBtn.style.display = "none";
   } else {
     if (manageBtn) manageBtn.style.display = "none";
   }
