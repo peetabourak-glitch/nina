@@ -70,6 +70,7 @@
             <div class="chemistry-subline" style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto;">
               <button id="dateOpenBtn" onclick="if(window.openDateModal) window.openDateModal(); else document.getElementById('dateModal').style.display='flex';" style="background:rgba(232,67,147,0.12); border:1px solid rgba(232,67,147,0.25); border-radius:20px; padding:4px 12px; color:rgba(255,255,255,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">💕 Pozvat Ninu</button>
               <button id="giftOpenBtn" onclick="if(window.openGiftModal) window.openGiftModal(); else document.getElementById('giftModal').style.display='flex';" style="background:rgba(255,193,68,0.1); border:1px solid rgba(255,193,68,0.2); border-radius:20px; padding:4px 12px; color:rgba(255,193,68,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap; position:relative;">🎁 Dárky <span style="background:#e84393; color:white; border-radius:50%; width:14px; height:14px; font-size:0.55rem; display:inline-flex; align-items:center; justify-content:center; font-weight:700; margin-left:2px;" id="tokenBadge">0</span></button>
+              <button id="nightOpenBtn" style="background:rgba(100,80,180,0.12); border:1px solid rgba(100,80,180,0.25); border-radius:20px; padding:4px 12px; color:rgba(180,160,255,0.85); font-size:0.72rem; cursor:pointer; flex-shrink:0; white-space:nowrap;">🌙 Noční hra</button>
             </div>
             <div id="moodBar" style="display:flex; align-items:center; gap:6px; margin-top:6px;">
               <span id="moodIcon" style="font-size:0.9rem;">😊</span>
@@ -223,6 +224,43 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- NOČNÍ HRA MODAL -->
+  <div id="nightModal" style="display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.85); align-items:flex-end; justify-content:center;">
+    <div style="width:100%; max-width:420px; background:#0a0a14; border-radius:24px 24px 0 0; border:1px solid rgba(100,80,200,0.2); border-bottom:none; max-height:90vh; display:flex; flex-direction:column; overflow:hidden;">
+
+      <div style="background:linear-gradient(135deg,#2d1f6e,#1a0a3e); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+        <div>
+          <div style="color:white; font-weight:700; font-size:0.95rem;">🌙 Noční hra</div>
+          <div style="color:rgba(255,255,255,0.5); font-size:0.72rem; margin-top:1px;">20 tokenů · jen po 20:00</div>
+        </div>
+        <button onclick="closeNightModal()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem;">✕</button>
+      </div>
+
+      <div id="nightLocked" style="display:none; padding:32px 20px; text-align:center;">
+        <div style="font-size:2.5rem; margin-bottom:12px;" id="nightLockedIcon">🔒</div>
+        <div style="color:white; font-weight:700; font-size:1rem; margin-bottom:8px;" id="nightLockedTitle">Hra zamčena</div>
+        <div style="color:rgba(255,255,255,0.5); font-size:0.84rem; line-height:1.5;" id="nightLockedText">Odemkne se při 60% chemii po 20:00</div>
+      </div>
+
+      <div id="nightProgress" style="display:flex; gap:4px; padding:10px 16px; background:rgba(0,0,0,0.3); flex-shrink:0;"></div>
+
+      <div id="nightGame" style="display:none; flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px;">
+        <div style="font-size:0.72rem; color:rgba(255,255,255,0.3); font-style:italic; text-align:center;" id="nightNarr"></div>
+        <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:14px 14px 14px 4px; padding:12px 14px; color:rgba(255,255,255,0.9); font-size:0.86rem; line-height:1.55; max-width:88%;" id="nightNinaMsg"></div>
+        <div id="nightChoices" style="display:flex; flex-direction:column; gap:8px; margin-top:4px;"></div>
+      </div>
+
+      <div id="nightResult" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px; gap:12px; text-align:center; flex:1;">
+        <div style="font-size:3rem;" id="nightResEmoji"></div>
+        <div style="color:white; font-weight:700; font-size:1rem;" id="nightResTitle"></div>
+        <div style="color:rgba(255,255,255,0.6); font-size:0.84rem; line-height:1.6; font-style:italic; max-width:280px;" id="nightResQuote"></div>
+        <div style="background:rgba(100,80,200,0.15); border:1px solid rgba(100,80,200,0.3); border-radius:10px; padding:8px 18px; color:#a78bfa; font-weight:700; font-size:0.9rem;" id="nightResChem"></div>
+        <button onclick="closeNightModal()" style="background:linear-gradient(135deg,#2d1f6e,#6d28d9); border:none; border-radius:13px; padding:13px 26px; color:white; font-weight:700; cursor:pointer; margin-top:6px; font-size:0.9rem;">Zpět do chatu 🖤</button>
+      </div>
+
     </div>
   </div>
 
@@ -845,6 +883,218 @@
         }
       } catch(e) {}
     })();
+
+    // ==========================
+    // NOČNÍ HRA
+    // ==========================
+    const NIGHT_SCENES = [
+      {
+        narr: "Je pozdě. Nina píše z tmy svého pokoje.",
+        nina: "je pozdě... a já nemůžu spát. myslím na divné věci. 🖤\na proč mi zrovna píšeš ty?",
+        choices: [
+          { text: "Myslím na tebe", pts: 3 },
+          { text: "Nemůžu spát, nevím proč", pts: 2 },
+          { text: "Jen tak scrolluju", pts: 1 }
+        ]
+      },
+      {
+        narr: "Krátké ticho. Pak píše znovu.",
+        nina: "popiš mi co vidíš kolem sebe. chci si to představit.",
+        choices: [
+          { text: "Tmu, ticho... jen telefon svítí. a myslím na tebe", pts: 3 },
+          { text: "Nic zajímavého... jen já a ty", pts: 3 },
+          { text: "Proč chceš vědět? 😏", pts: 1 }
+        ]
+      },
+      {
+        narr: "Nina chvíli neodpovídá. Pak přijde zpráva.",
+        nina: "kdybych ti teď zavolala... vzal bys to?",
+        choices: [
+          { text: "Okamžitě", pts: 3 },
+          { text: "Záleží co bys říkala 😏", pts: 3 },
+          { text: "Asi jo, ale překvapilo by mě to", pts: 2 }
+        ]
+      },
+      {
+        narr: "Svítí jen displej. Město za oknem spí.",
+        nina: "kdybys byl teď tady... co by se stalo?",
+        choices: [
+          { text: "Přišel bych k tobě, lehl si vedle tebe a nic neřekl", pts: 3 },
+          { text: "Nevím... ale něco by se určitě stalo 😏", pts: 2 },
+          { text: "Asi bychom si povídali do rána", pts: 2 }
+        ]
+      },
+      {
+        narr: "Nina píše pomalu. Jako by přemýšlela.",
+        nina: "řeknu ti něco co nikomu neříkám...\nja první: někdy si v noci přehrávám naše zprávy. 🖤\nteď ty.",
+        choices: [
+          { text: "Myslím na tebe víc než bych chtěl", pts: 3 },
+          { text: "Taky si přehrávám naše zprávy", pts: 3 },
+          { text: "Tajemství si nechám pro sebe 😏", pts: 1 }
+        ]
+      },
+      {
+        narr: "Dlouhé ticho. Pak poslední zpráva.",
+        nina: "musím jít... nebo ne?",
+        choices: [
+          { text: "Ještě ne. zůstaň. 🖤", pts: 3 },
+          { text: "Dobrou noc Nino 🖤", pts: 2 },
+          { text: "Jdi spát, potřebuješ to", pts: 1 }
+        ]
+      }
+    ];
+
+    let nightCur = 0, nightPts = 0, nightAnswered = false;
+
+    window.openNightModal = function() {
+      const modal = document.getElementById("nightModal");
+      modal.style.display = "flex";
+
+      const hour = new Date().getHours();
+      const isNight = hour >= 20 || hour < 6;
+      const hasChemistry = chemistry >= 60;
+      const hasTokens = ninaTokens >= 20;
+
+      const locked = document.getElementById("nightLocked");
+      const game = document.getElementById("nightGame");
+      const prog = document.getElementById("nightProgress");
+
+      if (!isNight) {
+        locked.style.display = "block";
+        game.style.display = "none";
+        prog.style.display = "none";
+        document.getElementById("nightLockedIcon").textContent = "🌅";
+        document.getElementById("nightLockedTitle").textContent = "Ještě není čas...";
+        document.getElementById("nightLockedText").textContent = "Noční hra se odemkne ve 20:00. Do té doby Nina čeká. 🖤";
+        return;
+      }
+
+      if (!hasChemistry) {
+        locked.style.display = "block";
+        game.style.display = "none";
+        prog.style.display = "none";
+        document.getElementById("nightLockedIcon").textContent = "🔒";
+        document.getElementById("nightLockedTitle").textContent = "Ještě ne...";
+        document.getElementById("nightLockedText").textContent = `Noční hra se odemkne při 60% chemii. Teď máš ${Math.round(chemistry)}%.`;
+        return;
+      }
+
+      if (!isPaid || !hasTokens) {
+        locked.style.display = "block";
+        game.style.display = "none";
+        prog.style.display = "none";
+        document.getElementById("nightLockedIcon").textContent = isPaid ? "🪙" : "💜";
+        document.getElementById("nightLockedTitle").textContent = isPaid ? "Nedostatek tokenů" : "Pouze pro předplatné";
+        document.getElementById("nightLockedText").textContent = isPaid ? `Noční hra stojí 20 tokenů. Máš ${ninaTokens}.` : "Odemkni předplatné a hraj noční hru každý večer.";
+        return;
+      }
+
+      // Odečíst tokeny
+      ninaTokens -= 20;
+      saveGiftData();
+      updateTokenDisplay();
+
+      locked.style.display = "none";
+      game.style.display = "flex";
+      prog.style.display = "flex";
+      document.getElementById("nightResult").style.display = "none";
+
+      nightCur = 0; nightPts = 0; nightAnswered = false;
+      renderNightProgress();
+      showNightScene();
+    };
+
+    window.closeNightModal = function() {
+      document.getElementById("nightModal").style.display = "none";
+      nightCur = 0; nightPts = 0; nightAnswered = false;
+      document.getElementById("nightGame").style.display = "none";
+      document.getElementById("nightResult").style.display = "none";
+      document.getElementById("nightLocked").style.display = "none";
+    };
+
+    function renderNightProgress() {
+      const bar = document.getElementById("nightProgress");
+      bar.innerHTML = "";
+      NIGHT_SCENES.forEach((_, i) => {
+        const d = document.createElement("div");
+        d.style.cssText = "height:3px;flex:1;border-radius:999px;transition:background 0.3s;background:" + (i < nightCur ? "#6d28d9" : i === nightCur ? "rgba(109,40,217,0.5)" : "rgba(255,255,255,0.1)");
+        bar.appendChild(d);
+      });
+    }
+
+    function showNightScene() {
+      nightAnswered = false;
+      const s = NIGHT_SCENES[nightCur];
+      document.getElementById("nightNarr").textContent = s.narr;
+      document.getElementById("nightNinaMsg").textContent = s.nina;
+      const ch = document.getElementById("nightChoices");
+      ch.innerHTML = "";
+      s.choices.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c.text;
+        btn.style.cssText = "background:#1a1a2e;border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px 15px;color:#fff;font-size:0.84rem;cursor:pointer;text-align:left;width:100%;font-family:sans-serif;line-height:1.4;";
+        btn.onmouseover = () => { if (!btn.disabled) { btn.style.background = "rgba(109,40,217,0.2)"; btn.style.borderColor = "#6d28d9"; } };
+        btn.onmouseout = () => { if (!btn.disabled) { btn.style.background = "#1a1a2e"; btn.style.borderColor = "rgba(255,255,255,0.2)"; } };
+        btn.onclick = () => pickNight(c.pts, btn);
+        ch.appendChild(btn);
+      });
+      renderNightProgress();
+    }
+
+    function pickNight(p, btn) {
+      if (nightAnswered) return;
+      nightAnswered = true;
+      nightPts += p;
+      if (p >= 3) { btn.style.background = "rgba(46,213,115,0.15)"; btn.style.borderColor = "#2ed573"; btn.style.color = "#2ed573"; }
+      else if (p >= 2) { btn.style.background = "rgba(253,190,68,0.15)"; btn.style.borderColor = "#fdbe44"; btn.style.color = "#fdbe44"; }
+      else { btn.style.background = "rgba(255,107,107,0.15)"; btn.style.borderColor = "#ff6b6b"; btn.style.color = "#ff6b6b"; }
+      document.querySelectorAll("#nightChoices button").forEach(b => { if (b !== btn) { b.disabled = true; b.style.opacity = "0.2"; } });
+      setTimeout(() => { nightCur++; nightCur >= NIGHT_SCENES.length ? showNightResult() : showNightScene(); }, 1000);
+    }
+
+    function showNightResult() {
+      document.getElementById("nightGame").style.display = "none";
+      const rv = document.getElementById("nightResult");
+      rv.style.display = "flex";
+      const max = NIGHT_SCENES.reduce((s, sc) => s + Math.max(...sc.choices.map(c => c.pts)), 0);
+      const ratio = nightPts / max;
+      let emoji, title, quote, chem;
+      if (ratio >= 0.75) {
+        emoji = "🖤"; title = "Nezapomenutelná noc";
+        quote = '"ta noc byla zvláštní... a já ji nechci zapomenout 🖤"';
+        chem = 10;
+      } else if (ratio >= 0.5) {
+        emoji = "🌙"; title = "Bylo to hezké";
+        quote = '"bylo to hezké... příště víc odvahy 😏"';
+        chem = 5;
+      } else {
+        emoji = "😌"; title = "Slibný začátek";
+        quote = '"zajímavý pokus... ale znám tě málo 😌"';
+        chem = 2;
+      }
+      document.getElementById("nightResEmoji").textContent = emoji;
+      document.getElementById("nightResTitle").textContent = title;
+      document.getElementById("nightResQuote").textContent = quote;
+      document.getElementById("nightResChem").textContent = "+" + chem + "% chemie";
+      increaseChemistry(chem);
+
+      // Uložit do paměti
+      try {
+        memory = memory || {};
+        memory.dateMemory = (memory.dateMemory || "") + " Strávili jsme spolu noční hru — bylo to intimní a nezapomenutelné.";
+        localStorage.setItem("nina_memory", JSON.stringify(memory));
+      } catch(e) {}
+
+      scheduleServerSync && scheduleServerSync();
+    }
+
+    document.getElementById("nightModal").addEventListener("click", e => {
+      if (e.target === document.getElementById("nightModal")) closeNightModal();
+    });
+
+    document.getElementById("nightOpenBtn").addEventListener("click", function() {
+      if (window.openNightModal) window.openNightModal();
+    });
 
     // ==========================
     // MENU
