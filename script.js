@@ -806,7 +806,9 @@ async function sendMessageToAI(history, proactive = false) {
       memory,
       proactive,
       lang: currentLang,
-      chemistry: Math.round(chemistry)
+      chemistry: Math.round(chemistry),
+      mood: localStorage.getItem("nina_mood") || "calm",
+      lastGift: localStorage.getItem("nina_last_gift") || null
     })
   });
 
