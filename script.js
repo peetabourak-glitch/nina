@@ -356,6 +356,74 @@ function saveMessages() {
   localStorage.setItem("nina_messages", JSON.stringify(messages));
 }
 
+// ==========================
+// SERVER SYNC (Upstash)
+// ==========================
+let syncTimer = null;
+
+function scheduleServerSync() {
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncToServer, 3000); // debounce 3s
+}
+
+async function syncToServer() {
+  try {
+    const email = localStorage.getItem("nina_email");
+    if (!email) return;
+
+    const data = {
+      messages: messages.slice(-50), // max 50 zpráv
+      memory,
+      chemistry: Math.round(chemistry),
+      tokens: parseInt(localStorage.getItem("nina_tokens") || "0"),
+      mood: localStorage.getItem("nina_mood") || "calm",
+      userMessageCount,
+      updatedAt: Date.now(),
+    };
+
+    await fetch("/.netlify/functions/save-user-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, data }),
+    });
+  } catch (e) {
+    // Tiché selhání — localStorage zůstane jako záloha
+  }
+}
+
+async function loadFromServer(email) {
+  try {
+    const res = await fetch("/.netlify/functions/load-user-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const json = await res.json();
+    if (!json.data) return false;
+
+    const d = json.data;
+
+    // Načti data ze serveru pouze pokud jsou novější
+    const serverTime = d.updatedAt || 0;
+    const localTime = parseInt(localStorage.getItem("nina_last_sync") || "0");
+
+    if (serverTime > localTime) {
+      if (d.messages) { messages = d.messages; localStorage.setItem("nina_messages", JSON.stringify(messages)); }
+      if (d.memory) { memory = d.memory; localStorage.setItem("nina_memory", JSON.stringify(memory)); }
+      if (d.chemistry) { chemistry = d.chemistry; localStorage.setItem("nina_chemistry", String(chemistry)); }
+      if (d.tokens) { localStorage.setItem("nina_tokens", String(d.tokens)); }
+      if (d.mood) { localStorage.setItem("nina_mood", d.mood); }
+      if (d.userMessageCount) { userMessageCount = d.userMessageCount; localStorage.setItem("nina_userMessageCount", String(userMessageCount)); }
+      localStorage.setItem("nina_last_sync", String(serverTime));
+      return true;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
 function saveUserMessageCount() {
   localStorage.setItem("nina_userMessageCount", String(userMessageCount));
 }
@@ -1206,6 +1274,7 @@ async function send() {
     saveMemory(data);
     await addAssistantReply(data.reply);
     isNinaResponding = false;
+    scheduleServerSync();
 
     await maybeSendPremiumPhoto(text);
     scheduleProactiveMessage();
@@ -1421,7 +1490,15 @@ async function verifyEmail() {
         if (window.updateTokenDisplay) window.updateTokenDisplay();
       }
       hideEmailModal();
-      updateUIState();
+      // Načti data ze serveru — mohou být z jiného zařízení
+      const loaded = await loadFromServer(email);
+      if (loaded) {
+        renderMessages();
+        updateUIState();
+        if (window.loadGiftData) window.loadGiftData();
+      } else {
+        updateUIState();
+      }
     } else {
       // Nenalezeno aktivní předplatné
       if (emailModalError) {
