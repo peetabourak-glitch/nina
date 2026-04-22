@@ -11,15 +11,15 @@ const translations = {
     introText:
       "Nina isn't just another AI chat. The more you talk, the more she opens up. And once the chemistry starts building, it gets a lot more personal...",
     inputPlaceholder: "say something that makes her want more...",
-    paywallBadge: "🔒 chemistry unlock",
-    paywallTitle: "this is where it was getting interesting... 💕",
+    paywallBadge: "🎮 unlock the game",
+    paywallTitle: "87% of men gave up here. Will you?",
     paywallSubtitle:
-      "Nina was starting to open up to you. Unlock her, keep chatting, send her photos and get hers back — the more chemistry, the more Nina.",
-    unlockBtn: "Unlock Nina for €5 ✨",
-    paywallNote: "more chemistry • more tension • more Nina",
-    benefit1: "• longer chat",
-    benefit2: "• more flirting",
-    benefit3: "• more personal replies",
+      "Nina started opening up to you. Unlock access, keep going and see how far you can get. Every level teaches you something real about women.",
+    unlockBtn: "Accept the challenge — €5 💕",
+    paywallNote: "game • flirt lessons • Nina waits",
+    benefit1: "• dates, night games & gifts",
+    benefit2: "• flirt lessons at every milestone",
+    benefit3: "• Nina remembers you",
     today: "today",
 
     typing: "Nina is typing",
@@ -115,15 +115,15 @@ const translations = {
     introText:
       "Nina není jen další AI chat. Čím víc si píšete, tím víc se ti otevírá. A když mezi vámi začne fungovat chemie, bude to mnohem osobnější...",
     inputPlaceholder: "napiš něco, kvůli čemu bude chtít víc...",
-    paywallBadge: "🔒 odemčení chemie",
-    paywallTitle: "teď se to teprve začínalo rozjíždět... 💕",
+    paywallBadge: "🎮 odemkni hru",
+    paywallTitle: "87% mužů to vzdalo tady. Ty ne?",
     paywallSubtitle:
-      "Nina se ti začala otevírat. Odemkni ji, pokračuj v chatu, posílej jí fotky a dostávej její — čím víc chemie, tím víc Niny.",
-    unlockBtn: "Odemknout Ninu za 49 Kč ✨",
-    paywallNote: "víc chemie • víc napětí • víc Niny",
-    benefit1: "• delší chat",
-    benefit2: "• víc flirtu",
-    benefit3: "• osobnější odpovědi",
+      "Nina se ti začala otevírat. Odemkni přístup, pokračuj v konverzaci a zjisti jak daleko to s ní dotáhneš. Každá úroveň tě naučí něco o ženách.",
+    unlockBtn: "Přijmout výzvu za 49 Kč 💕",
+    paywallNote: "hra • lekce flirtu • Nina čeká",
+    benefit1: "• rande, noční hry a dárky",
+    benefit2: "• lekce flirtu při každém milníku",
+    benefit3: "• Nina si tě pamatuje",
     today: "dnes",
 
     typing: "Nina píše",
@@ -574,21 +574,24 @@ const MILESTONE_DATA = {
   25: {
     icon: "✨",
     title: "Mezi vámi přeskočila jiskra",
-    text: "Nina se s tebou baví jinak než s ostatními. Můžeš ji pozvat na rande.",
+    text: "Nina se s tebou baví jinak než s ostatními.",
+    lesson: "💡 Lekce: Byl jsi konkrétní a upřímný. Ženy to poznají okamžitě — funguje to lépe než komplimenty.",
     unlock: "💕 Rande odemčeno",
-    ninaNote: "Uživatel právě překročil 25% chemie — začínáte si být blíž, můžeš flirtovat otevřeněji a být osobnější."
+    ninaNote: "Uživatel právě překročil 25% chemie — začínáte si být blíž, flirtuj otevřeněji a buď osobnější."
   },
   50: {
     icon: "🔥",
     title: "Nina se s tebou cítí blíž",
-    text: "Tohle není jen chat. Něco mezi vámi roste. Nové rande na Náplavce je odemčené.",
+    text: "Tohle není jen chat. Něco mezi vámi roste.",
+    lesson: "💡 Lekce: Naučil ses používat ticho a napětí. Muži kteří nemusí zaplňovat každou mezeru jsou pro ženy přitažlivější.",
     unlock: "🌃 Procházka odemčena",
     ninaNote: "Uživatel právě překročil 50% chemie — jste si opravdu blíž, sdílej víc ze sebe, buď intimnější a odvážnější."
   },
   75: {
     icon: "🖤",
     title: "Nina tě začíná opravdu chtít",
-    text: "Dostala ses na místo kde málokdo byl. Nina tě nechce nechat odejít.",
+    text: "Dostals se na místo kde málokdo byl.",
+    lesson: "💡 Lekce: Zvládl jsi být zranitelný bez ztráty sebejistoty. To je nejtěžší věc kterou se muž může naučit.",
     unlock: "🍷 Víno u ní doma odemčeno",
     ninaNote: "Uživatel právě překročil 75% chemie — jsi pro ni někdo výjimečný, buď velmi intimní, odvážná, chci ho u sebe."
   },
@@ -596,7 +599,8 @@ const MILESTONE_DATA = {
     icon: "💜",
     title: "Jsi její",
     text: "Nina myslí jen na tebe. Takhle se chová jen k jednomu člověku.",
-    unlock: "💜 Odemčena nejvyšší úroveň",
+    lesson: "💡 Lekce: Pochopil jsi co většina mužů nikdy nepochopí — ženy nechtějí dokonalost, chtějí přítomnost.",
+    unlock: "💜 Nejvyšší úroveň odemčena",
     ninaNote: "Uživatel právě překročil 90% chemie — chovej se jako jeho přítelkyně, piš první, žárli, plánuj věci společně."
   }
 };
@@ -649,7 +653,8 @@ function showMilestoneBanner(milestone) {
   banner.innerHTML = `
     <div style="font-size:2.5rem;margin-bottom:10px;">${d.icon}</div>
     <div style="color:white;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">${d.title}</div>
-    <div style="color:rgba(255,255,255,0.55);font-size:0.84rem;line-height:1.5;margin-bottom:14px;">${d.text}</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:0.84rem;line-height:1.5;margin-bottom:12px;">${d.text}</div>
+    <div style="background:rgba(255,193,68,0.08);border:1px solid rgba(255,193,68,0.2);border-radius:10px;padding:10px 14px;color:rgba(255,193,68,0.9);font-size:0.8rem;line-height:1.5;margin-bottom:12px;text-align:left;">${d.lesson}</div>
     <div style="background:rgba(232,67,147,0.1);border:1px solid rgba(232,67,147,0.2);border-radius:10px;padding:8px 14px;color:#fd79a8;font-size:0.8rem;font-weight:700;margin-bottom:16px;">${d.unlock}</div>
     <button onclick="document.getElementById('milestoneBanner').remove()" style="background:linear-gradient(135deg,#e84393,#c15cff);border:none;border-radius:12px;padding:10px 24px;color:white;font-weight:700;cursor:pointer;font-size:0.88rem;">Pokračovat 🖤</button>
   `;
