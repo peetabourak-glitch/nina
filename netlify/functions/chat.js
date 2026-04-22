@@ -91,6 +91,9 @@ export async function handler(event) {
     if (lastGift && giftMap[lastGift]) {
       moodContext += ` Před chvílí dostala ${giftMap[lastGift]} — to ji potěšilo, ale nemusí to zmiňovat přímo, jen je to v ní cítit.`;
     }
+    if (memory.milestoneNote) {
+      moodContext += ` ${memory.milestoneNote}`;
+    }
 
     // ==========================
     // SYSTEM PROMPT
