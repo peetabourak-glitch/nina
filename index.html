@@ -954,8 +954,9 @@
       const modal = document.getElementById("nightModal");
       modal.style.display = "flex";
 
-      const hour = new Date().getHours();
-      const isNight = hour >= 20 || hour < 6;
+      // Čas v Praze
+      const pragueHour = parseInt(new Date().toLocaleString("en-US", { timeZone: "Europe/Prague", hour: "numeric", hour12: false }));
+      const isNight = pragueHour >= 20 || pragueHour < 6;
       const hasChemistry = chemistry >= 60;
       const hasTokens = ninaTokens >= 20;
 
@@ -1184,6 +1185,8 @@
         menuEmailSubmit.textContent = "Načítám...";
         menuEmailSubmit.disabled = true;
         localStorage.setItem("nina_email", email);
+        // Ihned uložit aktuální lokální data na server
+        if (window.scheduleServerSync) window.scheduleServerSync();
         try {
           // 1. Načíst data ze serveru
           const res = await fetch("/.netlify/functions/load-user-data", {
