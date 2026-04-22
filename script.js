@@ -678,6 +678,8 @@ function showMilestoneBanner(milestone) {
     }
   }, 8000);
 }
+
+function getChemistryGainFromText(text) {
   const len = (text || "").trim().length;
   let gain = 2;
 
