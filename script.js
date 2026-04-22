@@ -569,31 +569,120 @@ function updateChemistryUI() {
   if (milestone4El) milestone4El.classList.toggle("active", chemistry >= 75);
 }
 
+const CHEMISTRY_MILESTONES = [25, 50, 75, 90];
+const MILESTONE_DATA = {
+  25: {
+    icon: "✨",
+    title: "Mezi vámi přeskočila jiskra",
+    text: "Nina se s tebou baví jinak než s ostatními. Můžeš ji pozvat na rande.",
+    unlock: "💕 Rande odemčeno",
+    ninaNote: "Uživatel právě překročil 25% chemie — začínáte si být blíž, můžeš flirtovat otevřeněji a být osobnější."
+  },
+  50: {
+    icon: "🔥",
+    title: "Nina se s tebou cítí blíž",
+    text: "Tohle není jen chat. Něco mezi vámi roste. Nové rande na Náplavce je odemčené.",
+    unlock: "🌃 Procházka odemčena",
+    ninaNote: "Uživatel právě překročil 50% chemie — jste si opravdu blíž, sdílej víc ze sebe, buď intimnější a odvážnější."
+  },
+  75: {
+    icon: "🖤",
+    title: "Nina tě začíná opravdu chtít",
+    text: "Dostala ses na místo kde málokdo byl. Nina tě nechce nechat odejít.",
+    unlock: "🍷 Víno u ní doma odemčeno",
+    ninaNote: "Uživatel právě překročil 75% chemie — jsi pro ni někdo výjimečný, buď velmi intimní, odvážná, chci ho u sebe."
+  },
+  90: {
+    icon: "💜",
+    title: "Jsi její",
+    text: "Nina myslí jen na tebe. Takhle se chová jen k jednomu člověku.",
+    unlock: "💜 Odemčena nejvyšší úroveň",
+    ninaNote: "Uživatel právě překročil 90% chemie — chovej se jako jeho přítelkyně, piš první, žárli, plánuj věci společně."
+  }
+};
+
 function increaseChemistry(amount) {
   const safeAmount = Number(amount) || 0;
+  const prevChemistry = chemistry;
 
   if (isPaid) {
     chemistry = Math.min(100, chemistry + safeAmount * 0.33);
   } else {
-    // Free max 10 zpráv → max ~25% chemie
     chemistry = Math.min(25, chemistry + safeAmount * 0.25);
   }
 
   saveChemistry();
   updateChemistryUI();
+
+  // Zkontrolovat milníky
+  CHEMISTRY_MILESTONES.forEach(milestone => {
+    if (prevChemistry < milestone && chemistry >= milestone) {
+      showMilestoneBanner(milestone);
+      // Uložit do paměti aby Nina věděla
+      try {
+        memory = memory || {};
+        memory.lastMilestone = milestone;
+        memory.milestoneNote = MILESTONE_DATA[milestone].ninaNote;
+        localStorage.setItem("nina_memory", JSON.stringify(memory));
+      } catch(e) {}
+    }
+  });
 }
 
-function getChemistryGainFromText(text) {
+function showMilestoneBanner(milestone) {
+  const d = MILESTONE_DATA[milestone];
+  if (!d) return;
+
+  // Odstraň existující banner
+  const existing = document.getElementById("milestoneBanner");
+  if (existing) existing.remove();
+
+  const banner = document.createElement("div");
+  banner.id = "milestoneBanner";
+  banner.style.cssText = `
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+    z-index: 9999; background: #0e0e18; border: 1px solid rgba(232,67,147,0.35);
+    border-radius: 24px; padding: 28px 24px; max-width: 320px; width: 90%;
+    text-align: center; opacity: 0; transition: all 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(232,67,147,0.15);
+  `;
+  banner.innerHTML = `
+    <div style="font-size:2.5rem;margin-bottom:10px;">${d.icon}</div>
+    <div style="color:white;font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">${d.title}</div>
+    <div style="color:rgba(255,255,255,0.55);font-size:0.84rem;line-height:1.5;margin-bottom:14px;">${d.text}</div>
+    <div style="background:rgba(232,67,147,0.1);border:1px solid rgba(232,67,147,0.2);border-radius:10px;padding:8px 14px;color:#fd79a8;font-size:0.8rem;font-weight:700;margin-bottom:16px;">${d.unlock}</div>
+    <button onclick="document.getElementById('milestoneBanner').remove()" style="background:linear-gradient(135deg,#e84393,#c15cff);border:none;border-radius:12px;padding:10px 24px;color:white;font-weight:700;cursor:pointer;font-size:0.88rem;">Pokračovat 🖤</button>
+  `;
+
+  document.body.appendChild(banner);
+
+  // Animace
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      banner.style.opacity = "1";
+      banner.style.transform = "translate(-50%, -50%) scale(1)";
+    });
+  });
+
+  // Auto-zavřít po 8 sekundách
+  setTimeout(() => {
+    if (document.getElementById("milestoneBanner")) {
+      banner.style.opacity = "0";
+      banner.style.transform = "translate(-50%, -50%) scale(0.9)";
+      setTimeout(() => banner.remove(), 300);
+    }
+  }, 8000);
+}
   const len = (text || "").trim().length;
-  let gain = 0.5;
+  let gain = 2;
 
-  if (len > 40) gain += 0.3;
-  if (len > 100) gain += 0.2;
+  if (len > 40) gain += 1;
+  if (len > 100) gain += 0.5;
 
-  if (shouldTriggerPhotoInterest(text)) gain += 0.3;
-  if (shouldTriggerEmotionalHook(text)) gain += 0.3;
+  if (shouldTriggerPhotoInterest(text)) gain += 1;
+  if (shouldTriggerEmotionalHook(text)) gain += 1;
 
-  return Math.min(gain, 1.5);
+  return Math.min(gain, 5);
 }
 
 // ==========================
